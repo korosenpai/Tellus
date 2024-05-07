@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
+import java.util.Arrays;
 
 import javax.swing.Timer;
 import javax.swing.JPanel;
@@ -62,7 +62,6 @@ public class Window extends JPanel implements ActionListener {
 
         grid = new Grid(screenWidth, screenHeight, tileDimension);
         grid.generateRandomizedGrid();
-        grid.grid[2][1] = new Particle(255);
     }
 
     public class MyKeyAdapter extends KeyAdapter {
@@ -108,16 +107,19 @@ public class Window extends JPanel implements ActionListener {
 
 
 
-    public Particle[] getNeighbors(int i, int j) {
-        return grid.getNeighbors(i, j);
+    public Particle[] getNeighbors(int j, int i) {
+        return grid.getNeighbors(j, i);
     }
 
-    public Particle[] getLowerNeighbors(int i, int j) {
-        return grid.getLowerNeighbors(i, j);
+    public Particle[] getLowerNeighbors(int j, int i) {
+        return grid.getLowerNeighbors(j, i);
     }
 
-    public Particle[] getUpperNeighbors(int i, int j) {
-        return grid.getUpperNeighbors(i, j);
+    public Particle[] getUpperNeighbors(int j, int i) {
+        return grid.getUpperNeighbors(j, i);
     }
 
+    public Particle[] getSideNeighbors(int j, int i) {
+        return grid.getSideNeighbors(j, i);
+    }
 }
