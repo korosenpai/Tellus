@@ -11,7 +11,7 @@ public class Mouse extends MouseMotionAdapter {
         // divide by tile size to get what position in grid mouse is currently hovering onto
         x = e.getX();
         y = e.getY();
-        System.out.println("Mouse x: " + x + " y: " + y);
+        // System.out.println("Mouse x: " + x + " y: " + y);
     }
 
     public int getX() {

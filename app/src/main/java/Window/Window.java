@@ -28,8 +28,12 @@ public class Window extends JPanel implements ActionListener {
     int DELAY;
     Timer timer;
 
-    static Grid grid;
-    boolean restart;
+    private static Grid grid;
+    private boolean restart;
+
+    private Mouse mouse = new Mouse();
+
+    private boolean windowShouldClose = false; // set when hit esc to quit
 
     public Window(int screenWidth, int screenHeight, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
@@ -49,18 +53,18 @@ public class Window extends JPanel implements ActionListener {
         this.requestFocusInWindow();
         
         this.addKeyListener(new MyKeyAdapter());
-        this.addMouseMotionListener(new Mouse());
+        this.addMouseMotionListener(mouse);
     }
 
     
 
     public void start() {
         restart = false;
-        if (timer == null) {
-            timer = new Timer(DELAY, this);
-            timer.setRepeats(true);
-            timer.start();
-        }
+        // if (timer == null) {
+        //     timer = new Timer(DELAY, this);
+        //     timer.setRepeats(true);
+        //     timer.start();
+        // }
 
         grid = new Grid(screenWidth, screenHeight, tileDimension);
         grid.generateRandomizedGrid();
@@ -71,8 +75,12 @@ public class Window extends JPanel implements ActionListener {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
-                case 10:
+                case 10: // enter
                     restart = true;
+                    break;
+
+                case 27: // esc
+                    windowShouldClose = true;
                     break;
             
                 default:
@@ -81,23 +89,34 @@ public class Window extends JPanel implements ActionListener {
         }
     }
 
+    public boolean getWindowShouldClose() {
+        return windowShouldClose;
+    }
+
     //called every timer clock cycle
     public void actionPerformed(ActionEvent event){
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
+    }
+
+    public void update() {
         if (restart) start();
         repaint(); // calls paintComponent
+
     }
 
     //called by repaint in actionPerformed
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; // 2d gives more access on geometry, coords, ...
+
         drawGrid(g2);
+        drawMouse(g2);
+
         g2.dispose(); // frees up memory
     }
 
-    public void drawGrid(Graphics g){        
+    public void drawGrid(Graphics2D g){        
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++) {
                 int color = grid.getAtPosition(i, j).getID();
@@ -105,6 +124,13 @@ public class Window extends JPanel implements ActionListener {
                 g.fillRect(j*tileDimension, i*tileDimension, tileDimension, tileDimension);                
             }
         }
+    }
+
+    // add support to draw as arc
+    public void drawMouse(Graphics2D g) {
+        g.setColor(new Color(255, 255, 255));
+        // (pos / tiledimension) * tiledimension works because java rounds to int the one in brackets so then we can treat it as i or j of drawGrid()
+        g.fillRect((mouse.getX() / tileDimension) * tileDimension, (mouse.getY() / tileDimension) * tileDimension, tileDimension, tileDimension);                
     }
 
 
