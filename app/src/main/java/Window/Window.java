@@ -126,11 +126,36 @@ public class Window extends JPanel implements ActionListener {
         }
     }
 
-    // add support to draw as arc
+    // TODO: add support to draw as circle
     public void drawMouse(Graphics2D g) {
         g.setColor(new Color(255, 255, 255));
         // (pos / tiledimension) * tiledimension works because java rounds to int the one in brackets so then we can treat it as i or j of drawGrid()
         g.fillRect((mouse.getX() / tileDimension) * tileDimension, (mouse.getY() / tileDimension) * tileDimension, tileDimension, tileDimension);                
+
+        // Bresenham Circle algorithm
+        // int radius = mouse.getRadius() * tileDimension;
+
+        // int x0 = (((mouse.getX() - radius) / tileDimension) * tileDimension) ;
+        // int y0 = (((mouse.getY() - radius) / tileDimension) * tileDimension) ;
+        // int x1 = (((mouse.getX() + radius) / tileDimension) * tileDimension) ;
+        // int y1 = (((mouse.getY() + radius) / tileDimension) * tileDimension) ;
+
+        // System.out.println(x0 + " : " + y0 + " : " + x1 + " : " + y1);
+
+        // for (int x = x0; x <= x1; x += tileDimension) {
+        //     for (int y = y0; y <= y1; y += tileDimension) {
+        //         if (Math.sqrt((x - mouse.getX()) * (x - mouse.getX()) + (y - mouse.getY()) * (y - mouse.getY())) <= radius) {
+        //             g.fillRect(mouse.getX(), mouse.getY(), tileDimension, tileDimension);                
+        //         }
+        //     }
+        // }
+
+        // int radius = mouse.getRadius() * tileDimension;
+
+        // int centerX = mouse.getX() / tileDimension;
+        // int centerY = mouse.getY() / tileDimension;
+
+        // for (int x0 = centerX - centerY)
     }
 
 
