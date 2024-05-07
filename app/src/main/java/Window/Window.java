@@ -12,27 +12,35 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.Timer;
 import javax.swing.JPanel;
-import javax.swing.JFrame;
 
 import Blocks.*;
 
 
 public class Window extends JPanel implements ActionListener {
     
-    static final int screenWidth = 800;
-    static final int screenHeight = 800;
-    static final int tileDimension = 20;
-    static final int rows = screenHeight / tileDimension;
-    static final int columns = screenWidth / tileDimension;
+    final int screenWidth;
+    final int screenHeight;
+    final int tileDimension;
+    final int rows;
+    final int columns;
 
-    final int fps = 30;
-    final int delay = 1000/fps;
+    int FPS;
+    int DELAY;
     Timer timer;
 
     static Grid grid;
     boolean restart;
 
-    Window() {
+    public Window(int screenWidth, int screenHeight, int tileDimension, int fps) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        this.tileDimension = tileDimension;
+        this.rows = screenHeight / tileDimension;
+        this.columns = screenWidth / tileDimension;
+
+        this.FPS = fps;
+        this.DELAY = 1000 / FPS;
+
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black); //dunno if its actually even useful since we color also the empty cell with a black square
         this.setDoubleBuffered(true); //improves performance
@@ -47,7 +55,7 @@ public class Window extends JPanel implements ActionListener {
     public void start() {
         restart = false;
         if (timer == null) {
-            timer = new Timer(delay, this);
+            timer = new Timer(DELAY, this);
             timer.setRepeats(true);
             timer.start();
         }
@@ -98,21 +106,7 @@ public class Window extends JPanel implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
-        JFrame screen = new JFrame();
-        screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        screen.setResizable(false);
-        screen.setTitle("rock-paper-scissors");
 
-        Window window = new Window();
-        screen.add(window);
-        screen.pack(); // resize window to fit preferred size (specified in gamepanel)
-
-        screen.setLocationRelativeTo(null); // specify location of the window // unll -> display at center of screen
-        screen.setVisible(true); 
-
-        window.start();
-    }
 
     public Particle[] getNeighbors(int i, int j) {
         return grid.getNeighbors(i, j);
