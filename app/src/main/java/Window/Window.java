@@ -1,3 +1,5 @@
+package Window;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -6,10 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
+
 
 import javax.swing.Timer;
-import javax.xml.parsers.FactoryConfigurationError;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 
@@ -71,8 +72,9 @@ public class Window extends JPanel implements ActionListener {
     //called every timer clock cycle
     public void actionPerformed(ActionEvent event){
         //equivalent to pygame.display.update()
+        //updates screen every clock cycle
         if (restart) start();
-        repaint();
+        repaint(); // calls paintComponent
     }
 
     //called by repaint in actionPerformed
@@ -108,10 +110,5 @@ public class Window extends JPanel implements ActionListener {
 
         window.start();
     }
-   
 
-
-    
-
-    
 }
