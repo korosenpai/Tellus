@@ -14,6 +14,8 @@ import javax.swing.Timer;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 
+import Blocks.*;
+
 
 public class Window extends JPanel implements ActionListener {
     
@@ -52,6 +54,7 @@ public class Window extends JPanel implements ActionListener {
 
         grid = new Grid(screenWidth, screenHeight, tileDimension);
         grid.generateRandomizedGrid();
+        grid.grid[2][1] = new Particle(255);
     }
 
     public class MyKeyAdapter extends KeyAdapter {
@@ -88,7 +91,7 @@ public class Window extends JPanel implements ActionListener {
     public void drawGrid(Graphics g){        
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++) {
-                int color = grid.grid[i][j];
+                int color = grid.getAtPosition(i, j).getID();
                 g.setColor(new Color(color, color, color));
                 g.fillRect(j*tileDimension, i*tileDimension, tileDimension, tileDimension);                
             }
@@ -109,6 +112,18 @@ public class Window extends JPanel implements ActionListener {
         screen.setVisible(true); 
 
         window.start();
+    }
+
+    public Particle[] getNeighbors(int i, int j) {
+        return grid.getNeighbors(i, j);
+    }
+
+    public Particle[] getLowerNeighbors(int i, int j) {
+        return grid.getLowerNeighbors(i, j);
+    }
+
+    public Particle[] getUpperNeighbors(int i, int j) {
+        return grid.getUpperNeighbors(i, j);
     }
 
 }
