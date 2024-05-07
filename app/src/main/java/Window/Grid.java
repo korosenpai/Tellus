@@ -2,6 +2,8 @@ package Window;
 
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
+
 import Blocks.Particle;
 
 class Grid {
@@ -74,45 +76,46 @@ class Grid {
         return grid[i][j];
     }
 
-    public Particle[] getNeighbors(int i, int j) {
-        Particle[] neighbors = new Particle[]{null, null, null, null, null, null, null, null};
-        return neighbors;
-
+    public Particle[] getNeighbors(int j, int i) {
+        // concatenate in array all three methods to get neighbor from top left to bottom right
+        return Stream.of(getUpperNeighbors(j, i), getSideNeighbors(j, i), getLowerNeighbors(j, i))
+            .flatMap(Arrays::stream)
+            .toArray(Particle[]::new);
     }
 
-    public Particle[] getLowerNeighbors(int i, int j) {
+    public Particle[] getLowerNeighbors(int j, int i) {
         /* return the three lower cells of grid[i][j] 
          * if neighbor is out of bound returns null
         */
         Particle[] lowerNeighbors = new Particle[]{null, null, null};
 
         if (j < rows) { //check if element is not in the last row
-            if (i > 0) lowerNeighbors[0] = grid[i-1][j+1]; //bottomleft
-            lowerNeighbors[1] = grid[i][j+1]; //bottom
-            if (i < columns) lowerNeighbors[2] = grid[i+1][j+1]; //bottomright
+            if (i > 0) lowerNeighbors[0] = grid[j + 1][i - 1]; //bottomleft
+            lowerNeighbors[1] = grid[j + 1][i]; //bottom
+            if (i < columns) lowerNeighbors[2] = grid[j + 1][i + 1]; //bottomright
         }
         return lowerNeighbors;
     }
 
-    public Particle[] getUpperNeighbors(int i, int j) {
+    public Particle[] getUpperNeighbors(int j, int i) {
         /* return the three lower cells of grid[i][j] 
          * if neighbor is out of bound returns null
         */
         Particle[] upperNeighbors = new Particle[]{null, null, null};
 
         if (j > 0) { //check if element is not in the last row
-            if (i > 0) upperNeighbors[0] = grid[i-1][j-1]; //upperleft
-            upperNeighbors[1] = grid[i][j-1]; //upper
-            if (i < columns) upperNeighbors[2] = grid[i+1][j-1]; //upperright
+            if (i > 0) upperNeighbors[0] = grid[j - 1][i - 1]; //upperleft
+            upperNeighbors[1] = grid[j - 1][i]; //upper
+            if (i < columns) upperNeighbors[2] = grid[j - 1][i + 1]; //upperright
         }
         return upperNeighbors;
     }
 
-    public Particle[] getSideNeighbors(int i, int j){
+    public Particle[] getSideNeighbors(int j, int i){
         Particle[] sideNeighbors = new Particle[]{null, null};
         
-        if (i > 0) sideNeighbors[0] = grid[i-1][j];
-        if (i < columns) {}
+        if (i > 0) sideNeighbors[0] = grid[j][i - 1];
+        if (i < columns) sideNeighbors[1] = grid[j][i + 1];
         return sideNeighbors;
     }
 
