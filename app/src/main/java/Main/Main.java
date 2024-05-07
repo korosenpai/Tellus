@@ -33,6 +33,22 @@ public class Main {
     public static void main(String[] args) {
         setupAndStartWindow();
 
+        // main loop
+        while (!window.getWindowShouldClose()) {
+            window.update();
+
+
+
+            try {
+                Thread.sleep(10);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // only reached if user quit with esc and not forcefully
+        screen.dispose();
     }
 
 }
