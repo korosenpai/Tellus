@@ -69,6 +69,18 @@ public class Grid {
         }
     }
 
+    public int getElementAtCell(int targetI, int targetJ) {
+        /* return elements at specified index */
+        return grid[targetI][targetJ];
+    }
+
+    public void switchWithCell(int thisI, int thisJ, int targetI, int targetJ) {
+        int targetCell = getElementAtCell(targetI, targetJ);
+        int thisCell = getElementAtCell(thisI, thisJ);
+        grid[targetI][targetJ] = thisCell;
+        grid[thisI][thisJ] = targetCell;
+    }
+
     public void print() {
         for (int[] row : grid) {
             System.out.println(Arrays.toString(row));
