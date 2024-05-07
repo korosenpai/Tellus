@@ -47,7 +47,9 @@ public class Window extends JPanel implements ActionListener {
 
         this.setFocusable(true); //for using keyAdapter
         this.requestFocusInWindow();
+        
         this.addKeyListener(new MyKeyAdapter());
+        this.addMouseMotionListener(new Mouse());
     }
 
     
