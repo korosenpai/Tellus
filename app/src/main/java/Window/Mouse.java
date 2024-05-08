@@ -3,7 +3,6 @@ package Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseListener;
 
 public class Mouse extends MouseMotionAdapter implements MouseListener{
     private int x;
@@ -41,7 +40,7 @@ public class Mouse extends MouseMotionAdapter implements MouseListener{
     @Override
     public void mousePressed(MouseEvent e) {
         pressed = true;
-        //System.out.println("Pressed");
+        System.out.println("Pressed");
     }
 
     @Override
@@ -82,4 +81,6 @@ public class Mouse extends MouseMotionAdapter implements MouseListener{
     public boolean isDragged() {
         return dragged;
     }
+
+
 }
