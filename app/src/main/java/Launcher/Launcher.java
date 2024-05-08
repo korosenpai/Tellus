@@ -1,10 +1,10 @@
-package Main;
+package Launcher;
 
 import javax.swing.JFrame;
 
 import Window.Window;
 
-public class Main {
+public class Launcher {
     static private JFrame screen;
     static private Window window;
 
@@ -14,11 +14,11 @@ public class Main {
 
     static int FPS = 30;
 
-    static public void setupAndStartWindow() {
+    public static void main(String[] args) {
         screen = new JFrame();
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         screen.setResizable(false);
-        screen.setTitle("rock-paper-scissors");
+        screen.setTitle("Tellus");
 
         window = new Window(WIDTH, HEIGHT, TILE_SIZE, FPS);
         screen.add(window);
@@ -28,27 +28,7 @@ public class Main {
         screen.setVisible(true); 
 
         window.start();
-    }
 
-    public static void main(String[] args) {
-        setupAndStartWindow();
-
-        // main loop
-        while (!window.getWindowShouldClose()) {
-            window.update();
-
-
-
-            try {
-                Thread.sleep(10);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        // only reached if user quit with esc and not forcefully
-        screen.dispose();
     }
 
 }

@@ -60,11 +60,11 @@ public class Window extends JPanel implements ActionListener {
 
     public void start() {
         restart = false;
-        // if (timer == null) {
-        //     timer = new Timer(DELAY, this);
-        //     timer.setRepeats(true);
-        //     timer.start();
-        // }
+        if (timer == null) {
+            timer = new Timer(DELAY, this);
+            timer.setRepeats(true);
+            timer.start();
+        }
 
         grid = new Grid(screenWidth, screenHeight, tileDimension);
         grid.generateRandomizedGrid();
@@ -93,16 +93,13 @@ public class Window extends JPanel implements ActionListener {
         return windowShouldClose;
     }
 
+    // NOTE: MAIN LOOP
     //called every timer clock cycle
     public void actionPerformed(ActionEvent event){
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
-    }
-
-    public void update() {
         if (restart) start();
         repaint(); // calls paintComponent
-
     }
 
     //called by repaint in actionPerformed
