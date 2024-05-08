@@ -68,6 +68,7 @@ public class Window extends JPanel implements ActionListener {
 
         grid = new Grid(screenWidth, screenHeight, tileDimension);
         grid.generateRandomizedGrid();
+
     }
 
     public boolean getWindowShouldClose() {

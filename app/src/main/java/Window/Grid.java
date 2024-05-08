@@ -72,9 +72,17 @@ class Grid {
         }
     }
 
-    public Particle getAtPosition(int i, int j) {
-        return grid[i][j];
+    public Particle getAtPosition(int j, int i) {
+        return grid[j][i];
     }
+
+    public void setParticle(int j, int i, Particle particle) {
+        grid[j][i] = particle;
+    }
+
+    // NOTE: GETNEIGHBORS FUNCTIONS
+    // input: j = y; i = x
+    // gives particles from left to right
 
     public Particle[] getNeighbors(int j, int i) {
         // concatenate in array all three methods to get neighbor from top left to bottom right
