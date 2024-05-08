@@ -6,3 +6,4 @@ build
 
 # vscode run scripts
 **/.settings/
+app/bin/
