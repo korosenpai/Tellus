@@ -60,7 +60,7 @@ public class Window extends JPanel implements ActionListener {
 
     public void start() {
         restart = false;
-        if (timer == null) {
+        if (timer == null) { // keep same timer even if restarted
             timer = new Timer(DELAY, this);
             timer.setRepeats(true);
             timer.start();
@@ -68,25 +68,6 @@ public class Window extends JPanel implements ActionListener {
 
         grid = new Grid(screenWidth, screenHeight, tileDimension);
         grid.generateRandomizedGrid();
-    }
-
-    public class MyKeyAdapter extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
-                case 10: // enter
-                    restart = true;
-                    break;
-
-                case 27: // esc
-                    windowShouldClose = true;
-                    break;
-            
-                default:
-                    break;
-            }
-        }
     }
 
     public boolean getWindowShouldClose() {
@@ -156,20 +137,24 @@ public class Window extends JPanel implements ActionListener {
     }
 
 
+    private class MyKeyAdapter extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
+                case 10: // enter
+                    restart = true;
+                    break;
 
-    public Particle[] getNeighbors(int j, int i) {
-        return grid.getNeighbors(j, i);
+                case 27: // esc
+                    windowShouldClose = true;
+                    break;
+            
+                default:
+                    break;
+            }
+        }
     }
 
-    public Particle[] getLowerNeighbors(int j, int i) {
-        return grid.getLowerNeighbors(j, i);
-    }
 
-    public Particle[] getUpperNeighbors(int j, int i) {
-        return grid.getUpperNeighbors(j, i);
-    }
-
-    public Particle[] getSideNeighbors(int j, int i) {
-        return grid.getSideNeighbors(j, i);
-    }
 }
