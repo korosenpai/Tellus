@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import Blocks.Particle;
 
-class Grid {
+public class Grid {
     final int screenWidth;
     final int screenHeight;
 
@@ -53,7 +53,7 @@ class Grid {
         for (int i = 0; i < this.columns; i++){
             Particle[] row = new Particle[this.columns];
             for (int j = 0; j < this.rows; j++){
-                row[j] = new Particle();
+                row[j] = new Particle(0); //0 is the empty ID
             }
             grid[i] = row;
         }
@@ -71,6 +71,26 @@ class Grid {
             grid[i] = row;
         }
     }
+
+    public void updateGrid() {
+        for (int j = columns-1; j > -1; j--){
+            for (int i = rows-1; i > -1; i--){
+                //grid[i][j].update(j, i, this);
+                grid[j][i] = new Particle(j);
+                grid[j][i].update(j, i, this);
+                try {
+                    
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
+                
+            }
+        }
+    }
+
+
+
+
 
     public Particle getAtPosition(int j, int i) {
         return grid[j][i];

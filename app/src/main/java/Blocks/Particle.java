@@ -1,5 +1,7 @@
 package Blocks;
 
+import Window.Grid;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Particle {
@@ -17,7 +19,9 @@ public class Particle {
         return this.ID;
     }
 
-    public void update(int i, int j) {
-        // i, j -> coords of particle (known by the position in the double for loop)
-    }
+    public void update(int j, int i, Grid grid) {
+        Particle bottomTile = grid.getLowerNeighbors(j, i)[1];
+        System.out.println(bottomTile);
+    } 
+
 }

@@ -92,8 +92,9 @@ public class Window extends JPanel implements ActionListener {
         if (restart) start();
         if (getWindowShouldClose()) stop();
 
+        
         setOnClick(); // set particle on the position of the mouse, when clicked
-
+        
         repaint(); // calls paintComponent
     }
 
@@ -112,6 +113,10 @@ public class Window extends JPanel implements ActionListener {
         if (!(mouse.isDragged() || mouse.isPressed())) return;
         grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Particle(255));
     }
+
+  
+
+
 
     public void drawGrid(Graphics2D g){        
         for (int i = 0; i < rows; i++){
