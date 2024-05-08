@@ -11,7 +11,9 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 import javax.swing.Timer;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import Blocks.*;
 
@@ -54,6 +56,7 @@ public class Window extends JPanel implements ActionListener {
         
         this.addKeyListener(new MyKeyAdapter());
         this.addMouseMotionListener(mouse);
+        this.addMouseListener(mouse);
     }
 
     
@@ -70,6 +73,12 @@ public class Window extends JPanel implements ActionListener {
         grid.generateRandomizedGrid();
 
     }
+    
+    public void stop() {
+        JFrame ancestor = (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this);
+        ancestor.dispose();
+        System.exit(0);
+    }
 
     public boolean getWindowShouldClose() {
         return windowShouldClose;
@@ -81,6 +90,10 @@ public class Window extends JPanel implements ActionListener {
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
         if (restart) start();
+        if (getWindowShouldClose()) stop();
+
+        setOnClick(); // set particle on the position of the mouse, when clicked
+
         repaint(); // calls paintComponent
     }
 
@@ -95,6 +108,11 @@ public class Window extends JPanel implements ActionListener {
         g2.dispose(); // frees up memory
     }
 
+    public void setOnClick() {
+        if (!(mouse.isDragged() || mouse.isPressed())) return;
+        grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Particle(255));
+    }
+
     public void drawGrid(Graphics2D g){        
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++) {
@@ -105,11 +123,18 @@ public class Window extends JPanel implements ActionListener {
         }
     }
 
+    // converts from window's coordinate to snapped window to grid coordinates for drawing
+    private int snapToGrid(int coord) {
+        // (pos / tiledimension) * tiledimension works 
+        // because java rounds to int the one in brackets so then we can treat it as i or j of drawGrid()
+        return (coord / tileDimension) * tileDimension;
+    }
+
     // TODO: add support to draw as circle
     public void drawMouse(Graphics2D g) {
         g.setColor(new Color(255, 255, 255));
-        // (pos / tiledimension) * tiledimension works because java rounds to int the one in brackets so then we can treat it as i or j of drawGrid()
-        g.fillRect((mouse.getX() / tileDimension) * tileDimension, (mouse.getY() / tileDimension) * tileDimension, tileDimension, tileDimension);                
+        
+        g.fillRect(snapToGrid(mouse.getX()), snapToGrid(mouse.getY()), tileDimension, tileDimension);                
 
         // Bresenham Circle algorithm
         // int radius = mouse.getRadius() * tileDimension;
