@@ -55,11 +55,11 @@ public class Window extends JPanel implements ActionListener {
         this.requestFocusInWindow();
         
         this.addKeyListener(new MyKeyAdapter());
+
+        this.addMouseWheelListener(mouse);// for mouse wheel detection, changes cursour radius
         this.addMouseMotionListener(mouse);
         this.addMouseListener(mouse);
-       
-        this.addMouseWheelListener(mouse);// for mouse wheel detection, changes cursour radius
-        this.addMouseListener(mouse);
+
 
     }
 
@@ -96,8 +96,11 @@ public class Window extends JPanel implements ActionListener {
         if (restart) start();
         if (getWindowShouldClose()) stop();
 
-        
-        setOnClick(); // set particle on the position of the mouse, when clicked
+        grid.updateGrid();
+
+        if (mouse.isDragged() || mouse.isPressed()) {
+            setOnClick(); // set particle on the position of the mouse, when clicked
+        };
         
         
 
@@ -117,7 +120,9 @@ public class Window extends JPanel implements ActionListener {
     }
 
     public void setOnClick() {
-        if (!(mouse.isDragged() || mouse.isPressed())) return;
+        int x = mouse.getX();
+        int y = mouse.getY();
+        if ( 0 > x || x > screenWidth - 1 || 0 > y || y > screenHeight - 1 ) return; // check if out of bounds
         grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
     }
 

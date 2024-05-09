@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public abstract class Particle {
     
     private int ID;
+    private int type; // 0: air, 1: solid, 2: liquid, 3: gas
 
     // to be abstracted by the solids
     // they are readonly
@@ -19,6 +20,13 @@ public abstract class Particle {
     }
     public Particle(int ID) {
         this.ID = ID;
+    }
+
+    public int getType() {
+        return type;
+    }
+    public void setType(int t) {
+        this.type = t;
     }
 
     public int getID() {
