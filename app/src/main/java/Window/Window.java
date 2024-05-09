@@ -17,6 +17,7 @@ import javax.swing.Timer;
 import Blocks.Particle;
 import Blocks.Solids.DynamicSolid.Sand;
 import Blocks.Solids.DynamicSolid.Snow;
+import Blocks.Solids.StaticParticle.Wood;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -37,6 +38,8 @@ public class Window extends JPanel implements ActionListener {
     private Mouse mouse = new Mouse();
 
     private boolean windowShouldClose = false; // set when hit esc to quit
+    public Particle currentSelectedParticle = new Sand(); //Sand
+    
 
     public Window(int screenWidth, int screenHeight, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
@@ -47,6 +50,9 @@ public class Window extends JPanel implements ActionListener {
 
         this.FPS = fps;
         this.DELAY = 1000 / FPS;
+
+             
+
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black); //dunno if its actually even useful since we color also the empty cell with a black square
@@ -123,7 +129,9 @@ public class Window extends JPanel implements ActionListener {
         int x = mouse.getX();
         int y = mouse.getY();
         if ( 0 > x || x > screenWidth - 1 || 0 > y || y > screenHeight - 1 ) return; // check if out of bounds
-        grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
+        if (currentSelectedParticle instanceof Sand) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
+        else if (currentSelectedParticle instanceof Snow) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Snow());
+        else if (currentSelectedParticle instanceof Wood) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Wood());
     }
 
     
@@ -199,7 +207,20 @@ public class Window extends JPanel implements ActionListener {
                 case 27: // esc
                     windowShouldClose = true;
                     break;
+                
+                //keyboards input to switch currently selected particle
+                case 112: //F1
+                    currentSelectedParticle = new Sand();
+                    break;
             
+                case 113: //F2
+                    currentSelectedParticle = new Snow();
+                    break;
+                
+                case 114: //F3
+                    currentSelectedParticle = new Wood();
+                    break;
+                
                 default:
                     break;
             }

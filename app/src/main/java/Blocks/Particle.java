@@ -37,6 +37,7 @@ public abstract class Particle {
 
     // give random offset to add more texture to color
     public int getColorOffset() {
+         //OFFSET IS += 100 quindi fare -50 da original rgb value
         return new Random().nextInt(100);
     }
 
