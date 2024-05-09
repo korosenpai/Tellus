@@ -2,40 +2,16 @@ package Blocks;
 
 import Window.Grid;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Particle {
     
-    private int ID;
-    private int type; // 0: air, 1: solid, 2: liquid, 3: gas
-
     // to be abstracted by the solids
     // they are readonly
     private int colorRed;
     private int colorGreen;
     private int colorBlue;
-
-    public Particle() {
-        this.ID = ThreadLocalRandom.current().nextInt(10);
-    }
-    public Particle(int ID) {
-        this.ID = ID;
-    }
-
-    public int getType() {
-        return type;
-    }
-    public void setType(int t) {
-        this.type = t;
-    }
-
-    public int getID() {
-        return this.ID;
-    }
-
-    public void setID(int id) {
-        this.ID = id;
-    }
 
     public void setColors(int r, int g, int b) {
         this.colorRed = parseColor(r);
@@ -57,6 +33,11 @@ public abstract class Particle {
 
     public int getColorBlue() {
         return colorBlue;
+    }
+
+    // give random offset to add more texture to color
+    public int getColorOffset() {
+        return new Random().nextInt(100);
     }
 
     public abstract void update(int j, int i, Grid grid);

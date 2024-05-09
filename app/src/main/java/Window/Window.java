@@ -16,6 +16,7 @@ import javax.swing.Timer;
 
 import Blocks.Particle;
 import Blocks.Solids.DynamicSolid.Sand;
+import Blocks.Solids.DynamicSolid.Snow;
 
 
 public class Window extends JPanel implements ActionListener {

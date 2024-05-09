@@ -7,8 +7,6 @@ public abstract class Solid extends Particle {
 
     public Solid() {
         super();
-        
-        setType(1);
     }
 
     @Override
