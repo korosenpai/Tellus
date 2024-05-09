@@ -8,6 +8,7 @@ public class Launcher {
     static private JFrame screen;
     static private Window window;
 
+    // WARNING: fix if launching with width != height crashing
     static final int WIDTH = 800;
     static final int HEIGHT = 800;
     static final int TILE_SIZE = 20;

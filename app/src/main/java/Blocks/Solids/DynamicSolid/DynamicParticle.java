@@ -1,13 +1,14 @@
 package Blocks.Solids.DynamicSolid;
 
 import Blocks.Particle;
+import Blocks.Solids.Solid;
 import Window.Grid;
 
 
 
-abstract class DynamicParticle extends Particle {
+abstract class DynamicParticle extends Solid {
     
-    DynamicParticle() {
+    public DynamicParticle() {
         super();
     }
 

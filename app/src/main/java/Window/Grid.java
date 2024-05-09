@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import Blocks.Air;
 import Blocks.Particle;
+import Blocks.TestParticle;
 
 public class Grid {
     final int screenWidth;
@@ -29,6 +30,13 @@ public class Grid {
         grid.generateRandomizedGrid();
         System.out.println(Arrays.toString(grid.grid[0]));
         grid.print();
+    }
+
+    public int getRows() {
+        return rows;
+    }
+    public int getColumns() {
+        return columns;
     }
 
     public void generateEmptyGrid(){
@@ -73,22 +81,23 @@ public class Grid {
         }
     }
 
+    public Particle[][] getGrid() {
+        return grid;
+    }
+
     public void updateGrid() {
-        // for (int j = columns-1; j > -1; j--){
-        //     for (int i = rows-1; i > -1; i--){
-        //         //grid[i][j].update(j, i, this);
-        //         // WARNING: what is this? to fix asap
-        //         // for now function is never called
-        //         grid[j][i] = new Particle(j);
-        //         grid[j][i].update(j, i, this);
-        //         try {
-        //             
-        //         } catch (Exception e) {
-        //             // TODO: handle exception
-        //         }
-        //         
-        //     }
-        // }
+        for (int j = columns-1; j > -1; j--){
+            for (int i = rows-1; i > -1; i--){
+                //grid[i][j].update(j, i, this);
+                // WARNING: what is this? to fix asap
+                // for now function is never called
+                //grid[j][i] = new TestParticle(j * 255 / columns, i * 255 / columns, 255);
+                if (grid[j][i] instanceof Air) continue;
+
+                grid[j][i].update(j, i, this);
+                
+            }
+        }
     }
 
 
@@ -120,10 +129,10 @@ public class Grid {
         */
         Particle[] lowerNeighbors = new Particle[]{null, null, null};
 
-        if (j < rows) { //check if element is not in the last row
+        if (j < rows - 1) { //check if element is not in the last row
             if (i > 0) lowerNeighbors[0] = grid[j + 1][i - 1]; //bottomleft
             lowerNeighbors[1] = grid[j + 1][i]; //bottom
-            if (i < columns) lowerNeighbors[2] = grid[j + 1][i + 1]; //bottomright
+            if (i < columns - 1) lowerNeighbors[2] = grid[j + 1][i + 1]; //bottomright
         }
         return lowerNeighbors;
     }
@@ -146,7 +155,7 @@ public class Grid {
         Particle[] sideNeighbors = new Particle[]{null, null};
         
         if (i > 0) sideNeighbors[0] = grid[j][i - 1];
-        if (i < columns) sideNeighbors[1] = grid[j][i + 1];
+        if (i < columns - 1) sideNeighbors[1] = grid[j][i + 1];
         return sideNeighbors;
     }
 
