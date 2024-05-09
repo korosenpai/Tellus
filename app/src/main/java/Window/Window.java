@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import Blocks.Particle;
+import Blocks.Solids.DynamicSolid.Sand;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -117,18 +118,22 @@ public class Window extends JPanel implements ActionListener {
 
     public void setOnClick() {
         if (!(mouse.isDragged() || mouse.isPressed())) return;
-        grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Particle(255));
+        grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
     }
 
     
 
 
 
+    // TODO: change method to go j, i (if needed tbh idk if it will give problems)
     public void drawGrid(Graphics2D g){        
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++) {
-                int color = grid.getAtPosition(i, j).getID();
-                g.setColor(new Color(color, color, color));
+                Particle curr = grid.getAtPosition(i, j);
+                int colorRed = curr.getColorRed();
+                int colorGreen = curr.getColorGreen();
+                int colorBlue = curr.getColorBlue();
+                g.setColor(new Color(colorRed, colorGreen, colorBlue));
                 g.fillRect(j*tileDimension, i*tileDimension, tileDimension, tileDimension);                
             }
         }

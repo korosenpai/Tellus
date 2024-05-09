@@ -1,16 +1,19 @@
+package Blocks.Solids.DynamicSolid;
+
 import Blocks.Particle;
+import Window.Grid;
 
 
-abstract class DynamicParticle extends Particle{
+
+abstract class DynamicParticle extends Particle {
     
     DynamicParticle() {
         super();
     }
 
     
-    public void update(int j, int i) {
-
-    }
+    @Override
+    public abstract void update(int j, int i, Grid grid);
 
     
 }
