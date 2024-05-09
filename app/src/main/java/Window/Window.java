@@ -8,14 +8,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 
-import javax.swing.Timer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
-import Blocks.*;
+import Blocks.Particle;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -57,6 +56,10 @@ public class Window extends JPanel implements ActionListener {
         this.addKeyListener(new MyKeyAdapter());
         this.addMouseMotionListener(mouse);
         this.addMouseListener(mouse);
+       
+        this.addMouseWheelListener(mouse);// for mouse wheel detection, changes cursour radius
+        this.addMouseListener(mouse);
+
     }
 
     
@@ -95,7 +98,10 @@ public class Window extends JPanel implements ActionListener {
         
         setOnClick(); // set particle on the position of the mouse, when clicked
         
+        
+
         repaint(); // calls paintComponent
+
     }
 
     //called by repaint in actionPerformed
@@ -114,7 +120,7 @@ public class Window extends JPanel implements ActionListener {
         grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Particle(255));
     }
 
-  
+    
 
 
 
@@ -139,33 +145,38 @@ public class Window extends JPanel implements ActionListener {
     public void drawMouse(Graphics2D g) {
         g.setColor(new Color(255, 255, 255));
         
-        g.fillRect(snapToGrid(mouse.getX()), snapToGrid(mouse.getY()), tileDimension, tileDimension);                
+  
+        int radiusInPixels = mouse.getRadius() * tileDimension;
+        int centerX = mouse.getX() / tileDimension * tileDimension;
+        int centerY = mouse.getY() / tileDimension * tileDimension;
+        
+        g.setColor(Color.WHITE); // Example color
+        g.fillOval(centerX - radiusInPixels, centerY - radiusInPixels, radiusInPixels * 2, radiusInPixels * 2);
+        
+        //g.fillRect(snapToGrid(mouse.getX()), snapToGrid(mouse.getY()), tileDimension, tileDimension); 
+       /* 
+        int radius = mouse.getRadius() * tileDimension;
+        int circleCentreX = Math.round((mouse.getX() / tileDimension) * tileDimension);
+        int circleCentreY = Math.round((mouse.getY() / tileDimension) * tileDimension);
+        //g.fillOval(circleCentreX - radius, circleCentreY - radius, radius * 2, radius * 2);
 
-        // Bresenham Circle algorithm
-        // int radius = mouse.getRadius() * tileDimension;
-
-        // int x0 = (((mouse.getX() - radius) / tileDimension) * tileDimension) ;
-        // int y0 = (((mouse.getY() - radius) / tileDimension) * tileDimension) ;
-        // int x1 = (((mouse.getX() + radius) / tileDimension) * tileDimension) ;
-        // int y1 = (((mouse.getY() + radius) / tileDimension) * tileDimension) ;
-
-        // System.out.println(x0 + " : " + y0 + " : " + x1 + " : " + y1);
-
-        // for (int x = x0; x <= x1; x += tileDimension) {
-        //     for (int y = y0; y <= y1; y += tileDimension) {
-        //         if (Math.sqrt((x - mouse.getX()) * (x - mouse.getX()) + (y - mouse.getY()) * (y - mouse.getY())) <= radius) {
-        //             g.fillRect(mouse.getX(), mouse.getY(), tileDimension, tileDimension);                
-        //         }
-        //     }
-        // }
-
-        // int radius = mouse.getRadius() * tileDimension;
-
-        // int centerX = mouse.getX() / tileDimension;
-        // int centerY = mouse.getY() / tileDimension;
-
-        // for (int x0 = centerX - centerY)
+        
+        int c0 = Math.round((((circleCentreX + radius) / tileDimension) * tileDimension)); //c0 stands for 0 degrees on the circumference
+        int c180 = Math.round((((circleCentreX - radius) / tileDimension) * tileDimension)); //c180 stands for 180 degrees on the circumference
+        int c90 = Math.round((((circleCentreY + radius) / tileDimension) * tileDimension)); //c90 stands for 90 degrees on the circumference
+        int c270 = Math.round((((circleCentreY - radius) / tileDimension) * tileDimension)); //c270 stands for 2700 degrees on the circumference
+        
+         
+        for (int x = c180; x <= c0; x += tileDimension){
+            for (int y = c270; y <= c90; y += tileDimension){
+                if (Math.sqrt((x - circleCentreX)*(x - circleCentreX) + (y - circleCentreY)*(y - circleCentreY)) <= radius){
+                g.fillRect(x, y, radius, radius); 
+                }
+            }
+        }
+        */
     }
+    
 
 
     private class MyKeyAdapter extends KeyAdapter {
