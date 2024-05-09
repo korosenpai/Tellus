@@ -10,7 +10,7 @@ public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWhe
     private int x;
     private int y;
 
-    private int radius = 2; // draw area around mouse
+    private int radius = 1; // draw area around mouse
 
     private boolean pressed, dragged; // starts with false by default
     private int wheel; // amount of scrolling
