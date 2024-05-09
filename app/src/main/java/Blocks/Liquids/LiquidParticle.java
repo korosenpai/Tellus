@@ -12,7 +12,6 @@ abstract class LiquidParticle extends Particle {
     private int maxSpeed = 0; // how many cells to move ain one frame
     private float acceleration = 0; // 32bits, will never need more
     private float velocity = 0;
-    private boolean isOnGround = false;
     
     public LiquidParticle() {
         super();
@@ -45,15 +44,14 @@ abstract class LiquidParticle extends Particle {
         for (int n = 0; n <= velocity; n++) {
 
             Particle[] under = grid.getLowerNeighbors(j, i);
+            Particle[] side = grid.getSideNeighbors(j, i);
+
             if (under[1] == null) return; // cannot move or you finish out of bounds
 
-            // NOTE: it always swaps with the cell it goes to
-            // make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
+            // NOTE: make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
 
-            if (isOnGround && under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle) {
-                
+            if (under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle) {
                 resetVelocity();    
-                break;
             }
 
             // if block under is not a solid swap with block under
@@ -61,8 +59,6 @@ abstract class LiquidParticle extends Particle {
                 grid.setParticle(j, i, grid.getAtPosition(j + 1, i));
                 grid.setParticle(j + 1, i, this);
                 j = j + 1;
-                
-                
             }
 
             // go to block to left if is not solid
@@ -71,7 +67,6 @@ abstract class LiquidParticle extends Particle {
                 grid.setParticle(j + 1, i - 1, this);
                 j = j + 1;
                 i = i - 1;
-                
             }
 
             // go to block to right if is not solid
@@ -82,21 +77,20 @@ abstract class LiquidParticle extends Particle {
                 i = i + 1;
                 
             }
+
+
+            // TODO: fix not feeling liquid and going all flat on the right instead of up and down as in the left (not even sure if that is good)
+            else if (side[0] != null && side[0] instanceof Air) {
+                grid.setParticle(j, i, grid.getAtPosition(j, i-1));
+                grid.setParticle(j, i - 1 , this);
+            }
+
+            else if (side[1] != null && side[1] instanceof Air) {
+                grid.setParticle(j, i, grid.getAtPosition(j, i+1));
+                grid.setParticle(j, i + 1 , this);
+            }
         }
 
-        Particle[] side = grid.getSideNeighbors(j, i);
-
-        if (side[0] != null && side[0] instanceof Air) {
-            grid.setParticle(j, i, grid.getAtPosition(j, i-1));
-            grid.setParticle(j, i - 1 , this);
-            return;
-        }
-
-        else if (side[1] != null && side[1] instanceof Air) {
-            grid.setParticle(j, i, grid.getAtPosition(j, i+1));
-            grid.setParticle(j, i + 1 , this);
-            return;
-        }
 
 
     }
