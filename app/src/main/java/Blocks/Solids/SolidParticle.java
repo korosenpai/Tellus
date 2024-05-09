@@ -3,9 +3,9 @@ package Blocks.Solids;
 import Blocks.Particle;
 import Window.Grid;
 
-public abstract class Solid extends Particle {
+public abstract class SolidParticle extends Particle {
 
-    public Solid() {
+    public SolidParticle() {
         super();
     }
 
