@@ -23,11 +23,11 @@ public class Grid {
         this.rows = screenHeight / tileDimension;
         this.columns = screenWidth / tileDimension;
         grid = new Particle[this.rows][this.columns];
+        generateEmptyGrid();
     }
 
     public static void main(String[] args) {
         Grid grid = new Grid(800, 800, 20);
-        grid.generateRandomizedGrid();
         System.out.println(Arrays.toString(grid.grid[0]));
         grid.print();
     }
@@ -58,27 +58,14 @@ public class Grid {
                   i
 
         */
-        
-        for (int i = 0; i < this.columns; i++){
-            Particle[] row = new Particle[this.columns];
-            for (int j = 0; j < this.rows; j++){
-                row[j] = new Air(); //0 is the empty ID
-            }
-            grid[i] = row;
-        }
-    }
 
-    public void generateRandomizedGrid(){ 
-        /*mostly for debugging purposes
-        generates a random 2d array of numbers between 0 and 255
-        */
-        for (int i = 0; i < this.columns; i++){
-            Particle[] row = new Particle[this.columns];
-            for (int j = 0; j < this.rows; j++){
-                row[j] = new Air();
+
+        for (int j = 0; j < this.rows; j++) {
+            for (int i = 0; i < this.columns; i++) {
+                grid[j][i] = new Air();
             }
-            grid[i] = row;
         }
+        
     }
 
     public Particle[][] getGrid() {
@@ -86,16 +73,11 @@ public class Grid {
     }
 
     public void updateGrid() {
-        for (int j = columns-1; j > -1; j--){
-            for (int i = rows-1; i > -1; i--){
-                //grid[i][j].update(j, i, this);
-                // WARNING: what is this? to fix asap
-                // for now function is never called
-                //grid[j][i] = new TestParticle(j * 255 / columns, i * 255 / columns, 255);
+        for (int j = rows-1; j > -1; j--){
+            for (int i = columns-1; i > -1; i--){
                 if (grid[j][i] instanceof Air) continue;
 
                 grid[j][i].update(j, i, this);
-                
             }
         }
     }
