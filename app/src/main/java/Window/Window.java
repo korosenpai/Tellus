@@ -19,7 +19,7 @@ import Blocks.Liquids.Water;
 import Blocks.Solids.DynamicSolid.Gravel;
 import Blocks.Solids.DynamicSolid.Sand;
 import Blocks.Solids.DynamicSolid.Snow;
-import Blocks.Solids.StaticParticle.Wood;
+import Blocks.Solids.StaticSolid.Wood;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -165,7 +165,7 @@ public class Window extends JPanel implements ActionListener {
 
     // TODO: add support to draw as circle
     public void drawMouse(Graphics2D g) {
-        g.setColor(new Color(255, 255, 255));
+        g.setColor(new Color(currentSelectedParticle.getColorRed(), currentSelectedParticle.getColorGreen(), currentSelectedParticle.getColorBlue()));
         
   
         // int radiusInPixels = mouse.getRadius() * tileDimension;

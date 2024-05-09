@@ -14,8 +14,8 @@ public class Water extends LiquidParticle{
         int offset = getColorOffset();
         setColors(-4 + offset, 32 + offset, 212 + offset);
 
-        setMaxSpeed(5);
-        setAcceleration(0.6f);
+        setMaxSpeed(10);
+        setAcceleration(1.2f);
 
     }
 }

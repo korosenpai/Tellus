@@ -1,4 +1,4 @@
-package Blocks.Solids.StaticParticle;
+package Blocks.Solids.StaticSolid;
 
 import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
