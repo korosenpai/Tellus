@@ -3,14 +3,17 @@ package Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
-public class Mouse extends MouseMotionAdapter implements MouseListener{
+public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWheelListener{
     private int x;
     private int y;
 
     private int radius = 2; // draw area around mouse
 
     private boolean pressed, dragged; // starts with false by default
+    private int wheel; // amount of scrolling
 
     public void mouseMoved(MouseEvent e) {
         // divide by tile size to get what position in grid mouse is currently hovering onto
@@ -40,7 +43,7 @@ public class Mouse extends MouseMotionAdapter implements MouseListener{
     @Override
     public void mousePressed(MouseEvent e) {
         pressed = true;
-        System.out.println("Pressed");
+        //System.out.println("Pressed");
     }
 
     @Override
@@ -60,6 +63,7 @@ public class Mouse extends MouseMotionAdapter implements MouseListener{
         dragged = pressed = false;
         //System.out.println("Exited");
     }
+
 
     public int getX() {
         return x;
@@ -82,5 +86,24 @@ public class Mouse extends MouseMotionAdapter implements MouseListener{
         return dragged;
     }
 
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        // detects the rotation of the wheel (inverted so scrolling toward oneself == -1)
+     
+        wheel = - e.getWheelRotation();
+        //System.out.println(wheel);
+        if (!(radius == 1 && wheel < 0)) {
+            radius = radius + wheel;
+        }
+        //System.out.println(radius);
+            
+    }
+
+    public int getWheel() {
+        return wheel;
+    }
+    
+    
 
 }
