@@ -156,15 +156,14 @@ public class Window extends JPanel implements ActionListener {
         g.setColor(new Color(255, 255, 255));
         
   
-        int radiusInPixels = mouse.getRadius() * tileDimension;
-        int centerX = mouse.getX() / tileDimension * tileDimension;
-        int centerY = mouse.getY() / tileDimension * tileDimension;
-        
-        g.setColor(Color.WHITE); // Example color
-        g.fillOval(centerX - radiusInPixels, centerY - radiusInPixels, radiusInPixels * 2, radiusInPixels * 2);
+        // int radiusInPixels = mouse.getRadius() * tileDimension;
+        // int centerX = mouse.getX() / tileDimension * tileDimension;
+        // int centerY = mouse.getY() / tileDimension * tileDimension;
+        // 
+        // g.setColor(Color.WHITE); // Example color
+        // g.fillOval(centerX - radiusInPixels, centerY - radiusInPixels, radiusInPixels * 2, radiusInPixels * 2);
         
         //g.fillRect(snapToGrid(mouse.getX()), snapToGrid(mouse.getY()), tileDimension, tileDimension); 
-       /* 
         int radius = mouse.getRadius() * tileDimension;
         int circleCentreX = Math.round((mouse.getX() / tileDimension) * tileDimension);
         int circleCentreY = Math.round((mouse.getY() / tileDimension) * tileDimension);
@@ -184,7 +183,6 @@ public class Window extends JPanel implements ActionListener {
                 }
             }
         }
-        */
     }
     
 
