@@ -3,7 +3,7 @@ package Blocks.Solids.DynamicSolid;
 import java.util.Random;
 
 import Blocks.Particle;
-import Blocks.Solids.Solid;
+import Blocks.Solids.SolidParticle;
 import Window.Grid;
 
 
@@ -46,16 +46,16 @@ public class Snow extends DynamicParticle {
             // NOTE: it always swaps with the cell it goes to
             // make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
 
-            if (under[1] instanceof Solid) resetVelocity();
+            if (under[1] instanceof SolidParticle) resetVelocity();
 
             // if block under is not a solid swap with block under
-            if (!(under[1] instanceof Solid)) {
+            if (!(under[1] instanceof SolidParticle)) {
                 grid.setParticle(j, i, grid.getAtPosition(j + 1, i));
                 grid.setParticle(j + 1, i, this);
                 j = j + 1;
             }
             // go to block to left if is not solid
-            else if (under[0] != null && !(under[0] instanceof Solid)) {
+            else if (under[0] != null && !(under[0] instanceof SolidParticle)) {
                 grid.setParticle(j, i, grid.getAtPosition(j + 1, i - 1));
                 grid.setParticle(j + 1, i - 1, this);
                 j = j + 1;
@@ -63,7 +63,7 @@ public class Snow extends DynamicParticle {
             }
 
             // go to block to right if is not solid
-            else if (under[2] != null && !(under[2] instanceof Solid)) {
+            else if (under[2] != null && !(under[2] instanceof SolidParticle)) {
                 grid.setParticle(j, i, grid.getAtPosition(j + 1, i + 1));
                 grid.setParticle(j + 1, i + 1, this);
                 j = j + 1;

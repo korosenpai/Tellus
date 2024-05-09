@@ -1,12 +1,12 @@
 package Blocks.Solids.StaticParticle;
 
 import Blocks.Particle;
-import Blocks.Solids.Solid;
+import Blocks.Solids.SolidParticle;
 import Window.Grid;
 
 
 
-abstract class StaticParticle extends Solid {
+abstract class StaticParticle extends SolidParticle {
 
     private int maxSpeed = 0; // how many cells to move ain one frame
     private float acceleration = 0; // 32bits, will never need more

@@ -15,6 +15,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import Blocks.Particle;
+import Blocks.Liquids.Water;
+import Blocks.Solids.DynamicSolid.Gravel;
 import Blocks.Solids.DynamicSolid.Sand;
 import Blocks.Solids.DynamicSolid.Snow;
 import Blocks.Solids.StaticParticle.Wood;
@@ -132,6 +134,8 @@ public class Window extends JPanel implements ActionListener {
         if (currentSelectedParticle instanceof Sand) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
         else if (currentSelectedParticle instanceof Snow) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Snow());
         else if (currentSelectedParticle instanceof Wood) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Wood());
+        else if (currentSelectedParticle instanceof Water) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Water());
+        else if (currentSelectedParticle instanceof Gravel) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Gravel());
     }
 
     
@@ -220,6 +224,16 @@ public class Window extends JPanel implements ActionListener {
                 case 114: //F3
                     currentSelectedParticle = new Wood();
                     break;
+                
+                case 115: //F4
+                    currentSelectedParticle = new Water();
+                    break;
+                
+                case 116: // F5
+                    currentSelectedParticle = new Gravel();
+                    break;
+
+                
                 
                 default:
                     break;
