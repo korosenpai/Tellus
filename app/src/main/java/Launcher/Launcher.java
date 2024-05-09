@@ -11,7 +11,7 @@ public class Launcher {
     // NOTE: leave them different to debug
     static final int WIDTH = 1000;
     static final int HEIGHT = 800;
-    static final int TILE_SIZE = 20;
+    static final int TILE_SIZE = 5;
 
     static int FPS = 30;
 
