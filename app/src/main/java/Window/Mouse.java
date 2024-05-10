@@ -93,7 +93,7 @@ public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWhe
      
         wheel = - e.getWheelRotation();
         //System.out.println(wheel);
-        if (!(radius == 1 && wheel < 0)) {
+        if (!(radius == 0 && wheel < 0)) {
             radius = radius + wheel;
         }
         //System.out.println(radius);
