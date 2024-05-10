@@ -10,9 +10,7 @@ public class Water extends LiquidParticle{
         super();
 
         // make them shift a bit to create texture
-        // original sand = 182, 155, 99
-        int offset = getColorOffset();
-        setColors(-4 + offset, 32 + offset, 212 + offset);
+        setColors(46, 82, 262);
 
         setMaxSpeed(10);
         setAcceleration(1.2f);

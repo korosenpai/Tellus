@@ -75,9 +75,19 @@ public class Grid {
     public void updateGrid() {
         for (int j = rows-1; j > -1; j--){
             for (int i = columns-1; i > -1; i--){
-                if (grid[j][i] instanceof Air) continue;
+                if (grid[j][i] instanceof Air || grid[j][i].hasMoved) continue;
 
                 grid[j][i].update(new int[]{j, i}, this);
+            }
+        }
+    }
+
+    public void setGridHasMovedFalse() {
+        for (int j = rows-1; j > -1; j--){
+            for (int i = columns-1; i > -1; i--){
+                if (grid[j][i] instanceof Air) continue;
+
+                grid[j][i].hasMoved = false;
             }
         }
     }

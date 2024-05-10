@@ -15,6 +15,8 @@ abstract class DynamicParticle extends SolidParticle {
     private float acceleration = 0; // 32bits, will never need more
     private float velocity = 0;
 
+    public boolean hasLanded;
+
     // behaviours
     private boolean goDown;
     private boolean goDownLeft;
@@ -54,21 +56,26 @@ abstract class DynamicParticle extends SolidParticle {
     // NOTE: coords -> j, i passed by reference
     @Override
     public int[] update(int[] coords, Grid grid) {
+        hasMoved = true;
+
         updateVelocity();
 
         for (int n = 0; n <= velocity; n++) {
 
             Particle[] under = grid.getLowerNeighbors(coords[0], coords[1]);
-            if (under[1] == null) return coords; // cannot move or you finish out of bounds
+            if (under[1] == null) {
+                hasLanded = true;
+                return coords; // cannot move or you finish out of bounds
+            }
 
             // NOTE: it always swaps with the cell it goes to
             // make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
 
             if (!(under[1] instanceof Air)) { // sabbia quando entra in acqua non ha più gravità e cade lentamente
                 resetVelocity(); 
+                if (under[1] instanceof SolidParticle) hasLanded = true;
                 if (under[1] instanceof Gravel) return coords;
             }
-            
 
             // if block under is not a solid swap with block under
             if (goDown && !(under[1] instanceof SolidParticle)) {
@@ -97,9 +104,9 @@ abstract class DynamicParticle extends SolidParticle {
         }
 
         
-        Particle under = grid.getLowerNeighbors(coords[0], coords[1])[1];
+        Particle underCell = grid.getLowerNeighbors(coords[0], coords[1])[1];
         
-        if (under instanceof Air) return coords;
+        if (underCell instanceof Air) return coords;
 
         if (this instanceof Gravel) {
             
@@ -119,6 +126,10 @@ abstract class DynamicParticle extends SolidParticle {
                 return coords;
             }
         }
+
+        // check if touching ground
+        if (!(grid.getLowerNeighbors(coords[0], coords[1])[1] instanceof SolidParticle))
+            hasLanded = false;
 
 
 
