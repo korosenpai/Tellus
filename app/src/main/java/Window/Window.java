@@ -1,4 +1,5 @@
 package Window;
+//gradlew build && gradlew run  I'm lazy XD
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import Blocks.Particle;
 import Blocks.Liquids.Water;
+import Blocks.Particle;
 import Blocks.Solids.DynamicSolid.Gravel;
 import Blocks.Solids.DynamicSolid.Sand;
 import Blocks.Solids.DynamicSolid.Snow;
@@ -138,6 +139,43 @@ public class Window extends JPanel implements ActionListener {
         else if (currentSelectedParticle instanceof Gravel) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Gravel());
     }
 
+ /*    public void setMouseOnClick(){
+        List<int[]> positions = drawMousePoints(g)(null); // Pass null to avoid drawing
+            for (int[] position : positions) {
+                setOnClick(position[0], position[1]);
+            }
+        }
+    } */
+/*     public void setOnClick() {
+        int x = mouse.getX();
+        int y = mouse.getY();
+
+        int radius = mouse.getRadius() * tileDimension;
+        int circleCentreX = (mouse.getX() / tileDimension) * tileDimension;
+        int circleCentreY = (mouse.getY() / tileDimension) * tileDimension;
+        
+        int c0 = (((circleCentreX + radius) / tileDimension) * tileDimension); //c0 stands for 0 degrees on the circumference
+        int c180 = (((circleCentreX - radius) / tileDimension) * tileDimension); //c180 stands for 180 degrees on the circumference
+        int c90 = (((circleCentreY + radius) / tileDimension) * tileDimension); //c90 stands for 90 degrees on the circumference
+        int c270 = (((circleCentreY - radius) / tileDimension) * tileDimension); //c270 stands for 270 degrees on the circumference 
+
+        if ( 0 > x || x > screenWidth - 1 || 0 > y || y > screenHeight - 1 ) return; // check if out of bounds
+            for (int i = c180; i <= c0; i += tileDimension) {
+                for (int j = c270; j <= c90; j += tileDimension) {
+                    // Your existing condition to check if the pixel is within the circle
+                    if (radius / tileDimension == 0){
+                        grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
+                    } else {
+                        if (Math.sqrt((i - circleCentreX) * (i - circleCentreX) + (j - circleCentreY) * (j - circleCentreY)) <= radius) {
+                            grid.setParticle(i, j, new Sand());
+                        }
+                    }
+                }
+            }
+            //grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
+       
+    } */
+
     
 
 
@@ -163,39 +201,69 @@ public class Window extends JPanel implements ActionListener {
         return (coord / tileDimension) * tileDimension;
     }
 
-    // TODO: add support to draw as circle
     public void drawMouse(Graphics2D g) {
         g.setColor(new Color(currentSelectedParticle.getColorRed(), currentSelectedParticle.getColorGreen(), currentSelectedParticle.getColorBlue()));
         
-  
-        // int radiusInPixels = mouse.getRadius() * tileDimension;
-        // int centerX = mouse.getX() / tileDimension * tileDimension;
-        // int centerY = mouse.getY() / tileDimension * tileDimension;
-        // 
-        // g.setColor(Color.WHITE); // Example color
-        // g.fillOval(centerX - radiusInPixels, centerY - radiusInPixels, radiusInPixels * 2, radiusInPixels * 2);
-        
-        //g.fillRect(snapToGrid(mouse.getX()), snapToGrid(mouse.getY()), tileDimension, tileDimension); 
-        int radius = mouse.getRadius() * tileDimension;
-        int circleCentreX = Math.round((mouse.getX() / tileDimension) * tileDimension);
-        int circleCentreY = Math.round((mouse.getY() / tileDimension) * tileDimension);
-        //g.fillOval(circleCentreX - radius, circleCentreY - radius, radius * 2, radius * 2);
+        /*
+         int radiusInPixels = mouse.getRadius() * tileDimension;
+         int centerX = mouse.getX() / tileDimension * tileDimension;
+         int centerY = mouse.getY() / tileDimension * tileDimension;
 
+         g.fillOval(centerX - radiusInPixels, centerY - radiusInPixels, radiusInPixels * 2, radiusInPixels * 2);
+        */
         
-        int c0 = Math.round((((circleCentreX + radius) / tileDimension) * tileDimension)); //c0 stands for 0 degrees on the circumference
-        int c180 = Math.round((((circleCentreX - radius) / tileDimension) * tileDimension)); //c180 stands for 180 degrees on the circumference
-        int c90 = Math.round((((circleCentreY + radius) / tileDimension) * tileDimension)); //c90 stands for 90 degrees on the circumference
-        int c270 = Math.round((((circleCentreY - radius) / tileDimension) * tileDimension)); //c270 stands for 2700 degrees on the circumference
+        int radius = mouse.getRadius() * tileDimension;
+        int circleCentreX = (mouse.getX() / tileDimension) * tileDimension;
+        int circleCentreY = (mouse.getY() / tileDimension) * tileDimension;
         
-         
-        for (int x = c180; x <= c0; x += tileDimension){
-            for (int y = c270; y <= c90; y += tileDimension){
-                if (Math.sqrt((x - circleCentreX)*(x - circleCentreX) + (y - circleCentreY)*(y - circleCentreY)) <= radius){
-                g.fillRect(x, y, radius, radius); 
+        int c0 = (((circleCentreX + radius) / tileDimension) * tileDimension); //c0 stands for 0 degrees on the circumference
+        int c180 = (((circleCentreX - radius) / tileDimension) * tileDimension); //c180 stands for 180 degrees on the circumference
+        int c90 = (((circleCentreY + radius) / tileDimension) * tileDimension); //c90 stands for 90 degrees on the circumference
+        int c270 = (((circleCentreY - radius) / tileDimension) * tileDimension); //c270 stands for 270 degrees on the circumference       
+        
+        //int radiusInTiles = radius / tileDimension;
+        // Calculate the number of tiles the circle spans in both directions
+        //int numTilesX = Math.abs(c180 - c0) / tileDimension;
+        //int numTilesY = Math.abs(c270 - c90) / tileDimension;
+
+        // Adjust the loop conditions based on the actual number of tiles the circle spans
+        for (int x = c180; x <= c0; x += tileDimension) {
+            for (int y = c270; y <= c90; y += tileDimension) {
+                // Your existing condition to check if the pixel is within the circle
+                if (radius / tileDimension == 0){
+                    g.fillRect(mouse.getX(), mouse.getY(), tileDimension, tileDimension);
+                } else {
+                    if (Math.sqrt((x - circleCentreX) * (x - circleCentreX) + (y - circleCentreY) * (y - circleCentreY)) <= radius) {
+                        g.fillRect(x, y, tileDimension, tileDimension);
+                    }
                 }
             }
         }
     }
+
+
+
+/*     public List<int[]> drawMousePoints(Graphics2D g) {
+        List<int[]> positions = new ArrayList<>();
+        int radius = mouse.getRadius() * tileDimension;
+        int circleCentreX = (mouse.getX() / tileDimension) * tileDimension;
+        int circleCentreY = (mouse.getY() / tileDimension) * tileDimension;
+        
+        int c0 = (((circleCentreX + radius) / tileDimension) * tileDimension);
+        int c180 = (((circleCentreX - radius) / tileDimension) * tileDimension);
+        int c90 = (((circleCentreY + radius) / tileDimension) * tileDimension);
+        int c270 = (((circleCentreY - radius) / tileDimension) * tileDimension);
+        
+        for (int x = c180; x <= c0; x += tileDimension) {
+            for (int y = c270; y <= c90; y += tileDimension) {
+                if (Math.sqrt((x - circleCentreX) * (x - circleCentreX) + (y - circleCentreY) * (y - circleCentreY)) <= radius) {
+                    positions.add(new int[]{x, y});
+                }
+            }
+        }
+        return positions;
+    } */
+
     
 
 
