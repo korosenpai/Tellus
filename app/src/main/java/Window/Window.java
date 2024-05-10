@@ -114,6 +114,10 @@ public class Window extends JPanel implements ActionListener {
         
 
         repaint(); // calls paintComponent
+    
+        // make particle moved be able to move again
+        grid.setGridHasMovedFalse();
+
 
     }
 

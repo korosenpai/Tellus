@@ -4,6 +4,7 @@ import java.util.Random;
 
 import Blocks.Air;
 import Blocks.Particle;
+import Blocks.Solids.SolidParticle;
 import Window.Grid;
 
 public class Gravel extends DynamicParticle {
@@ -25,10 +26,13 @@ public class Gravel extends DynamicParticle {
     @Override
     public int[] update(int[] coords, Grid grid) {
         // run generic dynamic solid update
+
         super.update(coords, grid);
 
         // TODO: make them work  here and not in dynamic solid
         // additional gravel updates
+        // MOVE ONCE AFTER LANDING
+        
 
         //Particle under = grid.getLowerNeighbors(coords[0], coords[1])[1];
         //if (under instanceof Air || under instanceof Gravel) return coords;
