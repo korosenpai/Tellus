@@ -13,6 +13,7 @@ abstract class LiquidParticle extends Particle {
     private float acceleration = 0; // 32bits, will never need more
     private float velocity = 0;
     private boolean isOnGround = false;
+    private int density = 0;
     
     public LiquidParticle() {
         super();
@@ -24,6 +25,14 @@ abstract class LiquidParticle extends Particle {
 
     public void setAcceleration(float accel) {
         acceleration = accel;
+    }
+
+    public void setDensity(int dens) {
+        density = dens;
+    }
+
+    public int getDensity() {
+        return density;
     }
 
     public void resetVelocity() {
@@ -50,10 +59,10 @@ abstract class LiquidParticle extends Particle {
             // NOTE: it always swaps with the cell it goes to
             // make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
 
-            if (isOnGround && under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle) {
+            if (under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle) {
                 
-                resetVelocity();    
-                break;
+                resetVelocity();          
+                
             }
 
             // if block under is not a solid swap with block under
@@ -61,8 +70,7 @@ abstract class LiquidParticle extends Particle {
                 grid.setParticle(j, i, grid.getAtPosition(j + 1, i));
                 grid.setParticle(j + 1, i, this);
                 j = j + 1;
-                
-                
+            
             }
 
             // go to block to left if is not solid
@@ -71,6 +79,7 @@ abstract class LiquidParticle extends Particle {
                 grid.setParticle(j + 1, i - 1, this);
                 j = j + 1;
                 i = i - 1;
+                
                 
             }
 
@@ -84,7 +93,14 @@ abstract class LiquidParticle extends Particle {
             }
         }
 
+
+        //doesnt freefall diagonally
+        Particle under = grid.getLowerNeighbors(j, i)[1];
+        if (under instanceof Air) return;
+
         Particle[] side = grid.getSideNeighbors(j, i);
+
+        
 
         if (side[0] != null && side[0] instanceof Air) {
             grid.setParticle(j, i, grid.getAtPosition(j, i-1));
