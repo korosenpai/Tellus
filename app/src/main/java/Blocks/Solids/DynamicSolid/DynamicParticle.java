@@ -1,7 +1,10 @@
 package Blocks.Solids.DynamicSolid;
 
+import Blocks.Air;
 import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
+import Blocks.Solids.DynamicSolid.Gravel;
+
 import Window.Grid;
 
 
@@ -48,7 +51,11 @@ abstract class DynamicParticle extends SolidParticle {
             // NOTE: it always swaps with the cell it goes to
             // make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
 
-            if (under[1] instanceof SolidParticle) resetVelocity();
+            if (!(under[1] instanceof Air)) { // sabbia quando entra in acqua non ha più gravità e cade lentamente
+                resetVelocity(); 
+                if (under[1] instanceof Gravel) return;
+            }
+            
 
             // if block under is not a solid swap with block under
             if (!(under[1] instanceof SolidParticle)) {
@@ -74,6 +81,31 @@ abstract class DynamicParticle extends SolidParticle {
                 i = i + 1;
             }
 
+        }
+
+
+        Particle under = grid.getLowerNeighbors(j, i)[1];
+        
+        if (under instanceof Air) return;
+
+        //doesnt freefall diagonally
+        if (this instanceof Gravel) {
+            
+
+            Particle[] side = grid.getSideNeighbors(j, i);
+
+
+            if (side[0] != null && side[0] instanceof Air) {
+                grid.setParticle(j, i, grid.getAtPosition(j, i-1));
+                grid.setParticle(j, i - 1 , this);
+                return;
+            }
+
+            else if (side[1] != null && side[1] instanceof Air) {
+                grid.setParticle(j, i, grid.getAtPosition(j, i+1));
+                grid.setParticle(j, i + 1 , this);
+                return;
+            }
         }
 
 
