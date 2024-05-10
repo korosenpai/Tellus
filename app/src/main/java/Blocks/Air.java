@@ -6,7 +6,9 @@ public class Air extends Particle {
 
     // does not need to be updated
     @Override
-    public void update(int i, int j, Grid grid) {}
+    public int[] update(int[] coords, Grid grid) {
+        return coords;
+    }
 
     
 }

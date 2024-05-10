@@ -48,71 +48,70 @@ abstract class LiquidParticle extends Particle {
     }
 
     @Override
-    public void update(int j, int i, Grid grid) {
+    public int[] update(int[] coords, Grid grid) {
         updateVelocity();
 
         for (int n = 0; n <= velocity; n++) {
 
-            Particle[] under = grid.getLowerNeighbors(j, i);
-            if (under[1] == null) return; // cannot move or you finish out of bounds
+            Particle[] under = grid.getLowerNeighbors(coords[0], coords[1]);
+            if (under[1] == null) return coords; // cannot move or you finish out of bounds
 
             // NOTE: it always swaps with the cell it goes to
             // make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
 
             if (under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle) {
-                
-                resetVelocity();          
-                
+                resetVelocity();
             }
 
             // if block under is not a solid swap with block under
             if (!(under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle)) {
-                grid.setParticle(j, i, grid.getAtPosition(j + 1, i));
-                grid.setParticle(j + 1, i, this);
-                j = j + 1;
+                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1]));
+                grid.setParticle(coords[0] + 1, coords[1], this);
+                coords[0]++;
             
             }
 
             // go to block to left if is not solid
             else if (under[0] != null && !(under[0] instanceof SolidParticle || under[0] instanceof LiquidParticle)) {
-                grid.setParticle(j, i, grid.getAtPosition(j + 1, i - 1));
-                grid.setParticle(j + 1, i - 1, this);
-                j = j + 1;
-                i = i - 1;
-                
-                
+                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] - 1));
+                grid.setParticle(coords[0] + 1, coords[1] - 1, this);
+                coords[0]++;
+                coords[1]--;
             }
 
             // go to block to right if is not solid
             else if (under[2] != null && !(under[2] instanceof SolidParticle || under[2] instanceof LiquidParticle)) {
-                grid.setParticle(j, i, grid.getAtPosition(j + 1, i + 1));
-                grid.setParticle(j + 1, i + 1, this);
-                j = j + 1;
-                i = i + 1;
+                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] + 1));
+                grid.setParticle(coords[0] + 1, coords[1] + 1, this);
+                coords[0]++;
+                coords[1]++;
                 
             }
         }
 
 
         //doesnt freefall diagonally
-        Particle under = grid.getLowerNeighbors(j, i)[1];
-        if (under instanceof Air) return;
+        Particle under = grid.getLowerNeighbors(coords[0], coords[1])[1];
+        if (under instanceof Air) return coords;
 
-        Particle[] side = grid.getSideNeighbors(j, i);
+        Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
 
         
 
         if (side[0] != null && side[0] instanceof Air) {
-            grid.setParticle(j, i, grid.getAtPosition(j, i-1));
-            grid.setParticle(j, i - 1 , this);
-            return;
+            grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] - 1));
+            grid.setParticle(coords[0], coords[1] - 1 , this);
+            return coords;
         }
 
         else if (side[1] != null && side[1] instanceof Air) {
-            grid.setParticle(j, i, grid.getAtPosition(j, i+1));
-            grid.setParticle(j, i + 1 , this);
-            return;
+            grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] + 1));
+            grid.setParticle(coords[0], coords[1] + 1 , this);
+            return coords;
         }
+        
+        return coords;
+
 
 
     }

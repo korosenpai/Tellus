@@ -10,7 +10,8 @@ public class TestParticle extends Particle {
     }
 
     @Override
-    public void update(int j, int i, Grid grid) {
+    public int[] update(int[] coords, Grid grid) {
+        return coords;
         
     }
 }

@@ -10,5 +10,5 @@ public abstract class SolidParticle extends Particle {
     }
 
     @Override
-    public abstract void update(int j, int i, Grid grid);
+    public abstract int[] update(int[] coords, Grid grid);
 }
