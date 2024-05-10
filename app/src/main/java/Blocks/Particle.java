@@ -41,6 +41,6 @@ public abstract class Particle {
         return new Random().nextInt(100);
     }
 
-    public abstract void update(int j, int i, Grid grid);
+    public abstract int[] update(int[] coords, Grid grid);
 
 }

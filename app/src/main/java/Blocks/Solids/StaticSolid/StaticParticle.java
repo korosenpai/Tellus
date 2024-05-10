@@ -37,7 +37,9 @@ abstract class StaticParticle extends SolidParticle {
     }
 
     @Override
-    public void update(int j, int i, Grid grid){}
+    public int[] update(int[] coords, Grid grid) {
+        return coords;
+    }
 
 
     

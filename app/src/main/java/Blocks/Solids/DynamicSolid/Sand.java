@@ -15,5 +15,6 @@ public class Sand extends DynamicParticle {
         setMaxSpeed(5);
         setAcceleration(0.6f);
 
+        setBehaviours(true, true, true);
     }
 }

@@ -77,7 +77,7 @@ public class Grid {
             for (int i = columns-1; i > -1; i--){
                 if (grid[j][i] instanceof Air) continue;
 
-                grid[j][i].update(j, i, this);
+                grid[j][i].update(new int[]{j, i}, this);
             }
         }
     }
