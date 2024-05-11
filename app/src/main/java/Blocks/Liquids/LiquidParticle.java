@@ -7,7 +7,7 @@ import Window.Grid;
 
 
 
-abstract class LiquidParticle extends Particle {
+public abstract class LiquidParticle extends Particle {
 
     private int maxSpeed = 0; // how many cells to move ain one frame
     private float acceleration = 0; // 32bits, will never need more
