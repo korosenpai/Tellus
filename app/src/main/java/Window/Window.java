@@ -24,6 +24,8 @@ import Blocks.Solids.DynamicSolid.Sand;
 import Blocks.Solids.DynamicSolid.Snow;
 import Blocks.Solids.StaticSolid.Wood;
 
+import Entities.Player;
+
 
 public class Window extends JPanel implements ActionListener {
     
@@ -48,6 +50,9 @@ public class Window extends JPanel implements ActionListener {
     public int currentSelectedParticle = 1;
     public Color currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
 
+    public Player player;
+    public int playerDirectionX = 0;
+    public int playerDirectionY = 0;
 
     public Window(int screenWidth, int screenHeight, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
@@ -87,6 +92,7 @@ public class Window extends JPanel implements ActionListener {
         }
 
         grid = new Grid(screenWidth, screenHeight, tileDimension);
+        player = new Player(tileDimension, screenHeight, screenWidth);
 
     }
     
@@ -129,6 +135,7 @@ public class Window extends JPanel implements ActionListener {
 
         drawGrid(g2);
         drawMouse(g2);
+        drawPlayer(g2);
 
         g2.dispose(); // frees up memory
     }
@@ -240,36 +247,19 @@ public class Window extends JPanel implements ActionListener {
         }
     }
 
-
-
-/*     public List<int[]> drawMousePoints(Graphics2D g) {
-        List<int[]> positions = new ArrayList<>();
-        int radius = mouse.getRadius() * tileDimension;
-        int circleCentreX = (mouse.getX() / tileDimension) * tileDimension;
-        int circleCentreY = (mouse.getY() / tileDimension) * tileDimension;
-        
-        int c0 = (((circleCentreX + radius) / tileDimension) * tileDimension);
-        int c180 = (((circleCentreX - radius) / tileDimension) * tileDimension);
-        int c90 = (((circleCentreY + radius) / tileDimension) * tileDimension);
-        int c270 = (((circleCentreY - radius) / tileDimension) * tileDimension);
-        
-        for (int x = c180; x <= c0; x += tileDimension) {
-            for (int y = c270; y <= c90; y += tileDimension) {
-                if (Math.sqrt((x - circleCentreX) * (x - circleCentreX) + (y - circleCentreY) * (y - circleCentreY)) <= radius) {
-                    positions.add(new int[]{x, y});
-                }
-            }
-        }
-        return positions;
-    } */
-
+    // this sends the direction of the player to the player's position updater and draws it
+    public void drawPlayer(Graphics2D p) {
+        player.updatePosition(playerDirectionX, playerDirectionY);
+        player.paintComponent(p);
+    }
     
 
 
     private class MyKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
+            int key = e.getKeyCode();
+            switch (key) {
                 //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
                 case 10: // enter
                     restart = true;
@@ -300,13 +290,51 @@ public class Window extends JPanel implements ActionListener {
                     currentSelectedParticle = 5;
                     break;
 
+                /* case 68: // D
+                    playerX++;
+                case 65: // A
+                    playerX--;
+                case 87: // W
+                    playerY--;
+                case 83: // S
+                    playerY++;
+                    break; */
+
                 default:
                     break;
+            }
+
+            // checks the motion key pressed
+            // TODO: multiple keys pressed at the same time
+            if (key == 68){
+                playerDirectionX = 1;
+            } else if (key == 65){
+                playerDirectionX = -1;
+            }
+            if (key == 87){
+                playerDirectionY = -1;
+            } else if (key == 83){
+                playerDirectionY = 1;
             }
 
             // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
             currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
 
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e){
+            int key = e.getKeyCode();
+            if (key == 68){
+                playerDirectionX = 0;
+            } else if (key == 65){
+                playerDirectionX = 0;
+            }
+            if (key == 87){
+                playerDirectionY = 0;
+            } else if (key == 83){
+                playerDirectionY = 0;
+            }
         }
 
     }
