@@ -1,10 +1,6 @@
 package Blocks.Solids.DynamicSolid;
 
-import java.util.Random;
 
-import Blocks.Air;
-import Blocks.Particle;
-import Blocks.Solids.SolidParticle;
 import Window.Grid;
 
 public class Gravel extends DynamicParticle {

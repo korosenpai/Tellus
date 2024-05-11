@@ -90,14 +90,9 @@ public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWhe
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         // detects the rotation of the wheel (inverted so scrolling toward oneself == -1)
-     
+
         wheel = - e.getWheelRotation();
-        //System.out.println(wheel);
-        if (!(radius == 0 && wheel < 0)) {
-            radius = radius + wheel;
-        }
-        //System.out.println(radius);
-            
+        radius = Math.max(radius + wheel, 0);
     }
 
     public int getWheel() {

@@ -1,16 +1,18 @@
 package Window;
 
 import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
 import Blocks.Air;
 import Blocks.Particle;
-import Blocks.TestParticle;
+import Blocks.ParticleList;
 
 public class Grid {
+    public ParticleList particleList = new ParticleList();
+
     final int screenWidth;
     final int screenHeight;
+    final int tileDimension;
 
     private final int rows;
     private final int columns;
@@ -22,6 +24,7 @@ public class Grid {
         this.screenHeight = screenHeight;
         this.rows = screenHeight / tileDimension;
         this.columns = screenWidth / tileDimension;
+        this.tileDimension = tileDimension;
         grid = new Particle[this.rows][this.columns];
         generateEmptyGrid();
     }
@@ -82,6 +85,8 @@ public class Grid {
         }
     }
 
+    // after painting set all pixels who have moved
+    //  able to make them move again
     public void setGridHasMovedFalse() {
         for (int j = rows-1; j > -1; j--){
             for (int i = columns-1; i > -1; i--){
@@ -93,15 +98,35 @@ public class Grid {
     }
 
 
-
-
-
     public Particle getAtPosition(int j, int i) {
         return grid[j][i];
     }
 
     public void setParticle(int j, int i, Particle particle) {
         grid[j][i] = particle;
+    }
+
+    public void setCursor(int mouseX, int mouseY, int radius, int particleID) {
+        int circleCentreX = mouseX / tileDimension;
+        int circleCentreY = mouseY / tileDimension;
+        
+        // min prevents to go out of bounds
+        int c0 = Math.min(circleCentreX + radius, columns - 1);
+        int c180 = Math.max(circleCentreX - radius, 0);
+        int c90 = Math.min(circleCentreY + radius, rows - 1);
+        int c270 = Math.max(circleCentreY - radius, 0);
+
+        // System.out.println(c0 + " : " + c180 + " : " + c90 + " : " + c270);
+
+        // Adjust the loop conditions based on the actual number of tiles the circle spans
+        for (int x = c180; x <= c0; x++) {
+            for (int y = c270; y <= c90; y++) {
+                if (Math.sqrt((x - circleCentreX) * (x - circleCentreX) + (y - circleCentreY) * (y - circleCentreY)) <= radius) {
+                    setParticle(y, x, particleList.getNewParticle(particleID));
+                }
+            }
+        }
+
     }
 
     // NOTE: GETNEIGHBORS FUNCTIONS
