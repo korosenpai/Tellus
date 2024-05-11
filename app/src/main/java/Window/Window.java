@@ -9,12 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Constructor;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import Blocks.ParticleList;
 import Blocks.Liquids.Water;
 import Blocks.Particle;
 import Blocks.Solids.DynamicSolid.Gravel;
@@ -41,8 +43,11 @@ public class Window extends JPanel implements ActionListener {
     private Mouse mouse = new Mouse();
 
     private boolean windowShouldClose = false; // set when hit esc to quit
-    public Particle currentSelectedParticle = new Sand(); //Sand
-    
+
+    public ParticleList particleList = new ParticleList();
+    public int currentSelectedParticle = 1;
+    public Color currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
+
 
     public Window(int screenWidth, int screenHeight, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
@@ -53,8 +58,6 @@ public class Window extends JPanel implements ActionListener {
 
         this.FPS = fps;
         this.DELAY = 1000 / FPS;
-
-             
 
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -110,8 +113,6 @@ public class Window extends JPanel implements ActionListener {
         if (mouse.isDragged() || mouse.isPressed()) {
             setOnClick(); // set particle on the position of the mouse, when clicked
         };
-        
-        
 
         repaint(); // calls paintComponent
     
@@ -136,11 +137,8 @@ public class Window extends JPanel implements ActionListener {
         int x = mouse.getX();
         int y = mouse.getY();
         if ( 0 > x || x > screenWidth - 1 || 0 > y || y > screenHeight - 1 ) return; // check if out of bounds
-        if (currentSelectedParticle instanceof Sand) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
-        else if (currentSelectedParticle instanceof Snow) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Snow());
-        else if (currentSelectedParticle instanceof Wood) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Wood());
-        else if (currentSelectedParticle instanceof Water) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Water());
-        else if (currentSelectedParticle instanceof Gravel) grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Gravel());
+
+        grid.setCursor(x, y, mouse.getRadius(), currentSelectedParticle);
     }
 
  /*    public void setMouseOnClick(){
@@ -206,7 +204,9 @@ public class Window extends JPanel implements ActionListener {
     }
 
     public void drawMouse(Graphics2D g) {
-        g.setColor(new Color(currentSelectedParticle.getColorRed(), currentSelectedParticle.getColorGreen(), currentSelectedParticle.getColorBlue()));
+        //g.setColor(new Color(currentSelectedParticle.getColorRed(), currentSelectedParticle.getColorGreen(), currentSelectedParticle.getColorBlue()));
+
+        g.setColor(currentSelectedParticleColor);
         
         /*
          int radiusInPixels = mouse.getRadius() * tileDimension;
@@ -233,13 +233,8 @@ public class Window extends JPanel implements ActionListener {
         // Adjust the loop conditions based on the actual number of tiles the circle spans
         for (int x = c180; x <= c0; x += tileDimension) {
             for (int y = c270; y <= c90; y += tileDimension) {
-                // Your existing condition to check if the pixel is within the circle
-                if (radius / tileDimension == 0){
-                    g.fillRect(mouse.getX(), mouse.getY(), tileDimension, tileDimension);
-                } else {
-                    if (Math.sqrt((x - circleCentreX) * (x - circleCentreX) + (y - circleCentreY) * (y - circleCentreY)) <= radius) {
-                        g.fillRect(x, y, tileDimension, tileDimension);
-                    }
+                if (Math.sqrt((x - circleCentreX) * (x - circleCentreX) + (y - circleCentreY) * (y - circleCentreY)) <= radius) {
+                    g.fillRect(x, y, tileDimension, tileDimension);
                 }
             }
         }
@@ -286,32 +281,34 @@ public class Window extends JPanel implements ActionListener {
                 
                 //keyboards input to switch currently selected particle
                 case 112: //F1
-                    currentSelectedParticle = new Sand();
+                    currentSelectedParticle = 1;
                     break;
             
                 case 113: //F2
-                    currentSelectedParticle = new Snow();
+                    currentSelectedParticle = 2;
                     break;
                 
                 case 114: //F3
-                    currentSelectedParticle = new Wood();
+                    currentSelectedParticle = 3;
                     break;
                 
                 case 115: //F4
-                    currentSelectedParticle = new Water();
+                    currentSelectedParticle = 4;
                     break;
                 
                 case 116: // F5
-                    currentSelectedParticle = new Gravel();
+                    currentSelectedParticle = 5;
                     break;
 
-                
-                
                 default:
                     break;
             }
-        }
-    }
 
+            // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
+            currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
+
+        }
+
+    }
 
 }
