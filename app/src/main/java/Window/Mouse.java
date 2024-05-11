@@ -92,7 +92,9 @@ public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWhe
         // detects the rotation of the wheel (inverted so scrolling toward oneself == -1)
 
         wheel = - e.getWheelRotation();
+        radius = Math.min(radius + wheel, 20);
         radius = Math.max(radius + wheel, 0);
+        
     }
 
     public int getWheel() {
