@@ -9,20 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.Constructor;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import Blocks.ParticleList;
-import Blocks.Liquids.Water;
 import Blocks.Particle;
-import Blocks.Solids.DynamicSolid.Gravel;
-import Blocks.Solids.DynamicSolid.Sand;
-import Blocks.Solids.DynamicSolid.Snow;
-import Blocks.Solids.StaticSolid.Wood;
+import Blocks.ParticleList;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -239,32 +233,6 @@ public class Window extends JPanel implements ActionListener {
             }
         }
     }
-
-
-
-/*     public List<int[]> drawMousePoints(Graphics2D g) {
-        List<int[]> positions = new ArrayList<>();
-        int radius = mouse.getRadius() * tileDimension;
-        int circleCentreX = (mouse.getX() / tileDimension) * tileDimension;
-        int circleCentreY = (mouse.getY() / tileDimension) * tileDimension;
-        
-        int c0 = (((circleCentreX + radius) / tileDimension) * tileDimension);
-        int c180 = (((circleCentreX - radius) / tileDimension) * tileDimension);
-        int c90 = (((circleCentreY + radius) / tileDimension) * tileDimension);
-        int c270 = (((circleCentreY - radius) / tileDimension) * tileDimension);
-        
-        for (int x = c180; x <= c0; x += tileDimension) {
-            for (int y = c270; y <= c90; y += tileDimension) {
-                if (Math.sqrt((x - circleCentreX) * (x - circleCentreX) + (y - circleCentreY) * (y - circleCentreY)) <= radius) {
-                    positions.add(new int[]{x, y});
-                }
-            }
-        }
-        return positions;
-    } */
-
-    
-
 
     private class MyKeyAdapter extends KeyAdapter {
         @Override
