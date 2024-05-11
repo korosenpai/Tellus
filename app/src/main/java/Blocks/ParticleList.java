@@ -31,6 +31,9 @@ public class ParticleList {
             case 5:
                 return new Gravel();
 
+            case 6:
+                return new Oil();
+
         }
 
         System.out.println("GET NEW PARTICLE PARTICLE WAS NOT INDEED FOUND");
@@ -39,20 +42,23 @@ public class ParticleList {
 
     public Color getColorOfParticle(int id) {
         switch (id) {
-           case 1:
-               return new Color(182, 155, 99);
+            case 1:
+                return new Color(182, 155, 99);
 
-           case 2:
-               return new Color(205, 205, 205);
+            case 2:
+                return new Color(205, 205, 205);
 
-           case 3:
-               return new Color(83, 54, 43);
+            case 3:
+                return new Color(83, 54, 43);
 
-           case 4:
-               return new Color(46, 82, 255);
+            case 4:
+                return new Color(46, 82, 255);
 
-           case 5:
-               return new Color(83, 84, 78);
+            case 5:
+                return new Color(83, 84, 78);
+
+            case 6:
+                return new Color(74 + 50 , 80 + 50, -42 + 50);
 
         }
 
