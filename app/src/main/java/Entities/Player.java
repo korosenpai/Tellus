@@ -11,23 +11,21 @@ public class Player extends Entity{
     final int tileDimension;
     final int screenHeight;
     final int screenWidth;
-
-    int moveX;
-    int moveY;
     
     boolean hasLanded = true;
 
-    public Player(int tileDimension, int screenHeight, int screenWidth) {
+    public Player(int tileDimension, int screenHeight, int screenWidth, int entityID) {
         
-        super();
+        super(entityID);
+        System.out.println(entityID);
 
         this.tileDimension = tileDimension;
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
 
-        moveX = (screenWidth / 2);
-        moveY = (screenHeight / 2);
-
+        setMoveX(screenWidth/2);
+        setMoveY(screenHeight/2);
+        setDimension(5, 8);
         setMaxSpeed(10);
         setAccelerationX(1);
         setAccelerationY(1.3f);
@@ -39,7 +37,7 @@ public class Player extends Entity{
         super.paintComponent(p);
 
         p.setColor(color);
-        p.fillRect((int)moveX, (int)moveY, 3 * tileDimension, 5 * tileDimension);
+        p.fillRect((int)moveX, (int)moveY, getDimensionX() * tileDimension, getDimensionY() * tileDimension);
     }
 
     public void updatePosition(int x, int y) {
@@ -48,14 +46,6 @@ public class Player extends Entity{
 
         moveX = moveX + getVelocityX();
         moveY = moveY + getVelocityY();
-    }
-
-    public int getMoveX() {
-        return moveX;
-    }
-
-    public int getMoveY() {
-        return moveY;
     }
 
     public Color getPlayerColor() {

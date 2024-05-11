@@ -1,6 +1,8 @@
 package Window;
 //gradlew build && gradlew run  I'm lazy XD
 
+import java.util.ArrayList;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,6 +21,8 @@ import Blocks.Particle;
 import Blocks.ParticleList;
 
 import Entities.Player;
+import Entities.Entity;
+import Entities.EntityParticle;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -47,6 +51,8 @@ public class Window extends JPanel implements ActionListener {
     public Player player;
     public int playerDirectionX = 0;
     public int playerDirectionY = 0;
+
+    public ArrayList<Entity> entityList;
 
     public Window(int screenWidth, int screenHeight, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
@@ -86,7 +92,9 @@ public class Window extends JPanel implements ActionListener {
         }
 
         grid = new Grid(screenWidth, screenHeight, tileDimension);
-        player = new Player(tileDimension, screenHeight, screenWidth);
+        entityList = new ArrayList<>();
+        player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
+        entityList.add(player);
 
     }
     
@@ -113,6 +121,8 @@ public class Window extends JPanel implements ActionListener {
         if (mouse.isDragged() || mouse.isPressed()) {
             setOnClick(); // set particle on the position of the mouse, when clicked
         };
+
+        setEntities();
 
         repaint(); // calls paintComponent
     
@@ -246,6 +256,19 @@ public class Window extends JPanel implements ActionListener {
         player.updatePosition(playerDirectionX, playerDirectionY);
         player.paintComponent(p);
     }
+
+    // NOTE: doesn't work, so far. 
+    // It should set in the grid the particles of all the Entities
+    public void setEntities() {
+        for(int e = 0; e < entityList.size(); e++){
+            Entity tempEntity = entityList.get(e);
+            ArrayList tempParticleList = tempEntity.getParticleList();
+            for(int p = 0; p < tempParticleList.size(); p++){
+                EntityParticle tempParticle = (EntityParticle)tempParticleList.get(p);
+                grid.setParticle(tempParticle.getY(), tempParticle.getX(), tempParticle);
+            }
+        }
+    }
     
 
 
@@ -282,6 +305,10 @@ public class Window extends JPanel implements ActionListener {
                 
                 case 116: // F5
                     currentSelectedParticle = 5;
+                    break;
+
+                case 117: // F6
+                    currentSelectedParticle = 6;
                     break;
 
                 /* case 68: // D
