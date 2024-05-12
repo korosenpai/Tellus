@@ -2,8 +2,8 @@ package Blocks.Solids.DynamicSolid;
 
 import Blocks.Air;
 import Blocks.Particle;
+import Blocks.Liquids.LiquidParticle;
 import Blocks.Solids.SolidParticle;
-import Blocks.Solids.DynamicSolid.Gravel;
 
 import Window.Grid;
 
@@ -15,14 +15,12 @@ abstract class DynamicParticle extends SolidParticle {
     private float acceleration = 0; // 32bits, will never need more
     private float velocity = 0;
 
-    public boolean hasLanded;
-
     // behaviours
     private boolean goDown;
     private boolean goDownLeft;
     private boolean goDownRight;
 
-    
+
     public DynamicParticle() {
         super();
     }
@@ -64,17 +62,18 @@ abstract class DynamicParticle extends SolidParticle {
 
             Particle[] under = grid.getLowerNeighbors(coords[0], coords[1]);
             if (under[1] == null) {
-                hasLanded = true;
                 return coords; // cannot move or you finish out of bounds
             }
+
+            // if has air beneath or moved since last frame
+            isFreeFalling = under[1] instanceof Air || under[1].isFreeFalling || !(coords[0] == previousPosition[0] && coords[1] == previousPosition[1]);
+            if (isFreeFalling) previousPosition = coords.clone();
 
             // NOTE: it always swaps with the cell it goes to
             // make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
 
-            if (!(under[1] instanceof Air)) { // sabbia quando entra in acqua non ha più gravità e cade lentamente
+            if (!isFreeFalling || under[1] instanceof LiquidParticle) { // sabbia quando entra in acqua non ha più gravità e cade lentamente
                 resetVelocity(); 
-                if (under[1] instanceof SolidParticle) hasLanded = true;
-                if (under[1] instanceof Gravel) return coords;
             }
 
             // if block under is not a solid swap with block under
@@ -86,7 +85,7 @@ abstract class DynamicParticle extends SolidParticle {
 
             // Gravel doesnt fall left/right only down
             // go to block to left if is not solid
-            else if (goDownLeft && !(this instanceof Gravel) && under[0] != null && !(under[0] instanceof SolidParticle)) {
+            else if (goDownLeft && under[0] != null && !(under[0] instanceof SolidParticle)) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] - 1));
                 grid.setParticle(coords[0] + 1, coords[1] - 1, this);
                 coords[0]++;
@@ -94,49 +93,18 @@ abstract class DynamicParticle extends SolidParticle {
             }
 
             // go to block to right if is not solid
-            else if (goDownRight && !(this instanceof Gravel) && under[2] != null && !(under[2] instanceof SolidParticle)) {
+            else if (goDownRight && under[2] != null && !(under[2] instanceof SolidParticle)) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] + 1));
                 grid.setParticle(coords[0] + 1, coords[1] + 1, this);
                 coords[0]++;
                 coords[1]++;
             }
 
+
+
         }
-
-        
-        Particle underCell = grid.getLowerNeighbors(coords[0], coords[1])[1];
-        
-        if (underCell instanceof Air) return coords;
-
-        if (this instanceof Gravel) {
-            
-
-            Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
-
-
-            if (side[0] != null && side[0] instanceof Air) {
-                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1]-1));
-                grid.setParticle(coords[0], coords[1] - 1 , this);
-                return coords;
-            }
-
-            else if (side[1] != null && side[1] instanceof Air) {
-                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] + 1));
-                grid.setParticle(coords[0], coords[1] + 1 , this);
-                return coords;
-            }
-        }
-
-        // check if touching ground
-        if (!(grid.getLowerNeighbors(coords[0], coords[1])[1] instanceof SolidParticle))
-            hasLanded = false;
-
-
 
         return coords;
 
-
     }
-
-    
 }
