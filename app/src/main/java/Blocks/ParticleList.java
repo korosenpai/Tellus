@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import Blocks.Gases.Smoke;
 import Blocks.Liquids.*;
 import Blocks.Solids.DynamicSolid.*;
 import Blocks.Solids.StaticSolid.*;;
@@ -34,6 +35,8 @@ public class ParticleList {
             case 6:
                 return new Oil();
 
+            case 7:
+                return new Smoke();
         }
 
         System.out.println("GET NEW PARTICLE PARTICLE WAS NOT INDEED FOUND");
@@ -58,7 +61,10 @@ public class ParticleList {
                 return new Color(83, 84, 78);
 
             case 6:
-                return new Color(74 + 50 , 80 + 50, -42 + 50);
+                return new Color(124, 130, 8);
+
+            case 7:
+                return new Color(79 , 78, 78);
 
         }
 

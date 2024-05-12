@@ -286,6 +286,7 @@ public class Window extends JPanel implements ActionListener {
                     windowShouldClose = true;
                     break;
                 
+                // TODO: add all in one check
                 //keyboards input to switch currently selected particle
                 case 112: //F1
                     currentSelectedParticle = 1;
@@ -309,6 +310,10 @@ public class Window extends JPanel implements ActionListener {
 
                 case 117: // F6
                     currentSelectedParticle = 6;
+                    break;
+
+                case 118:
+                    currentSelectedParticle = 7;
                     break;
 
                 /* case 68: // D
