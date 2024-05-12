@@ -13,6 +13,10 @@ public abstract class Particle {
     private int colorGreen;
     private int colorBlue;
 
+    public int[] previousPosition = new int[] {-1, -1}; // used to calculate isFreeFalling by seeing if moved last frame
+    public boolean isFreeFalling;
+
+
     // set top true when moved, set to false after rendering by the Window, to avoid calling on it update() more than once a frame
     public boolean hasMoved;
 
