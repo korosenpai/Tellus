@@ -63,6 +63,8 @@ abstract class DynamicParticle extends SolidParticle {
 
             Particle[] under = grid.getLowerNeighbors(coords[0], coords[1]);
             if (under[1] == null) {
+                isFreeFalling = false;
+                resetVelocity();
                 return coords; // cannot move or you finish out of bounds
             }
 
