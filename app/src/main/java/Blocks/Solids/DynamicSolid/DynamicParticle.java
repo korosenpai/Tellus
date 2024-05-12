@@ -14,6 +14,7 @@ abstract class DynamicParticle extends SolidParticle {
     private int maxSpeed = 0; // how many cells to move ain one frame
     private float acceleration = 0; // 32bits, will never need more
     private float velocity = 0;
+    private float horizontalVelocity = 0;
 
     // behaviours
     private boolean goDown;
@@ -73,6 +74,7 @@ abstract class DynamicParticle extends SolidParticle {
             // make smoke disappear (if it is gas it creates air and doesnt make the gas rise)
 
             if (!isFreeFalling || under[1] instanceof LiquidParticle) { // sabbia quando entra in acqua non ha più gravità e cade lentamente
+                horizontalVelocity = velocity;
                 resetVelocity(); 
             }
 
@@ -83,9 +85,9 @@ abstract class DynamicParticle extends SolidParticle {
                 coords[0]++;
             }
 
-            // Gravel doesnt fall left/right only down
             // go to block to left if is not solid
-            else if (goDownLeft && under[0] != null && !(under[0] instanceof SolidParticle)) {
+            // checked automatically if under[0] != null if it is an instance
+            else if (goDownLeft && !(under[0] instanceof SolidParticle)) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] - 1));
                 grid.setParticle(coords[0] + 1, coords[1] - 1, this);
                 coords[0]++;
@@ -93,7 +95,7 @@ abstract class DynamicParticle extends SolidParticle {
             }
 
             // go to block to right if is not solid
-            else if (goDownRight && under[2] != null && !(under[2] instanceof SolidParticle)) {
+            else if (goDownRight && !(under[2] instanceof SolidParticle)) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] + 1));
                 grid.setParticle(coords[0] + 1, coords[1] + 1, this);
                 coords[0]++;
