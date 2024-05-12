@@ -17,7 +17,7 @@ public class Player extends Entity{
     public Player(int tileDimension, int screenHeight, int screenWidth, int entityID) {
         
         super(entityID);
-        System.out.println(entityID);
+        //System.out.println(entityID);
 
         this.tileDimension = tileDimension;
         this.screenHeight = screenHeight;
