@@ -16,6 +16,8 @@ abstract class GasParticle extends Particle {
     public int[] update(int[] coords, Grid grid) {
         hasMoved = true;
 
+        // TODO: add in grid second pass to update from top to bottom
+
         Particle[] upper = grid.getUpperNeighbors(coords[0], coords[1]);
         if (upper[1] == null) {
             isRising = false;
