@@ -63,6 +63,9 @@ public abstract class LiquidParticle extends Particle {
 
             Particle[] under = grid.getLowerNeighbors(coords[0], coords[1]);
 
+            // TODO: avoid moving up more than once a frame
+            // TODO: check for vasi comunicanti (fixata dai bias)
+
             // move down
             // NOTE: remove check for liquidParticle to make if flow to bottom visual effect
             if (under[1] != null && !(under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle) ) {
