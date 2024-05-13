@@ -63,54 +63,32 @@ public abstract class LiquidParticle extends Particle {
 
             Particle[] under = grid.getLowerNeighbors(coords[0], coords[1]);
 
-            // TODO: avoid moving up more than once a frame
-            // TODO: check for vasi comunicanti (fixata dai bias)
 
             // move down
-            // NOTE: remove check for liquidParticle to make if flow to bottom visual effect
             if (under[1] != null && !(under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle) ) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1]));
                 grid.setParticle(coords[0] + 1, coords[1], this);
                 coords[0]++;
             }
 
-            // move to bottom left
-            else if (under[0] != null && !(under[0] instanceof SolidParticle || under[0] instanceof LiquidParticle)) {
-                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] - 1));
-                grid.setParticle(coords[0] + 1, coords[1] - 1, this);
-                coords[0]++;
-                coords[1]--;
-            }
 
-            // move bottom right
-            else if (under[2] != null && !(under[2] instanceof SolidParticle || under[2] instanceof LiquidParticle)) {
-                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] + 1));
-                grid.setParticle(coords[0] + 1, coords[1] + 1, this);
-                coords[0]++;
-                coords[1]++;
-            }
+            // move sideways in random direction that is less populated
 
-            else {
-
-                // move sideways in random direction
-
+            float random = ThreadLocalRandom.current().nextFloat(); // go to same direction multiple times in a row
+            for (int i = 0; i < 3; i++) {
                 Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
-
-                // TODO: maybe move based on ripples from surface
-                // TODO: go to left or right randomly, giving higher chance of going where it is empty
-                // NOTE: now it goes left or right in a random ass way
-
-                if (side[0] != null && (ThreadLocalRandom.current().nextInt(2) == 0) && !(side[0] instanceof LiquidParticle || side[0] instanceof SolidParticle)) {
+                if (side[0] != null && (random > 0.5f) && !(side[0] instanceof SolidParticle)) {
                     grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] - 1));
                     grid.setParticle(coords[0], coords[1] - 1, this);
                     coords[1]--;
                 }
-                else if (side[1] != null && !(side[1] instanceof SolidParticle)) {
+                else if (side[1] != null && !(side[1] instanceof SolidParticle) ) {
                     grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] + 1));
                     grid.setParticle(coords[0], coords[1] + 1, this);
                     coords[1]++;
                 }
             }
+
         }
 
 
