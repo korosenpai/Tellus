@@ -55,7 +55,7 @@ abstract class DynamicParticle extends SolidParticle {
     // NOTE: coords -> j, i passed by reference
     @Override
     public int[] update(int[] coords, Grid grid) {
-        hasMoved = true;
+        super.update(coords, grid);
 
         updateVelocity();
 

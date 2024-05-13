@@ -53,7 +53,8 @@ public abstract class LiquidParticle extends Particle {
 
     @Override
     public int[] update(int[] coords, Grid grid) {
-        hasMoved = true;
+        super.update(coords, grid);
+
         updateVelocity();
 
         for (int n = 0; n <= velocity; n++) {
