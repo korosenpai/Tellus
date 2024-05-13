@@ -1,9 +1,12 @@
 package Blocks.Solids.DynamicSolid;
 
 
+import Blocks.Air;
+import Blocks.Particle;
 import Window.Grid;
 
 public class Gravel extends DynamicParticle {
+    boolean movedAfterLanding = false;
     
     public Gravel() {
         super();
@@ -25,6 +28,16 @@ public class Gravel extends DynamicParticle {
 
         super.update(coords, grid);
 
+        if (isFreeFalling) {
+            movedAfterLanding = false;
+            return coords;
+        }
+
+        if (movedAfterLanding) return coords;
+
+        // we landed for the first time and have to move
+        movedAfterLanding = true;
+
         // TODO: make them work  here and not in dynamic solid
         // additional gravel updates
         // MOVE ONCE AFTER LANDING
@@ -37,20 +50,20 @@ public class Gravel extends DynamicParticle {
         // if (this instanceof Gravel) {
         //     
 
-        //     Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
+        Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
 
 
-        //     if (side[0] != null && side[0] instanceof Air) {
-        //         grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1]-1));
-        //         grid.setParticle(coords[0], coords[1] - 1 , this);
-        //         return coords;
-        //     }
+        if (side[0] != null && side[0] instanceof Air) {
+            grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1]-1));
+            grid.setParticle(coords[0], coords[1] - 1 , this);
+            return coords;
+        }
 
-        //     else if (side[1] != null && side[1] instanceof Air) {
-        //         grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] + 1));
-        //         grid.setParticle(coords[0], coords[1] + 1 , this);
-        //         return coords;
-        //     }
+        else if (side[1] != null && side[1] instanceof Air) {
+            grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] + 1));
+            grid.setParticle(coords[0], coords[1] + 1 , this);
+            return coords;
+        }
         // }
 
         return coords;

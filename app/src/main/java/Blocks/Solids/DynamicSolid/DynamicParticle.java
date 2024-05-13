@@ -1,5 +1,7 @@
 package Blocks.Solids.DynamicSolid;
 
+import java.util.Arrays;
+
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.Liquids.LiquidParticle;
@@ -58,6 +60,7 @@ abstract class DynamicParticle extends SolidParticle {
         super.update(coords, grid);
 
         updateVelocity();
+        float currentVel = velocity;
 
         for (int n = 0; n <= velocity; n++) {
 
@@ -103,6 +106,12 @@ abstract class DynamicParticle extends SolidParticle {
                 coords[1]++;
             }
 
+            // updated version for check in other specific classes
+            isFreeFalling = under[1] instanceof Air || under[1].isFreeFalling || !(coords[0] == previousPosition[0] && coords[1] == previousPosition[1]);
+            if (isFreeFalling) {
+                previousPosition = coords.clone();
+                velocity = currentVel;
+            };
 
 
         }

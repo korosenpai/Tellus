@@ -178,7 +178,7 @@ public class Grid {
         if (j > 0) { //check if element is not in the last row
             if (i > 0) upperNeighbors[0] = grid[j - 1][i - 1]; //upperleft
             upperNeighbors[1] = grid[j - 1][i]; //upper
-            if (i < columns) upperNeighbors[2] = grid[j - 1][i + 1]; //upperright
+            if (i < columns - 1) upperNeighbors[2] = grid[j - 1][i + 1]; //upperright
         }
         return upperNeighbors;
     }

@@ -1,5 +1,7 @@
 package Blocks.Solids.DynamicSolid;
 
+import java.util.Arrays;
+
 import Blocks.Particle;
 import Blocks.Liquids.Water;
 import Blocks.Liquids.LiquidParticle;
@@ -29,7 +31,6 @@ public class Snow extends DynamicParticle {
 
     @Override
     public int[] update(int[] coords, Grid grid) {
-        
 
         // move once every two frames
         if (!hasMovedLastFrame) super.update(coords, grid);
@@ -39,7 +40,7 @@ public class Snow extends DynamicParticle {
         //check if the any neighbor particle is Liquid
         Particle[] neighbors = grid.getNeighbors(coords[0], coords[1]); 
         int counter = 0;
-        for (int i = 0; i < neighbors.length; i++) {
+        for (int i = 0; i < neighbors.length - 1; i++) {
             if (neighbors[i] instanceof LiquidParticle) counter++;
         }
 
