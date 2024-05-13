@@ -129,7 +129,8 @@ public class Window extends JPanel implements ActionListener {
         // make particle moved be able to move again
         grid.setGridHasMovedFalse();
 
-
+        // remove unloaded particles
+        System.gc();
     }
 
     //called by repaint in actionPerformed

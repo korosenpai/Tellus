@@ -23,6 +23,8 @@ public class Snow extends DynamicParticle {
 
         setBehaviours(true, true, true);
 
+        spawnRate = 0.01f;
+
     }
 
     @Override
