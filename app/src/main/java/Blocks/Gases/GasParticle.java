@@ -10,11 +10,12 @@ abstract class GasParticle extends Particle {
         super();
 
         isRising = true;
+        scanDirection = 2; // top to bottom
     }
 
     @Override
     public int[] update(int[] coords, Grid grid) {
-        hasMoved = true;
+        super.update(coords, grid);
 
         // TODO: add in grid second pass to update from top to bottom
 

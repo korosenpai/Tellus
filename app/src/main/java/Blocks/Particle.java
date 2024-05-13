@@ -20,8 +20,11 @@ public abstract class Particle {
     public boolean isRising;
 
 
+    public int scanDirection = 1; // NOTE: 1 bottom to top, 2 top to bottom
+
     // set top true when moved, set to false after rendering by the Window, to avoid calling on it update() more than once a frame
     public boolean hasMoved;
+    // TODO: check when setting has moved if needing to change even particle that was moved
 
     public void setColors(int r, int g, int b) {
         this.colorRed = parseColor(r);
@@ -51,6 +54,9 @@ public abstract class Particle {
         return new Random().nextInt(100);
     }
 
-    public abstract int[] update(int[] coords, Grid grid);
+    public int[] update(int[] coords, Grid grid) {
+        hasMoved = true;
+        return coords;
+    }
 
 }

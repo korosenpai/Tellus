@@ -76,9 +76,19 @@ public class Grid {
     }
 
     public void updateGrid() {
+        // first scan, bottom to top
         for (int j = rows-1; j > -1; j--){
             for (int i = columns-1; i > -1; i--){
-                if (grid[j][i] instanceof Air || grid[j][i].hasMoved) continue;
+                if (grid[j][i] instanceof Air || grid[j][i].scanDirection != 1 || grid[j][i].hasMoved) continue;
+
+                grid[j][i].update(new int[]{j, i}, this);
+            }
+        }
+
+        // second scan, top to bottom
+        for (int j = 0; j < rows - 1; j++){
+            for (int i = 0; i < columns - 1; i++){
+                if (grid[j][i] instanceof Air || grid[j][i].scanDirection != 2 || grid[j][i].hasMoved) continue;
 
                 grid[j][i].update(new int[]{j, i}, this);
             }
