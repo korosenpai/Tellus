@@ -1,6 +1,7 @@
 package Window;
 
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
 import Blocks.Air;
@@ -132,7 +133,11 @@ public class Grid {
         for (int x = c180; x <= c0; x++) {
             for (int y = c270; y <= c90; y++) {
                 if (Math.sqrt((x - circleCentreX) * (x - circleCentreX) + (y - circleCentreY) * (y - circleCentreY)) <= radius) {
-                    setParticle(y, x, particleList.getNewParticle(particleID));
+                    Particle particle = particleList.getNewParticle(particleID);
+                    // chance to not spawn all the blocks in the cursor
+                    if (ThreadLocalRandom.current().nextFloat(1) <= particle.spawnRate) {
+                        setParticle(y, x, particleList.getNewParticle(particleID));
+                    }
                 }
             }
         }

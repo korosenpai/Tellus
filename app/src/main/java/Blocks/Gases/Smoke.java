@@ -8,7 +8,7 @@ public class Smoke extends GasParticle  {
         super();
 
         int offset = getColorOffset();
-        setColors(0 + offset, 8 + offset, 8 + offset);
+        setColors(30 + offset, 38 + offset, 38 + offset);
     }
 
     @Override

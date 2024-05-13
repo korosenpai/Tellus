@@ -13,6 +13,8 @@ public abstract class Particle {
     private int colorGreen;
     private int colorBlue;
 
+    public float spawnRate = 1f;
+
     public int[] previousPosition = new int[] {-1, -1}; // used to calculate isFreeFalling by seeing if moved last frame
     public boolean isFreeFalling;
 

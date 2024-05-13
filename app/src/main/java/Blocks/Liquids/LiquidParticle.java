@@ -21,6 +21,8 @@ public abstract class LiquidParticle extends Particle {
     
     public LiquidParticle() {
         super();
+
+        spawnRate = 0.5f;
     }
 
     public void setMaxSpeed(int max) {
@@ -91,6 +93,7 @@ public abstract class LiquidParticle extends Particle {
 
                 Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
 
+                // TODO: maybe move based on ripples from surface
                 // TODO: go to left or right randomly, giving higher chance of going where it is empty
                 // NOTE: now it goes left or right in a random ass way
 
