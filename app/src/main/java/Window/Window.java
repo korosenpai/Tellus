@@ -286,6 +286,15 @@ public class Window extends JPanel implements ActionListener {
                 case 27: // esc
                     windowShouldClose = true;
                     break;
+
+                // arrows up and down to increase / decrease cursor
+                case 38:
+                    mouse.incrementCursor();
+                    break;
+                case 40:
+                    mouse.decrementCursor();
+                    break;
+
                 
                 // TODO: add all in one check
                 //keyboards input to switch currently selected particle

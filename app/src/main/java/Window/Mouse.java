@@ -11,6 +11,8 @@ public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWhe
     private int y;
 
     private int radius = 1; // draw area around mouse
+    private int maxRadius = 20;
+    private int minRadius = 0;
 
     private boolean pressed, dragged; // starts with false by default
     private int wheel; // amount of scrolling
@@ -19,6 +21,13 @@ public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWhe
         // divide by tile size to get what position in grid mouse is currently hovering onto
         updateMousePosition(e);
         // System.out.println("Mouse x: " + x + " y: " + y);
+    }
+
+    public void incrementCursor() {
+        radius = Math.min(radius + 1, maxRadius);
+    }
+    public void decrementCursor() {
+        radius = Math.max(radius - 1, minRadius);
     }
 
     @Override
@@ -92,8 +101,8 @@ public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWhe
         // detects the rotation of the wheel (inverted so scrolling toward oneself == -1)
 
         wheel = - e.getWheelRotation();
-        radius = Math.min(radius + wheel, 20);
-        radius = Math.max(radius + wheel, 0);
+        radius = Math.min(radius + wheel, maxRadius);
+        radius = Math.max(radius + wheel, minRadius);
         
     }
 
