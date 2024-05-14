@@ -136,7 +136,9 @@ public class Grid {
                     Particle particle = particleList.getNewParticle(particleID);
                     // chance to not spawn all the blocks in the cursor
                     if (ThreadLocalRandom.current().nextFloat(1) <= particle.spawnRate) {
-                        setParticle(y, x, particleList.getNewParticle(particleID));
+                        if (getAtPosition(y, x).canBeOverridden) {
+                            setParticle(y, x, particleList.getNewParticle(particleID));
+                        }
                     }
                 }
             }

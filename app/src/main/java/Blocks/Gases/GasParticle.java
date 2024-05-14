@@ -21,6 +21,7 @@ abstract class GasParticle extends Particle {
         isRising = true;
         scanDirection = 2; // top to bottom
 
+        canBeOverridden = true;
 
         // spawnRate = 0.03f;
         spawnRate = 0.01f;
