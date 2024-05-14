@@ -29,11 +29,18 @@ public abstract class Particle {
     public boolean hasMoved;
     // TODO: check when setting has moved if needing to change even particle that was moved
 
+    //for fire and related stuff
+    public boolean isFlammable; 
+    
+    public int fireResistance = 400; //time until burning element turns into smoke
+
+
     public void setColors(int r, int g, int b) {
         this.colorRed = parseColor(r);
         this.colorGreen = parseColor(g);
         this.colorBlue = parseColor(b);
     }
+
     public int parseColor(int c) {
         // check if it is in bounds and in case return min or max values
         return Math.max(0, Math.min(c, 255));
