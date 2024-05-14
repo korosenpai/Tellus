@@ -22,6 +22,7 @@ public abstract class LiquidParticle extends Particle {
     public LiquidParticle() {
         super();
 
+        canBeOverridden = true;
         spawnRate = 0.5f;
     }
 

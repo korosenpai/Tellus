@@ -3,7 +3,6 @@ package Blocks;
 import Window.Grid;
 
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Particle {
     
@@ -21,6 +20,8 @@ public abstract class Particle {
     // isFreeFalling for gases, if they can still go up
     public boolean isRising;
 
+    // when creating an object, if this particle is in the way it will not spawn the object removing this item (if false)
+    public boolean canBeOverridden;
 
     public int scanDirection = 1; // NOTE: 1 bottom to top, 2 top to bottom
 
