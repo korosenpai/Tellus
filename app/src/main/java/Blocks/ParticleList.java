@@ -37,6 +37,9 @@ public class ParticleList {
 
             case 7:
                 return new Smoke();
+
+            case 8:
+                return new Fire();
         }
 
         System.out.println("GET NEW PARTICLE PARTICLE WAS NOT INDEED FOUND");
@@ -65,6 +68,9 @@ public class ParticleList {
 
             case 7:
                 return new Color(79 , 78, 78);
+            
+            case 8:
+                return new Color(189, 78, 31);
 
         }
 

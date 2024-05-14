@@ -15,5 +15,7 @@ public class Oil extends LiquidParticle{
         setMaxSpeed(10);
         setAcceleration(1.2f);
 
+        this.isFlammable = true;
+
     }
 }

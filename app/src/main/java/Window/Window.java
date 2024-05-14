@@ -326,6 +326,10 @@ public class Window extends JPanel implements ActionListener {
                     currentSelectedParticle = 7;
                     break;
 
+                case 119:
+                    currentSelectedParticle = 8;
+                    break;
+
                 /* case 68: // D
                     playerX++;
                 case 65: // A
