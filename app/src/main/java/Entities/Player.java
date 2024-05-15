@@ -3,8 +3,12 @@ package Entities;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import Window.Grid;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
+
+import java.util.ArrayList;
 
 public class Player extends Entity{
 
@@ -16,7 +20,7 @@ public class Player extends Entity{
 
     public Player(int tileDimension, int screenHeight, int screenWidth, int entityID) {
         
-        super(entityID);
+        super(entityID, 3, 5, tileDimension);
         //System.out.println(entityID);
 
         this.tileDimension = tileDimension;
@@ -25,7 +29,7 @@ public class Player extends Entity{
 
         setMoveX(screenWidth/2);
         setMoveY(screenHeight/2);
-        setDimension(5, 8);
+        //setDimension(3, 5);
         setMaxSpeed(10);
         setAccelerationX(1);
         setAccelerationY(1.3f);
@@ -40,16 +44,23 @@ public class Player extends Entity{
         p.fillRect((int)moveX, (int)moveY, getDimensionX() * tileDimension, getDimensionY() * tileDimension);
     }
 
-    public void updatePosition(int x, int y) {
-        updateVelocityX(x);
-        updateVelocityY(y);
+    public void updatePosition(Grid grid, int directionX, int directionY) {
+        updateVelocityX(directionX);
+        updateVelocityY(directionY);
 
-        moveX = moveX + getVelocityX();
-        moveY = moveY + getVelocityY();
+        super.update(grid, directionX, directionY);
+
+        setMoveX(moveX + getVelocityX());
+        setMoveY(moveY + getVelocityY());
+
     }
 
     public Color getPlayerColor() {
         return getColor();
+    }
+
+    public ArrayList getParticleList(){
+        return super.getParticleList();
     }
 
 

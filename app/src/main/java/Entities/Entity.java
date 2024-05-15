@@ -2,12 +2,20 @@ package Entities;
 
 import javax.swing.JPanel;
 
+import Blocks.Air;
+import Blocks.Particle;
+import Blocks.Liquids.LiquidParticle;
+import Blocks.Solids.SolidParticle;
+import Window.Grid;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 public class Entity extends JPanel{
     
+    final int tileDimension;
+
     int moveX = 0;
     int moveY = 0;
     
@@ -19,18 +27,31 @@ public class Entity extends JPanel{
     int entityDimensionX;
     int entityDimensionY;
 
+    //boolean isFreeFalling;
+
     int entityID;
-    ArrayList<EntityParticle> particleList = new ArrayList<>();
+    ArrayList<EntityParticle> particleList;
 
     //JPanel sprite = new JPanel();
     Color color;
 
-    public Entity(int entityID) {
+    public Entity(int entityID, int dimX, int dimY, int tileDim) {
+        this.tileDimension = tileDim;
+        entityDimensionX = dimX;
+        entityDimensionY = dimY;
+
+        particleList = new ArrayList<EntityParticle>();
 
         this.entityID = entityID;
         for (int i = 0; i < (entityDimensionX*entityDimensionY); i++){
-            particleList.add(new EntityParticle(entityID));
+            EntityParticle newP = new EntityParticle(entityID, maxSpeed);
+            newP.setAccelerationX(1);
+            newP.setAccelerationY(1.3f);
+            newP.setBehaviours(true, false, false);
+            newP.setColor(111, 0, 161);
+            this.particleList.add(newP);
         }
+        //System.out.println(particleList);
     }
 
     public ArrayList getParticleList() {
@@ -41,6 +62,54 @@ public class Entity extends JPanel{
     public void setDimension(int x, int y) {
         entityDimensionX = x;
         entityDimensionY = y;
+    }
+
+    public void update(Grid grid, int directionX, int directionY) {
+
+        Particle lowerN = new Particle() {};
+
+        for(int i = (getDimensionX()-1)*getDimensionY(); i < particleList.size(); i++){
+            
+            int[] coords = fromPosToCoords(i);
+            
+            lowerN = grid.getSingleLowerNeighbor(coords[1], coords[0]);
+            
+            if ((lowerN == null) || (lowerN instanceof SolidParticle && lowerN.isFreeFalling == false)) {
+                
+                for (int j = 0; j < particleList.size(); j++){
+                    particleList.get(j).isFreeFalling = false;
+                    particleList.get(j).resetVelocityY();
+                }
+
+                return;
+            }
+        }
+
+        //int[] coords = {moveX, moveY};
+        for (int i = 0; i < particleList.size(); i++) {
+            int[] coords = fromPosToCoords(i);
+            particleList.get(i).update(coords, grid, lowerN, directionX, directionY);
+        }
+        return;
+    }
+
+    public int[] fromPosToCoords(int index){
+        //int x = moveX/tileDimension + (index % entityDimensionX);
+        //int y = moveY/tileDimension + (index % entityDimensionX);
+        int x = 0, y = 0;
+
+        for (int i = 0; i < entityDimensionY; i++) {
+            for (int j = 0; j < entityDimensionX; j++){
+                index--;
+                if (index == 0){
+                    x = moveX/tileDimension + j;
+                    y = moveY/tileDimension + i;
+                }
+            }
+        }
+
+        int[] coords = {y, x};
+        return coords;
     }
 
     public int getMoveX() {
@@ -111,13 +180,14 @@ public class Entity extends JPanel{
         maxSpeed = speed;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
     public void setColor(int r, int g, int b) {
         color = new Color(r, g, b);
     }
 
-    public Color getColor() {
-        return color;
-    }
 }
 
 
