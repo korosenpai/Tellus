@@ -37,6 +37,9 @@ public class Window extends JPanel implements ActionListener {
     int DELAY;
     Timer timer;
 
+    // if not rendering in time for timer wait that first is done rendering and skip frame
+    private boolean currentlyRendering;
+
     private static Grid grid;
     private boolean restart;
 
@@ -111,10 +114,14 @@ public class Window extends JPanel implements ActionListener {
     // NOTE: MAIN LOOP
     //called every timer clock cycle
     public void actionPerformed(ActionEvent event){
+        if (currentlyRendering) return;
+        currentlyRendering = true;
+
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
         if (restart) start();
         if (getWindowShouldClose()) stop();
+
 
         grid.updateGrid();
 
@@ -131,6 +138,8 @@ public class Window extends JPanel implements ActionListener {
 
         // remove unloaded particles
         System.gc();
+
+        currentlyRendering = false;
     }
 
     //called by repaint in actionPerformed
