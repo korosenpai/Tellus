@@ -1,16 +1,13 @@
-package Blocks.Solids.StaticSolid;
+package Blocks.Gases;
 
-import java.awt.Color;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import Blocks.Air;
 import Blocks.Particle;
-import Blocks.Gases.Smoke;
 import Blocks.Liquids.LiquidParticle;
 import Window.Grid;
 
-public class Fire extends StaticParticle {
+public class Fire extends GasParticle {
     
     int lifetime = Math.max(50, ThreadLocalRandom.current().nextInt(fireLifetime));
     int hasLivedFor = 0;
@@ -31,6 +28,8 @@ public class Fire extends StaticParticle {
 
     public Fire() {
         super();
+
+        setBehaviours(false, false, false, false, false);
 
         canBeOverridden = true;
         spawnRate = 0.2f;
@@ -58,6 +57,7 @@ public class Fire extends StaticParticle {
             if (particle == null || particle instanceof Air) return coords;
 
             // check if there is water (or liquid that doesnt catch fire) to eestinguish or there is a material to be flammable
+            // TODO: with water fix it not estinguishing itself properly
             if (particle instanceof LiquidParticle && !particle.isFlammable) {
                 grid.setParticle(coords[0], coords[1], new Smoke());
             }
