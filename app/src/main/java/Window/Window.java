@@ -51,6 +51,8 @@ public class Window extends JPanel implements ActionListener {
     public int currentSelectedParticle = 1;
     public Color currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
 
+    public int currentlySelectedTemplate = 0;
+
     public Player player;
     public int playerDirectionX = 0;
     public int playerDirectionY = 0;
@@ -341,6 +343,22 @@ public class Window extends JPanel implements ActionListener {
                     currentSelectedParticle = 8;
                     break;
 
+                case 39:  // rightarrow
+                    currentSelectedParticle = (currentSelectedParticle +1) % ParticleList.getNumberOfParticleAvailable();
+            
+                case 37:
+                    currentSelectedParticle = (currentSelectedParticle -1);
+                    if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
+                    
+                case 32:// space 
+                    currentlySelectedTemplate = (currentlySelectedTemplate +1 ) % (GridTemplates.templates.size() +1);
+                    System.out.println(currentlySelectedTemplate);
+                case 77:
+                    GridTemplates.saveCurrentGrid(grid);
+                
+        
+                
+
                 /* case 68: // D
                     playerX++;
                 case 65: // A
@@ -367,13 +385,10 @@ public class Window extends JPanel implements ActionListener {
             } else if (key == 83){
                 playerDirectionY = 1;
             }
-            if (key == 39) {
-                currentSelectedParticle = (currentSelectedParticle +1) % ParticleList.getNumberOfParticleAvailable();
-            }
-            if (key == 37) {
-                currentSelectedParticle = (currentSelectedParticle -1);
-                if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
-            }
+
+
+
+
             
 
             // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
