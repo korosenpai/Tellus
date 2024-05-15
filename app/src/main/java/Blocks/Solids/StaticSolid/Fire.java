@@ -15,8 +15,6 @@ public class Fire extends StaticParticle {
     int lifetime = Math.max(50, ThreadLocalRandom.current().nextInt(fireLifetime));
     int hasLivedFor = 0;
     boolean hasMovedLastFrame = false;
-
-    float changeToSpreadFire = 0.02f;
     
     
     int[][] availableColors = new int[][]{
@@ -64,7 +62,7 @@ public class Fire extends StaticParticle {
                 grid.setParticle(coords[0], coords[1], new Smoke());
             }
             // spread to another particle if it is flammable (it substitutes any particle to fire) (to change method with oil)
-            else if (particle.isFlammable && ThreadLocalRandom.current().nextFloat() <= changeToSpreadFire) {
+            else if (particle.isFlammable && ThreadLocalRandom.current().nextFloat() <= chanceToSpreadFire) {
                 int[] particlePos = particle.getCurrentPosition();
                 grid.setParticle(particlePos[0], particlePos[1], new Fire());
             }
