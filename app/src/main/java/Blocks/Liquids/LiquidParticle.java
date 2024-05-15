@@ -18,7 +18,8 @@ public abstract class LiquidParticle extends Particle {
     private float velocity = 0;
     private boolean isOnGround = false;
     private int density = 0;
-    
+    private int dispersionRate = 2;
+
     public LiquidParticle() {
         super();
 
@@ -76,7 +77,7 @@ public abstract class LiquidParticle extends Particle {
             // move sideways in random direction that is less populated
 
             float random = ThreadLocalRandom.current().nextFloat(); // go to same direction multiple times in a row
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i <=  dispersionRate; i++) {
                 Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
                 if (side[0] != null && (random > 0.5f) && !(side[0] instanceof SolidParticle)) {
                     grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] - 1));

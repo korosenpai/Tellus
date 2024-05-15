@@ -38,6 +38,9 @@ public class Window extends JPanel implements ActionListener {
     int DELAY;
     Timer timer;
 
+    // if not rendering in time for timer wait that first is done rendering and skip frame
+    private boolean currentlyRendering;
+
     private static Grid grid;
     private boolean restart;
 
@@ -48,6 +51,8 @@ public class Window extends JPanel implements ActionListener {
     public ParticleList particleList = new ParticleList();
     public int currentSelectedParticle = 1;
     public Color currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
+
+    public int currentlySelectedTemplate = 0;
 
     public Player player;
     public int playerDirectionX = 0;
@@ -113,10 +118,14 @@ public class Window extends JPanel implements ActionListener {
     // NOTE: MAIN LOOP
     //called every timer clock cycle
     public void actionPerformed(ActionEvent event){
+        if (currentlyRendering) return;
+        currentlyRendering = true;
+
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
         if (restart) start();
         if (getWindowShouldClose()) stop();
+
 
         grid.updateGrid();
 
@@ -133,6 +142,8 @@ public class Window extends JPanel implements ActionListener {
 
         // remove unloaded particles
         System.gc();
+
+        currentlyRendering = false;
     }
 
     //called by repaint in actionPerformed
@@ -231,6 +242,7 @@ public class Window extends JPanel implements ActionListener {
         }
     }
 
+
     private class MyKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
@@ -284,6 +296,26 @@ public class Window extends JPanel implements ActionListener {
                     currentSelectedParticle = 7;
                     break;
 
+                case 119:
+                    currentSelectedParticle = 8;
+                    break;
+
+                case 39:  // rightarrow
+                    currentSelectedParticle = (currentSelectedParticle +1) % ParticleList.getNumberOfParticleAvailable();
+            
+                case 37:
+                    currentSelectedParticle = (currentSelectedParticle -1);
+                    if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
+                    
+                case 32:// space 
+                    currentlySelectedTemplate = (currentlySelectedTemplate +1 ) % (GridTemplates.templates.size() +1);
+                    System.out.println(currentlySelectedTemplate);
+                case 77:
+                    GridTemplates.saveCurrentGrid(grid);
+                
+        
+                
+
                 /* case 68: // D
                     playerX++;
                 case 65: // A
@@ -310,6 +342,11 @@ public class Window extends JPanel implements ActionListener {
             } else if (key == 83){
                 playerDirectionY = 1;
             }
+
+
+
+
+            
 
             // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
             currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);

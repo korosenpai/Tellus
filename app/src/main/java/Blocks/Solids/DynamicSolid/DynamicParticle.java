@@ -6,6 +6,7 @@ import Blocks.Air;
 import Blocks.Particle;
 import Blocks.Liquids.LiquidParticle;
 import Blocks.Solids.SolidParticle;
+import Blocks.Gases.GasParticle;
 
 import Window.Grid;
 
@@ -85,7 +86,10 @@ abstract class DynamicParticle extends SolidParticle {
 
             // if block under is not a solid swap with block under
             if (goDown && !(under[1] instanceof SolidParticle)) {
-                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1]));
+                Particle particleBelow = grid.getAtPosition(coords[0] + 1, coords[1]);
+
+                // if particle below is a gas make it air, else swap blocks
+                grid.setParticle(coords[0], coords[1], particleBelow instanceof GasParticle? new Air() : particleBelow);
                 grid.setParticle(coords[0] + 1, coords[1], this);
                 coords[0]++;
             }

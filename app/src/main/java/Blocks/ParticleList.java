@@ -1,10 +1,8 @@
 package Blocks;
 
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
 
-import Blocks.Gases.Smoke;
+import Blocks.Gases.*;
 import Blocks.Liquids.*;
 import Blocks.Solids.DynamicSolid.*;
 import Blocks.Solids.StaticSolid.*;;
@@ -13,10 +11,20 @@ import Blocks.Solids.StaticSolid.*;;
 
 public class ParticleList {
 
+    public static int numberOfParticleAvailable = 9; // TODO update every time we add a new particle VERY IMPORTANTO
+
+
+    public static int getNumberOfParticleAvailable() {
+        return numberOfParticleAvailable;
+    }
+
     public Particle getNewParticle(int id) {
+        
+
         switch (id) {
             case 0:
                 return new Air();
+
             case 1:
                 return new Sand();
 
@@ -37,6 +45,9 @@ public class ParticleList {
 
             case 7:
                 return new Smoke();
+
+            case 8:
+                return new Fire();
         }
 
         System.out.println("GET NEW PARTICLE PARTICLE WAS NOT INDEED FOUND");
@@ -65,6 +76,9 @@ public class ParticleList {
 
             case 7:
                 return new Color(79 , 78, 78);
+            
+            case 8:
+                return new Color(189, 78, 31);
 
         }
 
