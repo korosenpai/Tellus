@@ -14,6 +14,7 @@ public abstract class Particle {
 
     public float spawnRate = 1f;
 
+    public int[] currentPosition = new int[] {-1, -1};
     public int[] previousPosition = new int[] {-1, -1}; // used to calculate isFreeFalling by seeing if moved last frame
     public boolean isFreeFalling;
 
@@ -31,9 +32,11 @@ public abstract class Particle {
 
     //for fire and related stuff
     public boolean isFlammable; 
-    
-    public int fireResistance = 400; //time until burning element turns into smoke
+    public int fireLifetime = 200; //time until burning element turns into smoke
 
+    // TODO: 
+    // public int fireResistance; // time needed to change from block to fire
+    // public int burningFor; // how many ticks has been byurning, (before catching fire)
 
     public void setColors(int r, int g, int b) {
         this.colorRed = parseColor(r);
@@ -64,8 +67,13 @@ public abstract class Particle {
         return new Random().nextInt(100);
     }
 
+    public int[] getCurrentPosition() {
+        return currentPosition;
+    }
+
     public int[] update(int[] coords, Grid grid) {
         hasMoved = true;
+        currentPosition = coords.clone();
         return coords;
     }
 
