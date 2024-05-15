@@ -4,7 +4,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import Blocks.Air;
 import Blocks.Particle;
-import Blocks.Solids.StaticSolid.Fire;
 import Window.Grid;
 
 public class Smoke extends GasParticle  {

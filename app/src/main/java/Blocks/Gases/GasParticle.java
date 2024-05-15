@@ -7,13 +7,21 @@ import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
 import Window.Grid;
 
-abstract class GasParticle extends Particle {
+public abstract class GasParticle extends Particle {
 
     boolean hasMovedLastFrame;
 
     // for how many frames it will live for
     int lifetime = Math.max(200, ThreadLocalRandom.current().nextInt(300));
     int hasLivedFor = 0; // how many frames particle has been alive for in respect of lifetime
+
+    // behaviours
+    private boolean goUp = true;
+    private boolean goUpLeft = true;
+    private boolean goUpRight = true;
+    private boolean moveLeft = true;
+    private boolean moveRight = true;
+
 
     public GasParticle() {
         super();
@@ -29,6 +37,14 @@ abstract class GasParticle extends Particle {
 
     public void setLifetime(int lifetime) {
         this.lifetime = lifetime;
+    }
+
+    public void setBehaviours(boolean goUp, boolean goUpLeft, boolean goUpRight, boolean moveLeft, boolean moveRight) {
+        this.goUp = goUp;
+        this.goUpLeft = goUpLeft;
+        this.goUpRight = goUpRight;
+        this.moveLeft = moveLeft;
+        this.moveRight = moveRight;
     }
 
     @Override
@@ -66,14 +82,14 @@ abstract class GasParticle extends Particle {
         if (isRising) previousPosition = coords.clone();
 
         // if block upper is not a solid swap with block upper
-        if (isRising && upper[1] != null && !(upper[1] instanceof SolidParticle || upper[1] instanceof GasParticle)) {
+        if (goUp && isRising && upper[1] != null && !(upper[1] instanceof SolidParticle || upper[1] instanceof GasParticle)) {
             grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] - 1, coords[1]));
             grid.setParticle(coords[0] - 1, coords[1], this);
             coords[0]--;
         }
 
         // go to block to left if is not solid
-        else if (upper[0] != null && !(upper[0] instanceof SolidParticle || upper[0] instanceof GasParticle)) {
+        else if (goUpLeft && upper[0] != null && !(upper[0] instanceof SolidParticle || upper[0] instanceof GasParticle)) {
             grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] - 1, coords[1] - 1));
             grid.setParticle(coords[0] - 1, coords[1] - 1, this);
             coords[0]--;
@@ -81,7 +97,7 @@ abstract class GasParticle extends Particle {
         }
 
         // go to block to right if is not solid
-        else if (upper[2] != null && !(upper[2] instanceof SolidParticle || upper[2] instanceof GasParticle)) {
+        else if (goUpRight && upper[2] != null && !(upper[2] instanceof SolidParticle || upper[2] instanceof GasParticle)) {
             grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] - 1, coords[1] + 1));
             grid.setParticle(coords[0] - 1, coords[1] + 1, this);
             coords[0]--;
@@ -90,12 +106,12 @@ abstract class GasParticle extends Particle {
 
         Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
 
-        if (side[0] != null && ThreadLocalRandom.current().nextInt(2) == 0 && !(side[0] instanceof SolidParticle || side[0] instanceof GasParticle)) {
+        if (moveLeft && side[0] != null && ThreadLocalRandom.current().nextInt(2) == 0 && !(side[0] instanceof SolidParticle || side[0] instanceof GasParticle)) {
             grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] - 1));
             grid.setParticle(coords[0], coords[1] - 1, this);
             coords[1]--;
         }
-        else if (side[1] != null && !(side[1] instanceof SolidParticle || side[1] instanceof GasParticle)) {
+        else if (moveRight && side[1] != null && !(side[1] instanceof SolidParticle || side[1] instanceof GasParticle)) {
             grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] + 1));
             grid.setParticle(coords[0], coords[1] + 1, this);
             coords[1]++;

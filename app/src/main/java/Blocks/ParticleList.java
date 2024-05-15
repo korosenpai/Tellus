@@ -1,10 +1,8 @@
 package Blocks;
 
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
 
-import Blocks.Gases.Smoke;
+import Blocks.Gases.*;
 import Blocks.Liquids.*;
 import Blocks.Solids.DynamicSolid.*;
 import Blocks.Solids.StaticSolid.*;;
