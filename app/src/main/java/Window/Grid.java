@@ -207,12 +207,6 @@ public class Grid {
     }
     */
 
-    
-
-
-
-
-
     public void print() {
         for (Particle[] row : grid) {
             System.out.println(Arrays.toString(row));
