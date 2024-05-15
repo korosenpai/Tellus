@@ -33,6 +33,7 @@ public abstract class Particle {
     //for fire and related stuff
     public boolean isFlammable; 
     public int fireLifetime = 200; //time until burning element turns into smoke
+    public float chanceToSpreadFire = 0.02f;
 
     // TODO: 
     // public int fireResistance; // time needed to change from block to fire
