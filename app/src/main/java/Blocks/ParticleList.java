@@ -13,10 +13,20 @@ import Blocks.Solids.StaticSolid.*;;
 
 public class ParticleList {
 
+    public static int numberOfParticleAvailable = 9; // TODO update every time we add a new particle VERY IMPORTANTO
+
+
+    public static int getNumberOfParticleAvailable() {
+        return numberOfParticleAvailable;
+    }
+
     public Particle getNewParticle(int id) {
+        
+
         switch (id) {
             case 0:
                 return new Air();
+
             case 1:
                 return new Sand();
 

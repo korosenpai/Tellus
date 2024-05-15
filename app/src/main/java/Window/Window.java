@@ -270,6 +270,8 @@ public class Window extends JPanel implements ActionListener {
             }
         }
     }
+
+    
     
 
 
@@ -356,6 +358,11 @@ public class Window extends JPanel implements ActionListener {
             } else if (key == 83){
                 playerDirectionY = 1;
             }
+            if (key == 39) {
+                currentSelectedParticle = (currentSelectedParticle +1) % ParticleList.getNumberOfParticleAvailable();
+                System.out.println(currentSelectedParticle);
+            }
+            
 
             // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
             currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
