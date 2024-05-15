@@ -171,6 +171,18 @@ public class Grid {
         return lowerNeighbors;
     }
 
+    public Particle getSingleLowerNeighbor(int j, int i) {
+        /* return the single lower cell of grid[i][j] 
+         * if neighbor is out of bound returns null
+        */
+        Particle lower = new Particle() {};
+
+        if (j < rows - 1) { //check if element is not in the last row
+            lower = grid[j + 1][i]; //bottom
+            }
+        return lower;
+    }
+
     public Particle[] getUpperNeighbors(int j, int i) {
         /* return the three lower cells of grid[i][j] 
          * if neighbor is out of bound returns null
