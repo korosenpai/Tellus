@@ -369,7 +369,10 @@ public class Window extends JPanel implements ActionListener {
             }
             if (key == 39) {
                 currentSelectedParticle = (currentSelectedParticle +1) % ParticleList.getNumberOfParticleAvailable();
-                System.out.println(currentSelectedParticle);
+            }
+            if (key == 37) {
+                currentSelectedParticle = (currentSelectedParticle -1);
+                if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
             }
             
 
