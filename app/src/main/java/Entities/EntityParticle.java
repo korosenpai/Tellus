@@ -2,7 +2,7 @@ package Entities;
 
 import Blocks.Air;
 import Blocks.Particle;
-import Window.Grid;
+import Grid.Grid;
 
 public class EntityParticle extends Particle{
 

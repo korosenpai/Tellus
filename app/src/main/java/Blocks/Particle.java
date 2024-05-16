@@ -1,8 +1,8 @@
 package Blocks;
 
-import Window.Grid;
-
 import java.util.Random;
+
+import Grid.Grid;
 
 public abstract class Particle {
     

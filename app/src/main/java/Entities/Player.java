@@ -3,7 +3,7 @@ package Entities;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import Window.Grid;
+import Grid.Grid;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

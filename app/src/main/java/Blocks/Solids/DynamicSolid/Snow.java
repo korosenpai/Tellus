@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import Blocks.Particle;
 import Blocks.Liquids.Water;
+import Grid.Grid;
 import Blocks.Liquids.LiquidParticle;
-import Window.Grid;
 
 
 public class Snow extends DynamicParticle {

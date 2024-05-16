@@ -6,7 +6,7 @@ import Blocks.Air;
 import Blocks.Particle;
 import Blocks.Liquids.LiquidParticle;
 import Blocks.Solids.SolidParticle;
-import Window.Grid;
+import Grid.Grid;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

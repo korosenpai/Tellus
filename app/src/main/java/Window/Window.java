@@ -21,6 +21,8 @@ import Blocks.ParticleList;
 import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
+import Grid.Grid;
+import Grid.GridTemplates;
 
 
 public class Window extends JPanel implements ActionListener {

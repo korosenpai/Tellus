@@ -3,7 +3,7 @@ package Blocks.Solids.DynamicSolid;
 
 import Blocks.Air;
 import Blocks.Particle;
-import Window.Grid;
+import Grid.Grid;
 
 public class Gravel extends DynamicParticle {
     boolean movedAfterLanding = false;

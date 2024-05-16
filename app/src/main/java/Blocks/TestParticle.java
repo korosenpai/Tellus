@@ -1,6 +1,6 @@
 package Blocks;
 
-import Window.Grid;
+import Grid.Grid;
 
 // NOTE: use if need to render a particle with a specific color
 public class TestParticle extends Particle {

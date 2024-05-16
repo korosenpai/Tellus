@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.Liquids.LiquidParticle;
-import Window.Grid;
+import Grid.Grid;
 
 public class Fire extends GasParticle {
     

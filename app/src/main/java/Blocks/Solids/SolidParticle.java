@@ -1,7 +1,7 @@
 package Blocks.Solids;
 
 import Blocks.Particle;
-import Window.Grid;
+import Grid.Grid;
 
 public abstract class SolidParticle extends Particle {
 

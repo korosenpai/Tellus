@@ -1,6 +1,6 @@
 package Blocks;
 
-import Window.Grid;
+import Grid.Grid;
 
 public class Air extends Particle {
 

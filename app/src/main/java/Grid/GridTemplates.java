@@ -1,4 +1,4 @@
-package Window;
+package Grid;
 
 
 import java.io.Serializable;

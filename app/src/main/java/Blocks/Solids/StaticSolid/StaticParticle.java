@@ -2,7 +2,7 @@ package Blocks.Solids.StaticSolid;
 
 import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
-import Window.Grid;
+import Grid.Grid;
 
 
 
