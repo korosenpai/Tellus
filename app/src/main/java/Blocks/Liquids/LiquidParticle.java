@@ -74,17 +74,18 @@ public abstract class LiquidParticle extends Particle {
             }
 
 
-            // move sideways in random direction that is less populated
+            // move sideways if there is no solid or liquid (will have to add a way to mix liquid but for now its good)
+            // if liquid doesnt move it doesnt wake the chunk unnecessarily
 
             float random = ThreadLocalRandom.current().nextFloat(); // go to same direction multiple times in a row
             for (int i = 0; i <=  dispersionRate; i++) {
                 Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
-                if (side[0] != null && (random > 0.5f) && !(side[0] instanceof SolidParticle)) {
+                if (side[0] != null && (random > 0.5f) && !(side[0] instanceof SolidParticle || side[0] instanceof LiquidParticle)) {
                     grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] - 1));
                     grid.setParticle(coords[0], coords[1] - 1, this);
                     coords[1]--;
                 }
-                else if (side[1] != null && !(side[1] instanceof SolidParticle) ) {
+                else if (side[1] != null && !(side[1] instanceof SolidParticle || side[1] instanceof LiquidParticle) ) {
                     grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] + 1));
                     grid.setParticle(coords[0], coords[1] + 1, this);
                     coords[1]++;
