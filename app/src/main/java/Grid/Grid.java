@@ -18,6 +18,8 @@ public class Grid {
     private final int rows;
     private final int columns;
     public Particle[][] grid = {{}};
+
+    public Chunk[][] gridChunk;
     
 
     public Grid(int screenWidth, int screenHeight, int tileDimension){
@@ -87,8 +89,8 @@ public class Grid {
         }
 
         // second scan, top to bottom
-        for (int j = 0; j < rows - 1; j++){
-            for (int i = 0; i < columns - 1; i++){
+        for (int j = 0; j < rows; j++){
+            for (int i = 0; i < columns; i++){
                 if (grid[j][i] instanceof Air || grid[j][i].scanDirection != 2 || grid[j][i].hasMoved) continue;
 
                 grid[j][i].update(new int[]{j, i}, this);
