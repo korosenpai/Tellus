@@ -68,17 +68,20 @@ public class Entity extends JPanel{
 
         Particle lowerN = new Particle() {};
 
-        for(int i = (getDimensionX()-1)*getDimensionY(); i < particleList.size(); i++){
+        for(int i = (getDimensionY()-1)*getDimensionX(); i < particleList.size(); i++){
             
             int[] coords = fromPosToCoords(i);
             
             lowerN = grid.getSingleLowerNeighbor(coords[1], coords[0]);
+            //System.out.println(lowerN);
+            //System.out.println(lowerN.isFreeFalling);
             
             if ((lowerN == null) || (lowerN instanceof SolidParticle && lowerN.isFreeFalling == false)) {
                 
                 for (int j = 0; j < particleList.size(); j++){
                     particleList.get(j).isFreeFalling = false;
                     particleList.get(j).resetVelocityY();
+                    particleList.get(j).update(coords, grid, lowerN, directionX, directionY);
                 }
 
                 return;
@@ -88,6 +91,8 @@ public class Entity extends JPanel{
         //int[] coords = {moveX, moveY};
         for (int i = 0; i < particleList.size(); i++) {
             int[] coords = fromPosToCoords(i);
+            particleList.get(i).isFreeFalling = true;
+            //System.out.println(particleList.get(i).isFreeFalling + " Porcod");
             particleList.get(i).update(coords, grid, lowerN, directionX, directionY);
         }
         return;
@@ -97,6 +102,7 @@ public class Entity extends JPanel{
         //int x = moveX/tileDimension + (index % entityDimensionX);
         //int y = moveY/tileDimension + (index % entityDimensionX);
         int x = 0, y = 0;
+        index++;
 
         for (int i = 0; i < entityDimensionY; i++) {
             for (int j = 0; j < entityDimensionX; j++){
