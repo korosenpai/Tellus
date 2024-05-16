@@ -1,8 +1,6 @@
 package Window;
 //gradlew build && gradlew run  I'm lazy XD
 
-import java.util.ArrayList;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -11,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,11 +18,9 @@ import javax.swing.Timer;
 
 import Blocks.Particle;
 import Blocks.ParticleList;
-import Blocks.Solids.SolidParticle;
-import Blocks.Solids.StaticSolid.Wood;
-import Entities.Player;
 import Entities.Entity;
 import Entities.EntityParticle;
+import Entities.Player;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -100,7 +97,6 @@ public class Window extends JPanel implements ActionListener {
         grid = new Grid(screenWidth, screenHeight, tileDimension);
         entityList = new ArrayList<>();
         player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
-        //System.out.println(player.getParticleList());
         entityList.add(player);
 
     }
@@ -133,7 +129,7 @@ public class Window extends JPanel implements ActionListener {
             setOnClick(); // set particle on the position of the mouse, when clicked
         };
 
-        setPlayer();
+        setEntities();
 
         repaint(); // calls paintComponent
     
@@ -165,6 +161,47 @@ public class Window extends JPanel implements ActionListener {
 
         grid.setCursor(x, y, mouse.getRadius(), currentSelectedParticle);
     }
+
+ /*    public void setMouseOnClick(){
+        List<int[]> positions = drawMousePoints(g)(null); // Pass null to avoid drawing
+            for (int[] position : positions) {
+                setOnClick(position[0], position[1]);
+            }
+        }
+    } */
+/*     public void setOnClick() {
+        int x = mouse.getX();
+        int y = mouse.getY();
+
+        int radius = mouse.getRadius() * tileDimension;
+        int circleCentreX = (mouse.getX() / tileDimension) * tileDimension;
+        int circleCentreY = (mouse.getY() / tileDimension) * tileDimension;
+        
+        int c0 = (((circleCentreX + radius) / tileDimension) * tileDimension); //c0 stands for 0 degrees on the circumference
+        int c180 = (((circleCentreX - radius) / tileDimension) * tileDimension); //c180 stands for 180 degrees on the circumference
+        int c90 = (((circleCentreY + radius) / tileDimension) * tileDimension); //c90 stands for 90 degrees on the circumference
+        int c270 = (((circleCentreY - radius) / tileDimension) * tileDimension); //c270 stands for 270 degrees on the circumference 
+
+        if ( 0 > x || x > screenWidth - 1 || 0 > y || y > screenHeight - 1 ) return; // check if out of bounds
+            for (int i = c180; i <= c0; i += tileDimension) {
+                for (int j = c270; j <= c90; j += tileDimension) {
+                    // Your existing condition to check if the pixel is within the circle
+                    if (radius / tileDimension == 0){
+                        grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
+                    } else {
+                        if (Math.sqrt((i - circleCentreX) * (i - circleCentreX) + (j - circleCentreY) * (j - circleCentreY)) <= radius) {
+                            grid.setParticle(i, j, new Sand());
+                        }
+                    }
+                }
+            }
+            //grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
+       
+    } */
+
+    
+
+
 
     // TODO: change method to go j, i (if needed tbh idk if it will give problems)
     public void drawGrid(Graphics2D g){        
@@ -232,15 +269,21 @@ public class Window extends JPanel implements ActionListener {
 
     // NOTE: doesn't work, so far. 
     // It should set in the grid the particles of all the Entities
-    public void setPlayer() {
-        ArrayList<Particle> playerParticles = player.getParticleList();
-        //System.out.println(playerParticles);
-        for(int p = 0; p < playerParticles.size(); p++){
-            int[] coords = player.fromPosToCoords(p);
-            //System.out.println(coords[0] + " " + coords[1]);
-            grid.setParticle(coords[1], coords[0], playerParticles.get(p));
+    public void setEntities() {
+    
+        for(int e = 0; e < entityList.size(); e++){
+            Entity tempEntity = entityList.get(e);
+            ArrayList tempParticleList = tempEntity.getParticleList();
+            for(int p = 0; p < tempParticleList.size(); p++){
+                int[] coords = tempEntity.fromPosToCoords(p);
+                EntityParticle tempParticle = (EntityParticle)tempParticleList.get(p);
+                grid.setParticle(coords[1], coords[0], tempParticle);
+            }
         }
     }
+
+    
+    
 
 
     private class MyKeyAdapter extends KeyAdapter {
