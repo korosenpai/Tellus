@@ -2,8 +2,6 @@ package Entities;
 
 import Blocks.Air;
 import Blocks.Particle;
-import Blocks.Liquids.LiquidParticle;
-import Blocks.Solids.SolidParticle;
 import Window.Grid;
 
 public class EntityParticle extends Particle{
@@ -34,16 +32,24 @@ public class EntityParticle extends Particle{
     
     public int[] update(int[] coords, Grid grid, Particle lowerN, int directionX, int directionY) {
         super.update(coords, grid);
+        
+        previousPosition = coords.clone();
+        if (isFreeFalling) {
+                grid.setParticle(previousPosition[0], previousPosition[1], new Air());
+        }
+        previousPosition = coords.clone();
 
-        updateVelocityY(directionY);
+      /*   updateVelocityY(directionY);
         int currentFallingVel = velocityY;
 
         //System.out.println(coords[0] + " " + coords[1]);
+        
 
         for (int n = 0; n <= velocityY; n++) {
 
+            
 
-            // if has air beneath or moved since last frame
+            /* // if has air beneath or moved since last frame
             isFreeFalling = lowerN instanceof Air || lowerN.isFreeFalling || !(coords[0] == previousPosition[0] && coords[1] == previousPosition[1]);
             if (isFreeFalling) previousPosition = coords.clone();
 
@@ -68,8 +74,8 @@ public class EntityParticle extends Particle{
                 previousPosition = coords.clone();
                 velocityY = currentFallingVel;
             };
-
-        }
+ 
+        } */
 
         return coords;
 

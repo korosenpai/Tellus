@@ -1,13 +1,10 @@
 package Blocks.Solids.DynamicSolid;
 
-import java.util.Arrays;
-
 import Blocks.Air;
-import Blocks.Particle;
-import Blocks.Liquids.LiquidParticle;
-import Blocks.Solids.SolidParticle;
 import Blocks.Gases.GasParticle;
-
+import Blocks.Liquids.LiquidParticle;
+import Blocks.Particle;
+import Blocks.Solids.SolidParticle;
 import Window.Grid;
 
 

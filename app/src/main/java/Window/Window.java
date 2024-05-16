@@ -277,7 +277,7 @@ public class Window extends JPanel implements ActionListener {
             for(int p = 0; p < tempParticleList.size(); p++){
                 int[] coords = tempEntity.fromPosToCoords(p);
                 EntityParticle tempParticle = (EntityParticle)tempParticleList.get(p);
-                grid.setParticle(coords[1], coords[0], tempParticle);
+                grid.setParticle(coords[0], coords[1], tempParticle);
             }
         }
     }
