@@ -13,29 +13,28 @@ public class Grid {
 
     final int screenWidth;
     final int screenHeight;
+    final int chunkSize;
     final int tileDimension;
 
     private final int rows;
     private final int columns;
     public Particle[][] grid = {{}};
 
+    private ThreadUpdates threadUpdates;
     public Chunk[][] gridChunk;
     
 
-    public Grid(int screenWidth, int screenHeight, int tileDimension){
+    public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.chunkSize = chunkSize;
         this.rows = screenHeight / tileDimension;
         this.columns = screenWidth / tileDimension;
         this.tileDimension = tileDimension;
         grid = new Particle[this.rows][this.columns];
         generateEmptyGrid();
-    }
 
-    public static void main(String[] args) {
-        Grid grid = new Grid(800, 800, 20);
-        System.out.println(Arrays.toString(grid.grid[0]));
-        grid.print();
+        threadUpdates = new ThreadUpdates(this.columns);
     }
 
     public int getRows() {
@@ -96,6 +95,8 @@ public class Grid {
                 grid[j][i].update(new int[]{j, i}, this);
             }
         }
+
+        // threadUpdates.update(this);
     }
 
     // after painting set all pixels who have moved
