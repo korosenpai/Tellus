@@ -9,9 +9,11 @@ public class Launcher {
     static private Window window;
 
     // NOTE: leave them different to debug
-    static final int WIDTH = 1000;
-    static final int HEIGHT = 800;
     static final int TILE_SIZE = 5;
+    static final int CHUNK_SIZE = 32;
+    static final int WIDTH = CHUNK_SIZE * TILE_SIZE * 8; // 1.280
+    static final int HEIGHT = CHUNK_SIZE * TILE_SIZE * 6; // 960
+    static final int SIDEBAR_WIDTH = 0; //(int)(WIDTH * .3);
 
     static int FPS = 30;
 
@@ -21,7 +23,7 @@ public class Launcher {
         screen.setResizable(false);
         screen.setTitle("Tellus");
 
-        window = new Window(WIDTH, HEIGHT, TILE_SIZE, FPS);
+        window = new Window(WIDTH, HEIGHT, CHUNK_SIZE, SIDEBAR_WIDTH, TILE_SIZE, FPS);
         screen.add(window);
         screen.pack(); // resize window to fit preferred size (specified in gamepanel)
 

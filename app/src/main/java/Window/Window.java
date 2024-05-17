@@ -29,6 +29,8 @@ public class Window extends JPanel implements ActionListener {
     
     final int screenWidth;
     final int screenHeight;
+    final int chunkSize;
+    final int sidebarWidth;
     final int tileDimension;
     final int rows;
     final int columns;
@@ -59,9 +61,11 @@ public class Window extends JPanel implements ActionListener {
 
     public ArrayList<Entity> entityList;
 
-    public Window(int screenWidth, int screenHeight, int tileDimension, int fps) {
+    public Window(int screenWidth, int screenHeight,int chunkSize, int sidebarWidth, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.chunkSize = chunkSize;
+        this.sidebarWidth = sidebarWidth;
         this.tileDimension = tileDimension;
         this.rows = screenHeight / tileDimension;
         this.columns = screenWidth / tileDimension;
@@ -70,7 +74,7 @@ public class Window extends JPanel implements ActionListener {
         this.DELAY = 1000 / FPS;
 
 
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        this.setPreferredSize(new Dimension(screenWidth + sidebarWidth, screenHeight));
         this.setBackground(Color.black); //dunno if its actually even useful since we color also the empty cell with a black square
         this.setDoubleBuffered(true); //improves performance
 
@@ -96,7 +100,7 @@ public class Window extends JPanel implements ActionListener {
             timer.start();
         }
 
-        grid = new Grid(screenWidth, screenHeight, tileDimension);
+        grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension);
         entityList = new ArrayList<>();
         player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
         entityList.add(player);
