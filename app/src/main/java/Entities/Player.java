@@ -27,11 +27,11 @@ public class Player extends Entity{
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
 
-        setMoveX(screenWidth/2);
-        setMoveY(screenHeight/2);
+        setMoveX(screenWidth/tileDimension/2);
+        setMoveY(screenHeight/tileDimension/2);
         //setDimension(3, 5);
-        setMaxSpeed(10);
-        setAccelerationX(1);
+        setMaxSpeed(3);
+        setAccelerationX(0.5f);
         setAccelerationY(1.3f);
         setColor(111, 0, 161);
         
@@ -41,17 +41,17 @@ public class Player extends Entity{
         super.paintComponent(p);
 
         p.setColor(color);
-        p.fillRect((int)moveX, (int)moveY, getDimensionX() * tileDimension, getDimensionY() * tileDimension);
+        p.fillRect((int)moveX*tileDimension, (int)moveY*tileDimension, getDimensionX() * tileDimension, getDimensionY() * tileDimension);
     }
 
     public void updatePosition(Grid grid, int directionX, int directionY) {
-        updateVelocityX(directionX);
-        updateVelocityY(directionY);
+        //updateVelocityX(directionX);
+        //updateVelocityY(directionY);
 
-        super.update(grid, directionX, directionY);
+        //super.update(grid, directionX, directionY);
 
-        setMoveX(moveX + getVelocityX());
-        setMoveY(moveY + getVelocityY());
+        //setMoveX(moveX + getVelocityX());
+        //setMoveY(moveY + getVelocityY());
 
     }
 

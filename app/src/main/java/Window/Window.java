@@ -135,7 +135,7 @@ public class Window extends JPanel implements ActionListener {
             setOnClick(); // set particle on the position of the mouse, when clicked
         };
 
-        setEntities();
+        //setEntities();
 
         repaint(); // calls paintComponent
     
@@ -273,7 +273,7 @@ public class Window extends JPanel implements ActionListener {
         player.paintComponent(p);
     }
 
-    // NOTE: doesn't work, so far. 
+
     // It should set in the grid the particles of all the Entities
     public void setEntities() {
     
@@ -361,9 +361,6 @@ public class Window extends JPanel implements ActionListener {
                     System.out.println(currentlySelectedTemplate);
                 case 77:
                     GridTemplates.saveCurrentGrid(grid);
-                
-        
-                
 
                 /* case 68: // D
                     playerX++;
@@ -381,14 +378,14 @@ public class Window extends JPanel implements ActionListener {
 
             // checks the motion key pressed
             // TODO: multiple keys pressed at the same time
-            if (key == 68){
+            if (key == 68){ // D
                 playerDirectionX = 1;
-            } else if (key == 65){
+            } else if (key == 65){ // A
                 playerDirectionX = -1;
             }
-            if (key == 87){
+            if (key == 87){ // W
                 playerDirectionY = -1;
-            } else if (key == 83){
+            } else if (key == 83){ // S
                 playerDirectionY = 1;
             }
 
