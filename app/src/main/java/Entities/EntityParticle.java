@@ -10,11 +10,6 @@ public class EntityParticle extends Particle{
 
     //int particleX;
     //int particleY;
-
-    int velocityX;
-    int velocityY;
-    float accelerationX = 0;
-    float accelerationY = 0;
     
     int maxSpeed = 0;
 
@@ -30,14 +25,20 @@ public class EntityParticle extends Particle{
     }
 
     
-    public int[] update(int[] coords, Grid grid, Particle lowerN, int directionX, int directionY) {
+    public int[] update(int[] coords, Grid grid, Particle lowerN, int velocityX, int velocityY) {
         super.update(coords, grid);
         
         previousPosition = coords.clone();
         if (isFreeFalling) {
-                grid.setParticle(previousPosition[0], previousPosition[1], new Air());
+            coords[0] = coords[0] + velocityY;
+            grid.setParticle(previousPosition[0], previousPosition[1], new Air());
         }
-        previousPosition = coords.clone();
+
+        coords[1] = coords[1] + velocityX;
+        //System.out.println(velocityX);
+        currentPosition = coords.clone();
+
+
 
       /*   updateVelocityY(directionY);
         int currentFallingVel = velocityY;
@@ -89,30 +90,6 @@ public class EntityParticle extends Particle{
 
     public void setMaxSpeed(int speed) {
         maxSpeed = speed;
-    }
-
-    public void setAccelerationX(float acceleration) {
-        accelerationX = acceleration;
-    }
-
-    public void setAccelerationY(float acceleration) {
-        accelerationY = acceleration;
-    }
-
-    public void updateVelocityX(int direction) {
-        velocityX = direction*Math.min(Math.round(Math.abs(velocityX) + accelerationX), maxSpeed);
-    }
-
-    public void updateVelocityY(int direction) {
-        velocityY = direction*Math.min(Math.round(Math.abs(velocityY) + accelerationY), maxSpeed);
-    }
-
-    public void resetVelocityX() {
-        velocityX = 0;
-    }
-
-    public void resetVelocityY() {
-        velocityY = 0;
     }
 
     public void setColor(int r, int g, int b) {
