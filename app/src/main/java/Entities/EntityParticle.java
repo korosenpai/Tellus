@@ -31,9 +31,12 @@ public class EntityParticle extends Particle{
         previousPosition = coords.clone();
         if (isFreeFalling) {
             coords[0] = coords[0] + velocityY;
-            grid.setParticle(previousPosition[0], previousPosition[1], new Air());
+            
+        } else if (!isFreeFalling && velocityY < 0){
+            //coords[0] = coords[0] + velocityY;
         }
 
+        grid.setParticle(previousPosition[0], previousPosition[1], new Air());
         coords[1] = coords[1] + velocityX;
         //System.out.println(velocityX);
         currentPosition = coords.clone();

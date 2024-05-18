@@ -155,7 +155,7 @@ public class Window extends JPanel implements ActionListener {
 
         drawGrid(g2);
         drawMouse(g2);
-        drawPlayer(g2);
+        //drawPlayer(g2);
 
         g2.dispose(); // frees up memory
     }

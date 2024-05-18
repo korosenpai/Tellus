@@ -30,7 +30,7 @@ public class Player extends Entity{
         setMoveX(screenWidth/tileDimension/2);
         setMoveY(screenHeight/tileDimension/2);
         //setDimension(3, 5);
-        setMaxSpeed(3);
+        setMaxSpeed(4);
         setAccelerationX(0.5f);
         setAccelerationY(1.3f);
         setColor(111, 0, 161);
@@ -48,10 +48,12 @@ public class Player extends Entity{
         //updateVelocityX(directionX);
         //updateVelocityY(directionY);
 
-        //super.update(grid, directionX, directionY);
+        super.update(grid, directionX, directionY);
 
         //setMoveX(moveX + getVelocityX());
         //setMoveY(moveY + getVelocityY());
+        //System.out.println("X coords: " + moveX);
+        //System.out.println("Y coords: " + moveY);
 
     }
 
@@ -59,7 +61,7 @@ public class Player extends Entity{
         return getColor();
     }
 
-    public ArrayList getParticleList(){
+    public ArrayList<EntityParticle> getParticleList(){
         return super.getParticleList();
     }
 

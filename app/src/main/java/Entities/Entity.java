@@ -52,7 +52,7 @@ public class Entity extends JPanel{
         //System.out.println(particleList);
     }
 
-    public ArrayList getParticleList() {
+    public ArrayList<EntityParticle> getParticleList() {
         return particleList;
     }
 
@@ -68,47 +68,49 @@ public class Entity extends JPanel{
         boolean shouldFreeFall = true;
         int[] coords;
         ArrayList <int[]> totalCoords = new ArrayList<>();
+        int currentVelY = velocityY;
 
-        for(int i = (getDimensionY()-1)*getDimensionX(); i < particleList.size(); i++){
-            
-            coords = fromPosToCoords(i);
-            
-            lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1]);
-            System.out.println(lowerN);
+        // loop that boundes the movement of the player
+        for (int v = 0; v <= currentVelY; v++) {
 
-            shouldFreeFall = (shouldFreeFall && !(lowerN == null) && !(lowerN instanceof SolidParticle && lowerN.isFreeFalling == false));
-            
-            
-        }
+            totalCoords = new ArrayList<>();
 
-        updateVelocityX(directionX);
-        
-        if (!shouldFreeFall) {
-                
-            resetVelocityY();
-            for (int j = 0; j < particleList.size(); j++){
-                coords = fromPosToCoords(j);
-                particleList.get(j).isFreeFalling = false;
-                totalCoords.add(particleList.get(j).update(coords, grid, lowerN, velocityX, velocityY));
+            for(int i = (getDimensionY()-1)*getDimensionX(); i < particleList.size(); i++) {
+
+                coords = fromPosToCoords(i);
+                lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], v);
+                System.out.println(lowerN);
+                shouldFreeFall = (shouldFreeFall && !(lowerN == null) && !(lowerN instanceof SolidParticle && lowerN.isFreeFalling == false));
+
             }
 
-            return;
+            updateVelocityX(directionX);
+            if (!shouldFreeFall) {
+                
+                resetVelocityY();
+                for (int j = 0; j < particleList.size(); j++){
+                    coords = fromPosToCoords(j);
+                    particleList.get(j).isFreeFalling = false;
+                    totalCoords.add(particleList.get(j).update(coords, grid, lowerN, velocityX, v));
+                }
+    
+            } else {
+
+                for (int i = 0; i < particleList.size(); i++) {
+                    coords = fromPosToCoords(i);
+                    particleList.get(i).isFreeFalling = true;
+                    //System.out.println("Free Falling: " + particleList.get(i).isFreeFalling);
+                    totalCoords.add(particleList.get(i).update(coords, grid, lowerN, velocityX, v));
+                }
+            }
         }
 
-        //int[] coords = {moveX, moveY};
-        
         updateVelocityY(1);
-        for (int i = 0; i < particleList.size(); i++) {
-            coords = fromPosToCoords(i);
-            particleList.get(i).isFreeFalling = true;
-            //System.out.println(particleList.get(i).isFreeFalling + " Porcod");
-            totalCoords.add(particleList.get(i).update(coords, grid, lowerN, velocityX, velocityY));
-        }
-        
         setMoveX(totalCoords.get(0)[1]);
         setMoveY(totalCoords.get(0)[0]);
+        //System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
         for (int i = 0; i < totalCoords.size(); i++) {
-            //System.out.println(totalCoords.get(i)[0] + " " + totalCoords.get(i)[1]);
+            //System.out.println("X: " + totalCoords.get(i)[1] + " Y: " + totalCoords.get(i)[0]);
             grid.setParticle(totalCoords.get(i)[0], totalCoords.get(i)[1], particleList.get(i));
         }
 

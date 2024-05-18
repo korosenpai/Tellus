@@ -174,13 +174,13 @@ public class Grid {
         return lowerNeighbors;
     }
 
-    public Particle getSingleLowerNeighbor(int j, int i) {
+    public Particle getSingleLowerNeighbor(int j, int i, int offset) {
         /* return the single lower cell of grid[i][j] 
          * if neighbor is out of bound returns null
         */
 
-        if (j < rows - 1) { //check if element is not in the last row
-            return grid[j + 1][i]; //bottom
+        if (j < rows - offset - 1) { //check if element is not in the last row
+            return grid[j + 1 + offset][i]; //bottom
             }
         return null;
     }
