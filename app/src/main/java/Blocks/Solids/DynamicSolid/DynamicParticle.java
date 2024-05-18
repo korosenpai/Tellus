@@ -5,6 +5,7 @@ import Blocks.Gases.GasParticle;
 import Blocks.Liquids.LiquidParticle;
 import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
+import Entities.EntityParticle;
 import Grid.Grid;
 
 
@@ -81,8 +82,8 @@ abstract class DynamicParticle extends SolidParticle {
                 resetVelocity(); 
             }
 
-            // if block under is not a solid swap with block under
-            if (goDown && !(under[1] instanceof SolidParticle)) {
+            // if block under is not a solid nor an entity swap with block under
+            if (goDown && !(under[1] instanceof SolidParticle || under[1] instanceof EntityParticle)) {
                 Particle particleBelow = grid.getAtPosition(coords[0] + 1, coords[1]);
 
                 // if particle below is a gas make it air, else swap blocks
@@ -91,16 +92,16 @@ abstract class DynamicParticle extends SolidParticle {
                 coords[0]++;
             }
 
-            // go to block to left if is not solid
-            else if (goDownLeft && under[0] != null && !(under[0] instanceof SolidParticle)) {
+            // go to block to left if is not solid nor entity
+            else if (goDownLeft && under[0] != null && !(under[0] instanceof SolidParticle || under[1] instanceof EntityParticle)) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] - 1));
                 grid.setParticle(coords[0] + 1, coords[1] - 1, this);
                 coords[0]++;
                 coords[1]--;
             }
 
-            // go to block to right if is not solid
-            else if (goDownRight && under[2] != null && !(under[2] instanceof SolidParticle)) {
+            // go to block to right if is not solid nor entity
+            else if (goDownRight && under[2] != null && !(under[2] instanceof SolidParticle || under[1] instanceof EntityParticle)) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] + 1));
                 grid.setParticle(coords[0] + 1, coords[1] + 1, this);
                 coords[0]++;
