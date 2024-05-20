@@ -36,11 +36,13 @@ public class EntityParticle extends Particle{
             //coords[0] = coords[0] + velocityY;
         }
 
-        grid.setParticle(previousPosition[0], previousPosition[1], new Air());
+        if (previousPosition != currentPosition){
+            grid.setParticle(previousPosition[0], previousPosition[1], new Air());
+        }   
         coords[1] = coords[1] + velocityX;
         //System.out.println(velocityX);
         currentPosition = coords.clone();
-
+        
 
 
       /*   updateVelocityY(directionY);

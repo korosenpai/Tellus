@@ -65,11 +65,17 @@ public class Entity extends JPanel{
     public void update(Grid grid, int directionX, int directionY) {
 
         Particle lowerN = new Particle() {};
+        Particle leftN = new Particle() {};
+        Particle rightN = new Particle() {};
         boolean shouldFreeFall = true;
+        boolean  canGoLeft = true;
+        boolean canGoRight = true;
         int[] coords;
         ArrayList <int[]> totalCoords = new ArrayList<>();
         int currentVelY = velocityY;
+        int v = 0;
 
+        /*
         // loop that boundes the movement of the player
         for (int v = 0; v <= currentVelY; v++) {
 
@@ -78,13 +84,29 @@ public class Entity extends JPanel{
             for(int i = (getDimensionY()-1)*getDimensionX(); i < particleList.size(); i++) {
 
                 coords = fromPosToCoords(i);
-                lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], v);
-                System.out.println(lowerN);
+                //lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], v); 
+                lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], v); //the -1 works don't know why hopefully it doesn't cuase issues
+                
+                //System.out.println(lowerN);
                 shouldFreeFall = (shouldFreeFall && !(lowerN == null) && !(lowerN instanceof SolidParticle && lowerN.isFreeFalling == false));
 
             }
+            /* if (!shouldFreeFall) break;
+    
 
+            for(int i = 0; i < particleList.size()-entityDimensionX; i += entityDimensionX){
+                coords = fromPosToCoords(i);
+                leftN = grid.getSideNeighbors(coords[0], coords[1])[0];
+
+                canGoLeft = (canGoLeft && !(leftN == null) && !(leftN instanceof  SolidParticle));
+
+            } */
+
+           /*  if (canGoLeft) {
+                updateVelocityX(directionX);
+            } 
             updateVelocityX(directionX);
+
             if (!shouldFreeFall) {
                 
                 resetVelocityY();
@@ -103,20 +125,90 @@ public class Entity extends JPanel{
                     totalCoords.add(particleList.get(i).update(coords, grid, lowerN, velocityX, v));
                 }
             }
-        }
+        }   
 
         updateVelocityY(1);
         setMoveX(totalCoords.get(0)[1]);
         setMoveY(totalCoords.get(0)[0]);
-        //System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
+        System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
+        System.out.println("Grid rows: " + grid.getRows());
         for (int i = 0; i < totalCoords.size(); i++) {
             //System.out.println("X: " + totalCoords.get(i)[1] + " Y: " + totalCoords.get(i)[0]);
-            grid.setParticle(totalCoords.get(i)[0], totalCoords.get(i)[1], particleList.get(i));
+            grid.setParticle(totalCoords.get(i)[0],totalCoords.get(i)[1], particleList.get(i));
+        }
+
+        return;
+    
+
+    }
+
+*/
+
+        for (; v < currentVelY; v++) {
+
+            totalCoords = new ArrayList<>();
+
+            for(int i = (getDimensionY()-1)*getDimensionX(); i < particleList.size(); i++) {
+
+                coords = fromPosToCoords(i);
+                lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], v); 
+                // grid.getSingleLowerNeighbor(coords[0]-1, coords[1], v); //the -1 works don't know why hopefully it doesn't cuase issues
+                
+                System.out.println(lowerN);
+                System.out.println("Prima: "+shouldFreeFall);
+                shouldFreeFall = (shouldFreeFall && !(lowerN == null) && !(lowerN instanceof SolidParticle && lowerN.isFreeFalling == false));
+                System.out.println("Dopo: "+shouldFreeFall);
+
+            }
+            if (!shouldFreeFall) break;
+        }
+
+            for(int i = 0; i < particleList.size()-entityDimensionX; i += entityDimensionX){
+                coords = fromPosToCoords(i);
+                leftN = grid.getSideNeighbors(coords[0], coords[1])[0];
+
+                canGoLeft = (canGoLeft && !(leftN == null) && !(leftN instanceof  SolidParticle));
+
+            }
+
+            if (canGoLeft) {
+                updateVelocityX(directionX);
+            }
+
+
+            if (!shouldFreeFall) {
+                
+                resetVelocityY();
+                for (int j = 0; j < particleList.size(); j++){
+                    coords = fromPosToCoords(j);
+                    particleList.get(j).isFreeFalling = false;
+                    totalCoords.add(particleList.get(j).update(coords, grid, lowerN, velocityX, v));
+                }
+    
+            } else {
+
+                for (int i = 0; i < particleList.size(); i++) {
+                    coords = fromPosToCoords(i);
+                    particleList.get(i).isFreeFalling = true;
+                    //System.out.println("Free Falling: " + particleList.get(i).isFreeFalling);
+                    totalCoords.add(particleList.get(i).update(coords, grid, lowerN, velocityX, v));
+                }
+            }
+        
+
+        updateVelocityY(1);
+        setMoveX(totalCoords.get(0)[1]);
+        setMoveY(totalCoords.get(0)[0]);
+        System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
+        System.out.println("Grid rows: " + grid.getRows());
+        for (int i = 0; i < totalCoords.size(); i++) {
+            //System.out.println("X: " + totalCoords.get(i)[1] + " Y: " + totalCoords.get(i)[0]);
+            grid.setParticle(totalCoords.get(i)[0],totalCoords.get(i)[1], particleList.get(i));
         }
 
         return;
 
-    }
+    } 
 
     public int[] fromPosToCoords(int index){
         //int x = moveX/tileDimension + (index % entityDimensionX);
