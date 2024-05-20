@@ -1,14 +1,11 @@
 package Blocks.Liquids;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
 import Entities.EntityParticle;
 import Grid.Grid;
-
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-
-import Blocks.Air;
 
 
 
@@ -81,12 +78,12 @@ public abstract class LiquidParticle extends Particle {
             float random = ThreadLocalRandom.current().nextFloat(); // go to same direction multiple times in a row
             for (int i = 0; i <=  dispersionRate; i++) {
                 Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
-                if (side[0] != null && (random > 0.5f) && !(side[0] instanceof SolidParticle || side[0] instanceof LiquidParticle || under[1] instanceof EntityParticle)) {
+                if (side[0] != null && (random > 0.5f) && !(side[0] instanceof SolidParticle || side[0] instanceof LiquidParticle || side[0] instanceof EntityParticle)) {
                     grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] - 1));
                     grid.setParticle(coords[0], coords[1] - 1, this);
                     coords[1]--;
                 }
-                else if (side[1] != null && !(side[1] instanceof SolidParticle || side[1] instanceof LiquidParticle || under[1] instanceof EntityParticle) ) {
+                else if (side[1] != null && !(side[1] instanceof SolidParticle || side[1] instanceof LiquidParticle || side[1] instanceof EntityParticle) ) {
                     grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] + 1));
                     grid.setParticle(coords[0], coords[1] + 1, this);
                     coords[1]++;

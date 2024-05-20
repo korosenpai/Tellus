@@ -155,7 +155,7 @@ public class Window extends JPanel implements ActionListener {
 
         drawGrid(g2);
         drawMouse(g2);
-        //drawPlayer(g2);
+        drawPlayer(g2);
 
         g2.dispose(); // frees up memory
     }
@@ -167,46 +167,6 @@ public class Window extends JPanel implements ActionListener {
 
         grid.setCursor(x, y, mouse.getRadius(), currentSelectedParticle);
     }
-
- /*    public void setMouseOnClick(){
-        List<int[]> positions = drawMousePoints(g)(null); // Pass null to avoid drawing
-            for (int[] position : positions) {
-                setOnClick(position[0], position[1]);
-            }
-        }
-    } */
-/*     public void setOnClick() {
-        int x = mouse.getX();
-        int y = mouse.getY();
-
-        int radius = mouse.getRadius() * tileDimension;
-        int circleCentreX = (mouse.getX() / tileDimension) * tileDimension;
-        int circleCentreY = (mouse.getY() / tileDimension) * tileDimension;
-        
-        int c0 = (((circleCentreX + radius) / tileDimension) * tileDimension); //c0 stands for 0 degrees on the circumference
-        int c180 = (((circleCentreX - radius) / tileDimension) * tileDimension); //c180 stands for 180 degrees on the circumference
-        int c90 = (((circleCentreY + radius) / tileDimension) * tileDimension); //c90 stands for 90 degrees on the circumference
-        int c270 = (((circleCentreY - radius) / tileDimension) * tileDimension); //c270 stands for 270 degrees on the circumference 
-
-        if ( 0 > x || x > screenWidth - 1 || 0 > y || y > screenHeight - 1 ) return; // check if out of bounds
-            for (int i = c180; i <= c0; i += tileDimension) {
-                for (int j = c270; j <= c90; j += tileDimension) {
-                    // Your existing condition to check if the pixel is within the circle
-                    if (radius / tileDimension == 0){
-                        grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
-                    } else {
-                        if (Math.sqrt((i - circleCentreX) * (i - circleCentreX) + (j - circleCentreY) * (j - circleCentreY)) <= radius) {
-                            grid.setParticle(i, j, new Sand());
-                        }
-                    }
-                }
-            }
-            //grid.setParticle(mouse.getY() / tileDimension, mouse.getX() / tileDimension, new Sand());
-       
-    } */
-
-    
-
 
 
     // TODO: change method to go j, i (if needed tbh idk if it will give problems)

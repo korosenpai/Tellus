@@ -1,14 +1,10 @@
 package Entities;
 
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import Grid.Grid;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
-
 import java.util.ArrayList;
+
+import Grid.Grid;
 
 public class Player extends Entity{
 
