@@ -11,25 +11,31 @@ import Blocks.ParticleList;
 public class Grid {
     public ParticleList particleList = new ParticleList();
 
+    // relative to viewport
     final int screenWidth;
     final int screenHeight;
     final int chunkSize;
     final int tileDimension;
 
+    // offset to draw viewport and not all grid
+    private int viewportOffsetX = 0;
+    private int viewportOffsetY = 0;
+
     private final int rows;
     private final int columns;
     public Particle[][] grid = {{}};
+    private final int gridOffset = 8; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
 
     private ThreadUpdates threadUpdates;
     public Chunk[][] gridChunk;
     
 
     public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+        this.screenWidth = screenWidth + gridOffset * chunkSize;
+        this.screenHeight = screenHeight + gridOffset * chunkSize;
         this.chunkSize = chunkSize;
-        this.rows = screenHeight / tileDimension;
-        this.columns = screenWidth / tileDimension;
+        this.rows = this.screenHeight / tileDimension;
+        this.columns = this.screenWidth / tileDimension;
         this.tileDimension = tileDimension;
         grid = new Particle[this.rows][this.columns];
         generateEmptyGrid();
@@ -118,6 +124,9 @@ public class Grid {
 
     public void setParticle(int j, int i, Particle particle) {
         grid[j][i] = particle;
+    } 
+    public void setParticleWithOffset(int j, int i, Particle particle) {
+        grid[j + viewportOffsetY][i + viewportOffsetX] = particle;
     }
 
     public void setCursor(int mouseX, int mouseY, int radius, int particleID) {
@@ -139,8 +148,8 @@ public class Grid {
                     Particle particle = particleList.getNewParticle(particleID);
                     // chance to not spawn all the blocks in the cursor
                     if (ThreadLocalRandom.current().nextFloat(1) <= particle.spawnRate) {
-                        if (getAtPosition(y, x).canBeOverridden) {
-                            setParticle(y, x, particleList.getNewParticle(particleID));
+                        if (getAtPosition(y + viewportOffsetY, x + viewportOffsetX).canBeOverridden) {
+                            setParticleWithOffset(y, x, particleList.getNewParticle(particleID));
                         }
                     }
                 }
@@ -225,6 +234,29 @@ public class Grid {
         for (Particle[] row : grid) {
             System.out.println(Arrays.toString(row));
         }
+    }
+
+
+    // move viewport
+    public int getViewportOffsetX() {
+        return viewportOffsetX;
+    }
+    public int getViewportOffsetY() {
+        return viewportOffsetY;
+    }
+
+    public void moveViewportDown() {
+        // add checks to see if we can moce
+        this.viewportOffsetY++;
+    };
+    public void moveViewportUp() {
+        this.viewportOffsetY--;
+    };
+    public void moveViewportLeft() {
+        this.viewportOffsetX--;
+    }
+    public void moveViewportRight() {
+        this.viewportOffsetX++;
     }
 
 

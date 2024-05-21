@@ -8,6 +8,8 @@ public class Launcher {
     static private JFrame screen;
     static private Window window;
 
+    // int seed = 69 // TODO: all random is determined with this seed
+
     // NOTE: leave them different to debug
     static final int TILE_SIZE = 5;
     static final int CHUNK_SIZE = 32;

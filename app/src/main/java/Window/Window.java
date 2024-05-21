@@ -171,9 +171,12 @@ public class Window extends JPanel implements ActionListener {
 
     // TODO: change method to go j, i (if needed tbh idk if it will give problems)
     public void drawGrid(Graphics2D g){        
+        if (grid == null) return;
+
+        // grid is saved perpewndicular so it must be draw in opposite way
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++) {
-                Particle curr = grid.getAtPosition(i, j);
+                Particle curr = grid.getAtPosition(i + grid.getViewportOffsetY(), j + grid.getViewportOffsetX());
                 int colorRed = curr.getColorRed();
                 int colorGreen = curr.getColorGreen();
                 int colorBlue = curr.getColorBlue();
@@ -183,12 +186,12 @@ public class Window extends JPanel implements ActionListener {
         }
     }
 
-    // converts from window's coordinate to snapped window to grid coordinates for drawing
-    private int snapToGrid(int coord) {
-        // (pos / tiledimension) * tiledimension works 
-        // because java rounds to int the one in brackets so then we can treat it as i or j of drawGrid()
-        return (coord / tileDimension) * tileDimension;
-    }
+    // // converts from window's coordinate to snapped window to grid coordinates for drawing
+    // private int snapToGrid(int coord) {
+    //     // (pos / tiledimension) * tiledimension works 
+    //     // because java rounds to int the one in brackets so then we can treat it as i or j of drawGrid()
+    //     return (coord / tileDimension) * tileDimension;
+    // }
 
     public void drawMouse(Graphics2D g) {
         //g.setColor(new Color(currentSelectedParticle.getColorRed(), currentSelectedParticle.getColorGreen(), currentSelectedParticle.getColorBlue()));
@@ -229,6 +232,7 @@ public class Window extends JPanel implements ActionListener {
 
     // this sends the direction of the player to the player's position updater and draws it
     public void drawPlayer(Graphics2D p) {
+        if (player == null) return;
         player.updatePosition(grid, playerDirectionX, playerDirectionY);
         player.paintComponent(p);
     }

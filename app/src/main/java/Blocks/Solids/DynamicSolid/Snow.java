@@ -48,7 +48,7 @@ public class Snow extends DynamicParticle {
         else this.counterUntilMelts ++;
 
         if (this.counterUntilMelts == 180){ //number is arbitrary can be changed later on
-            grid.grid[coords[0]][coords[1]] = new Water();
+            grid.setParticle(coords[0], coords[1], new Water());
         }
 
         return coords;
