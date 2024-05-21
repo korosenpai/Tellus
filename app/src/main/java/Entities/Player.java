@@ -1,14 +1,10 @@
 package Entities;
 
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import Grid.Grid;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
-
 import java.util.ArrayList;
+
+import Grid.Grid;
 
 public class Player extends Entity{
 
@@ -29,7 +25,6 @@ public class Player extends Entity{
 
         setMoveX(screenWidth/tileDimension/2);
         setMoveY(screenHeight/tileDimension/2);
-        //setDimension(3, 5);
         setMaxSpeed(4);
         setAccelerationX(0.5f);
         setAccelerationY(1.3f);
@@ -45,13 +40,9 @@ public class Player extends Entity{
     }
 
     public void updatePosition(Grid grid, int directionX, int directionY) {
-        //updateVelocityX(directionX);
-        //updateVelocityY(directionY);
 
         super.update(grid, directionX, directionY);
 
-        //setMoveX(moveX + getVelocityX());
-        //setMoveY(moveY + getVelocityY());
         //System.out.println("X coords: " + moveX);
         //System.out.println("Y coords: " + moveY);
 

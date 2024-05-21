@@ -93,7 +93,7 @@ abstract class DynamicParticle extends SolidParticle {
             }
 
             // go to block to left if is not solid nor entity
-            else if (goDownLeft && under[0] != null && !(under[0] instanceof SolidParticle || under[1] instanceof EntityParticle)) {
+            else if (goDownLeft && under[0] != null && !(under[0] instanceof SolidParticle || under[0] instanceof EntityParticle)) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] - 1));
                 grid.setParticle(coords[0] + 1, coords[1] - 1, this);
                 coords[0]++;
@@ -101,7 +101,7 @@ abstract class DynamicParticle extends SolidParticle {
             }
 
             // go to block to right if is not solid nor entity
-            else if (goDownRight && under[2] != null && !(under[2] instanceof SolidParticle || under[1] instanceof EntityParticle)) {
+            else if (goDownRight && under[2] != null && !(under[2] instanceof SolidParticle || under[2] instanceof EntityParticle)) {
                 grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1] + 1));
                 grid.setParticle(coords[0] + 1, coords[1] + 1, this);
                 coords[0]++;

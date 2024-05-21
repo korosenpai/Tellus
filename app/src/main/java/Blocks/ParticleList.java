@@ -48,6 +48,9 @@ public class ParticleList {
 
             case 8:
                 return new Fire();
+
+            case 9:
+                return new Stone();
         }
 
         System.out.println("GET NEW PARTICLE PARTICLE WAS NOT INDEED FOUND");
@@ -69,7 +72,7 @@ public class ParticleList {
                 return new Color(46, 82, 255);
 
             case 5:
-                return new Color(83, 84, 78);
+                return new Color(158, 152, 134);
 
             case 6:
                 return new Color(124, 130, 8);
@@ -80,6 +83,8 @@ public class ParticleList {
             case 8:
                 return new Color(189, 78, 31);
 
+            case 9:
+                return new Color(83, 84, 78);
         }
 
         System.out.println("COULD NOT FIND COLOR BOHO");
