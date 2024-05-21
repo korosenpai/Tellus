@@ -8,9 +8,9 @@ public class Stone extends StaticParticle {
         super();
         
         
-        // make them shift a bit to create texture
-        // original sand = 182, 155, 99
+
+
         int offset = getColorOffset();
-        setColors(108 + offset, 102 + offset, 84 + offset);
+        setColors(33 + offset, 34 + offset, 28 + offset);
     }
 }
