@@ -9,7 +9,7 @@ import Blocks.Air;
 
 public class ThreadUpdates {
 
-    private final int nThreads = Runtime.getRuntime().availableProcessors() * 2; // how many cores the pc has
+    private final int nThreads = Runtime.getRuntime().availableProcessors() - 1; // how many unused cores the pc has
     private final ExecutorService es;
 
     private final int screenColumns;
@@ -32,7 +32,7 @@ public class ThreadUpdates {
             for (int threadN = 0; threadN < nThreads; threadN += 2) {
                 // first pass
                 for (int j = grid.getRows() - 1; j > -1; j--) {
-                    for (int i = chunkSize - 1; i > -1; i--) {
+                    for (int i = chunkSize; i > -1; i--) {
                         //System.out.println(i + " " + threadN);
                         int offsetI = i + chunkSize * threadN;
                         if (grid.grid[j][offsetI] instanceof Air || grid.grid[j][offsetI].scanDirection != 1 || grid.grid[j][offsetI].hasMoved) continue;
@@ -48,14 +48,14 @@ public class ThreadUpdates {
 
         waitTillDone();
 
-        latch = new CountDownLatch(nThreads / 2); // nthreads
+        latch = new CountDownLatch(nThreads / 2);
 
         es.execute(() -> {
             // odd threads
             for (int threadN = 1; threadN < nThreads; threadN += 2) {
                 // first pass
                 for (int j = grid.getRows() - 1; j > -1; j--) {
-                    for (int i = chunkSize - 1; i > -1; i--) {
+                    for (int i = chunkSize; i > -1; i--) {
                         //System.out.println(i + " " + threadN);
                         int offsetI = i + chunkSize * threadN;
                         if (grid.grid[j][offsetI] instanceof Air || grid.grid[j][offsetI].scanDirection != 1 || grid.grid[j][offsetI].hasMoved) continue;
