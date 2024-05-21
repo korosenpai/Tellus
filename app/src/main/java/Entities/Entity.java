@@ -154,10 +154,10 @@ public class Entity extends JPanel{
                 lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], v); 
                 // grid.getSingleLowerNeighbor(coords[0]-1, coords[1], v); //the -1 works don't know why hopefully it doesn't cuase issues
                 
-                System.out.println(lowerN);
-                System.out.println("Prima: "+shouldFreeFall);
+                // System.out.println(lowerN);
+                // System.out.println("Prima: "+shouldFreeFall);
                 shouldFreeFall = (shouldFreeFall && !(lowerN == null) && !(lowerN instanceof SolidParticle && lowerN.isFreeFalling == false));
-                System.out.println("Dopo: "+shouldFreeFall);
+                // System.out.println("Dopo: "+shouldFreeFall);
 
             }
             if (!shouldFreeFall) break;
@@ -199,8 +199,8 @@ public class Entity extends JPanel{
         updateVelocityY(1);
         setMoveX(totalCoords.get(0)[1]);
         setMoveY(totalCoords.get(0)[0]);
-        System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
-        System.out.println("Grid rows: " + grid.getRows());
+        // System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
+        // System.out.println("Grid rows: " + grid.getRows());
         for (int i = 0; i < totalCoords.size(); i++) {
             //System.out.println("X: " + totalCoords.get(i)[1] + " Y: " + totalCoords.get(i)[0]);
             grid.setParticle(totalCoords.get(i)[0],totalCoords.get(i)[1], particleList.get(i));

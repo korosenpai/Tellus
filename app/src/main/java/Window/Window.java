@@ -277,39 +277,43 @@ public class Window extends JPanel implements ActionListener {
                 
                 // TODO: add all in one check
                 //keyboards input to switch currently selected particle
-                case 112: //F1
+                case 49: //F1
                     currentSelectedParticle = 1;
                     break;
             
-                case 113: //F2
+                case 50: //F2
                     currentSelectedParticle = 2;
                     break;
                 
-                case 114: //F3
+                case 51: //F3
                     currentSelectedParticle = 3;
                     break;
                 
-                case 115: //F4
+                case 52: //F4
                     currentSelectedParticle = 4;
                     break;
                 
-                case 116: // F5
+                case 53: // F5
                     currentSelectedParticle = 5;
                     break;
 
-                case 117: // F6
+                case 54: // F6
                     currentSelectedParticle = 6;
                     break;
 
-                case 118:
+                case 55:
                     currentSelectedParticle = 7;
                     break;
 
-                case 119:
+                case 56:
                     currentSelectedParticle = 8;
                     break;
 
-                case 39:  // rightarrow
+                case 57:
+                    currentSelectedParticle = 9;
+                    break;
+
+                case 58:  // rightarrow
                     currentSelectedParticle = (currentSelectedParticle +1) % ParticleList.getNumberOfParticleAvailable();
             
                 case 37:
@@ -320,17 +324,8 @@ public class Window extends JPanel implements ActionListener {
                     currentlySelectedTemplate = (currentlySelectedTemplate +1 ) % (GridTemplates.templates.size() +1);
                     System.out.println(currentlySelectedTemplate);
                 case 77:
-                    GridTemplates.saveCurrentGrid(grid);
-
-                /* case 68: // D
-                    playerX++;
-                case 65: // A
-                    playerX--;
-                case 87: // W
-                    playerY--;
-                case 83: // S
-                    playerY++;
-                    break; */
+                    //GridTemplates.saveCurrentGrid(grid);
+                    break;
 
                 default:
                     break;
