@@ -245,7 +245,19 @@ public class Grid {
         return viewportOffsetY;
     }
 
-    public void moveViewportDown() {};
+    public void moveViewportDown() {
+        // add checks to see if we can moce
+        this.viewportOffsetY++;
+    };
+    public void moveViewportUp() {
+        this.viewportOffsetY--;
+    };
+    public void moveViewportLeft() {
+        this.viewportOffsetX--;
+    }
+    public void moveViewportRight() {
+        this.viewportOffsetX++;
+    }
 
 
 
