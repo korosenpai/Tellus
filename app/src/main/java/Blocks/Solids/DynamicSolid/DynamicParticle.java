@@ -7,6 +7,7 @@ import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
 import Entities.EntityParticle;
 import Grid.Grid;
+import MusicPlayer.MusicPlayer;
 
 
 
@@ -67,6 +68,7 @@ abstract class DynamicParticle extends SolidParticle {
             if (under[1] == null) {
                 isFreeFalling = false;
                 resetVelocity();
+
                 return coords; // cannot move or you finish out of bounds
             }
 

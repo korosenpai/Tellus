@@ -2,6 +2,7 @@ package Launcher;
 
 import javax.swing.JFrame;
 
+import MusicPlayer.MusicPlayer;
 import Window.Window;
 
 public class Launcher {
@@ -31,6 +32,9 @@ public class Launcher {
 
         screen.setLocationRelativeTo(null); // specify location of the window // null -> display at center of screen
         screen.setVisible(true); 
+        
+        // MusicPlayer player = new MusicPlayer();
+        // player.playFile("src/main/assets/audio/blocks/landed.wav");
 
         window.start();
 
