@@ -22,7 +22,6 @@ import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
 import Grid.Grid;
-import Grid.GridTemplates;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -324,9 +323,10 @@ public class Window extends JPanel implements ActionListener {
                     currentSelectedParticle = (currentSelectedParticle -1);
                     if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
                     
-                case 32:// space 
+                /* case 32:// space 
                     currentlySelectedTemplate = (currentlySelectedTemplate +1 ) % (GridTemplates.templates.size() +1);
-                    System.out.println(currentlySelectedTemplate);
+                    System.out.println(currentlySelectedTemplate); */
+                    
                 case 77:
                     //GridTemplates.saveCurrentGrid(grid);
                     break;
@@ -342,8 +342,9 @@ public class Window extends JPanel implements ActionListener {
             } else if (key == 65){ // A
                 playerDirectionX = -1;
             }
-            if (key == 87){ // W
+            if (key == 87 || key == 32){ // W or sapce
                 playerDirectionY = -1;
+
             } else if (key == 83){ // S
                 playerDirectionY = 1;
             }
@@ -366,7 +367,7 @@ public class Window extends JPanel implements ActionListener {
             } else if (key == 65){
                 playerDirectionX = 0;
             }
-            if (key == 87){
+            if (key == 87 || key == 32){
                 playerDirectionY = 0;
             } else if (key == 83){
                 playerDirectionY = 0;

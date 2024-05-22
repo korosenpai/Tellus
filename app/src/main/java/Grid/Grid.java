@@ -219,6 +219,17 @@ public class Grid {
         return null;
     }
 
+    public Particle getSingleUpperNeighbor(int j, int i, int offset) {
+        /* return the single lower cell of grid[i][j] 
+         * if neighbor is out of bound returns null
+        */
+
+        if (j > 0 + offset) { //check if element is not in the first row
+            return grid[j - 1][i]; //upper
+            }
+        return null;
+    }
+
     public Particle[] getUpperNeighbors(int j, int i) {
         /* return the three lower cells of grid[i][j] 
          * if neighbor is out of bound returns null
