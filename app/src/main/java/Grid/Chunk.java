@@ -1,43 +1,32 @@
 package Grid;
 
-import Blocks.Air;
-import Blocks.Particle;
-
 public class Chunk {
-    public int SIZE = 32;
+    public final int SIZE = 32;
 
-    private Particle[][] elements = new Particle[SIZE][SIZE];
+    private boolean shouldStep = true;
+    private boolean shouldStepNextFrame = false;
+
+    private int[] topLeft;
 
     public Chunk() {
-        generateEmptyChunk();
     }
 
-    public void generateEmptyChunk() {
-        for (int j = 0; j < SIZE; j++) {
-            for (int i = 0; i < SIZE; i++) {
-                elements[j][i] = new Air();
-            }
-        }
+    public void setTopLeft(int[] newTopLeft) {
+        topLeft = newTopLeft;
+    }
+    public int[] getTopLeft() {
+        return topLeft;
     }
 
-    public void update(Grid grid) {
-        // way for it to abstract so the particles continue to see grid as array of particles and not
-        // of chunks
+    public boolean getShouldStep() {
+        return shouldStep;
+    }
+    public void setShouldStepNextFrame(boolean shouldStepNextFrame) {
+        this.shouldStepNextFrame = shouldStepNextFrame;
+    }
 
-        // for (int j = SIZE - 1; j > -1; j--) {
-        //     for (int i = SIZE - 1; i > -1; i--) {
-        //         // if (grid[j][i] instanceof Air || grid[j][i].scanDirection != 1 || grid[j][i].hasMoved) continue;
-
-        //         // grid[j][i].update(new int[]{j, i}, this);
-        //     }
-        // }
-
-        // for (int j = 0; j < SIZE - 1; j++) {
-        //     for (int i = 0; i < SIZE - 1; i++) {
-
-        //     }
-        // }
-
-        System.out.println("updating chunk...");
+    public void goToNextStep() {
+        shouldStep = shouldStepNextFrame;
+        shouldStepNextFrame = false;
     }
 }
