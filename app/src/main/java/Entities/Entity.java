@@ -9,6 +9,8 @@ import Grid.Grid;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import Blocks.Air;
+
 public class Entity extends JPanel{
     
     final int tileDimension;
@@ -23,6 +25,9 @@ public class Entity extends JPanel{
     float accelerationY = 0;
     int entityDimensionX;
     int entityDimensionY;
+
+    int minJumpHeight = 10;
+    int currentJumpHeight = 0; // how long jump button is pressed determines how high it goes
 
     int entityID;
     ArrayList<EntityParticle> particleList;
@@ -60,6 +65,7 @@ public class Entity extends JPanel{
 
         // temporary istances
         Particle lowerN = new Particle() {};
+        Particle upperN = new Particle() {};
         Particle leftN = new Particle() {};
         Particle rightN = new Particle() {};
 
@@ -88,7 +94,26 @@ public class Entity extends JPanel{
                 // System.out.println("Dopo: "+shouldFreeFall);
 
             }
-            if (!shouldFreeFall) break;
+            if (!shouldFreeFall) {
+                if (directionY == -1){
+                    for(int i = 0; i < getDimensionY(); i++) {
+
+                        coords = fromPosToCoords(i);
+                        upperN = grid.getSingleUpperNeighbor(coords[0], coords[1], vy); 
+                       
+                        if (upperN != null || upperN instanceof Air) { 
+                            //conditions for jump met
+                            setJump();
+                            
+                        }
+                        
+        
+                    }
+                }
+                break;
+            }
+
+            
         }
 
         // loop that boundes the horizontal movement of the Entity
@@ -133,6 +158,11 @@ public class Entity extends JPanel{
             if (!shouldFreeFall) {
                 tempParticle.isFreeFalling = false;
                 resetVelocityY();
+                if (currentJumpHeight != 0){
+
+                }
+                
+                
             } else tempParticle.isFreeFalling = true;
 
             totalCoords.add(tempParticle.update(coords, grid, lowerN, vx*directionX, vy));
@@ -140,18 +170,23 @@ public class Entity extends JPanel{
         
         //local update section
         updateVelocityX(directionX);
-        updateVelocityY(1);
+        //System.out.println("niggeers " + directionY*currentJumpHeight);
+        updateVelocityY(1, directionY*currentJumpHeight); // gravity
+        
         setMoveX(totalCoords.get(0)[1]);
         setMoveY(totalCoords.get(0)[0]);
 
         // System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
         // System.out.println("Grid rows: " + grid.getRows());
-
         //set particles in the grid section
         for (int i = 0; i < totalCoords.size(); i++) {
             //System.out.println("X: " + totalCoords.get(i)[1] + " Y: " + totalCoords.get(i)[0]);
-            grid.setParticle(totalCoords.get(i)[0],totalCoords.get(i)[1], particleList.get(i));
+            
+             grid.setParticle(totalCoords.get(i)[0],totalCoords.get(i)[1], particleList.get(i));
+        
         }
+       
+            
 
         return;
 
@@ -182,8 +217,11 @@ public class Entity extends JPanel{
         velocityX = direction*Math.min(Math.round(Math.abs(velocityX) + accelerationX), maxSpeed);
     }
 
-    public void updateVelocityY(int direction) {
+    public void updateVelocityY(int direction, int jump) {
         velocityY = direction*Math.min(Math.round(Math.abs(velocityY) + accelerationY), maxSpeed);
+        //System.out.println("before: " + velocityY);
+        velocityY += jump;
+        //System.out.println("after: " + velocityY);
     }
 
     public int getMoveX() {
@@ -252,6 +290,14 @@ public class Entity extends JPanel{
 
     public void setColor(int r, int g, int b) {
         color = new Color(r, g, b);
+    }
+
+    public void setJump (){
+        currentJumpHeight = minJumpHeight;
+    }
+
+    public void resetJump (){
+        currentJumpHeight = 0;
     }
 
 }

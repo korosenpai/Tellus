@@ -2,10 +2,16 @@ package Blocks;
 
 import java.awt.Color;
 
-import Blocks.Gases.*;
-import Blocks.Liquids.*;
-import Blocks.Solids.DynamicSolid.*;
-import Blocks.Solids.StaticSolid.*;;
+import Blocks.Gases.Fire;
+import Blocks.Gases.Smoke;
+import Blocks.Liquids.Oil;
+import Blocks.Liquids.Water;
+import Blocks.Solids.DynamicSolid.Gravel;
+import Blocks.Solids.DynamicSolid.Sand;
+import Blocks.Solids.DynamicSolid.Snow;
+import Blocks.Solids.StaticSolid.Stone;
+import Blocks.Solids.StaticSolid.Wood;
+;
 
 // functions as big ass lookup table to get new instance of any particle
 
