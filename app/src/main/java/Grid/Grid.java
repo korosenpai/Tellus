@@ -24,7 +24,7 @@ public class Grid {
     private final int rows;
     private final int columns;
     public Particle[][] grid = {{}};
-    private final int gridOffset = 8; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
+    private final int gridOffset = 0               ; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
 
     private ThreadUpdates threadUpdates;
     public Chunk[][] gridChunk;
@@ -190,6 +190,17 @@ public class Grid {
 
         if (j < rows - offset - 1) { //check if element is not in the last row
             return grid[j + 1 + offset][i]; //bottom
+            }
+        return null;
+    }
+
+    public Particle getSingleUpperNeighbor(int j, int i, int offset) {
+        /* return the single lower cell of grid[i][j] 
+         * if neighbor is out of bound returns null
+        */
+
+        if (j > 0 + offset) { //check if element is not in the first row
+            return grid[j - 1][i]; //upper
             }
         return null;
     }
