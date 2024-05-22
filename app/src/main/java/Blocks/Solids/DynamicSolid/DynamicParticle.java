@@ -92,6 +92,7 @@ abstract class DynamicParticle extends SolidParticle {
                 grid.setParticle(coords[0], coords[1], particleBelow instanceof GasParticle? new Air() : particleBelow);
                 grid.setParticle(coords[0] + 1, coords[1], this);
                 coords[0]++;
+                grid.wakeUpChunks(coords[0], coords[1]);
             }
 
             // go to block to left if is not solid nor entity

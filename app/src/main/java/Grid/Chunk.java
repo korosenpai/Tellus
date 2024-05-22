@@ -21,8 +21,8 @@ public class Chunk {
     public boolean getShouldStep() {
         return shouldStep;
     }
-    public void setShouldStepNextFrame(boolean shouldStepNextFrame) {
-        this.shouldStepNextFrame = shouldStepNextFrame;
+    public void setShouldStepNextFrame() {
+        this.shouldStepNextFrame = true;
     }
 
     public void goToNextStep() {
