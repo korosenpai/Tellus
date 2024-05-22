@@ -92,6 +92,8 @@ public abstract class LiquidParticle extends Particle {
 
         }
 
+        wakeUpAdjacentChunks(coords, grid);
+
 
         return coords;
 

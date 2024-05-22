@@ -71,10 +71,17 @@ public abstract class Particle {
     public int[] getCurrentPosition() {
         return currentPosition;
     }
+    
+    // should be called at end of update function
+    public void wakeUpAdjacentChunks(int [] coords, Grid grid) {
+        if (coords[0] != previousPosition[0] || coords[1] != previousPosition[1])
+            grid.wakeUpChunks(coords[0], coords[1]);
+    }
 
     public int[] update(int[] coords, Grid grid) {
         hasMoved = true;
         currentPosition = coords.clone();
+
         return coords;
     }
 

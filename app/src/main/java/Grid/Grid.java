@@ -95,7 +95,7 @@ public class Grid {
         // populate also the chunks
         for (int j = 0; j < this.rows / chunkSize; j++) {
             for (int i = 0; i < this.columns / chunkSize; i++) {
-                gridChunk[j][i] = new Chunk();
+                gridChunk[j][i] = new Chunk(chunkSize);
             }
         }
         

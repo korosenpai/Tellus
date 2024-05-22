@@ -52,13 +52,15 @@ public abstract class GasParticle extends Particle {
     public int[] update(int[] coords, Grid grid) {
         super.update(coords, grid);
 
+        // always wake this chunk up
+        grid.wakeUpChunks(coords[0], coords[1]);
+
         hasLivedFor++;
         // has lived a fulfilling life and now needs to go
         if (hasLivedFor >= lifetime) {
             grid.setParticle(coords[0], coords[1], new Air());
             return coords;
         }
-
 
         hasMovedLastFrame = !hasMovedLastFrame;
         if (hasMovedLastFrame) return coords;
@@ -117,7 +119,6 @@ public abstract class GasParticle extends Particle {
             grid.setParticle(coords[0], coords[1] + 1, this);
             coords[1]++;
         }
-
 
         return coords;
     }
