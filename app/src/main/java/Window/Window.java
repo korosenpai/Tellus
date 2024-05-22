@@ -21,7 +21,6 @@ import Blocks.ParticleList;
 import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
-import Grid.Chunk;
 import Grid.Grid;
 
 
@@ -57,7 +56,7 @@ public class Window extends JPanel implements ActionListener {
 
     public Player player;
     public int playerDirectionX = 0;
-    public int playerDirectionY = 0;
+    public int playerDirectionY = 1;
 
     public ArrayList<Entity> entityList;
 
@@ -396,9 +395,9 @@ public class Window extends JPanel implements ActionListener {
                 playerDirectionX = 0;
             }
             if (key == 87 || key == 32){
-                playerDirectionY = 0;
+                playerDirectionY = 1;
             } else if (key == 83){
-                playerDirectionY = 0;
+                playerDirectionY = 1;
             }
         }
 
