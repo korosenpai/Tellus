@@ -192,12 +192,12 @@ public class Entity extends JPanel{
         } else if (directionY >= 0){
             resetJump();
         }
-        System.out.println("pippo : " + currentJumpVel + " dirY; " + directionY);
+        //System.out.println("pippo : " + currentJumpVel + " dirY; " + directionY);
 
         setMoveX(totalCoords.get(0)[1]);
         setMoveY(totalCoords.get(0)[0]);
 
-        System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
+        //System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
         // System.out.println("Grid rows: " + grid.getRows());
         //set particles in the grid section
         for (int i = 0; i < totalCoords.size(); i++) {
@@ -246,7 +246,7 @@ public class Entity extends JPanel{
             velocityY = -currentJumpVel + (int) accelerationY;
         }
         //System.out.println("before: " + velocityY);       
-        System.out.println("velY: " + velocityY);
+        //System.out.println("velY: " + velocityY);
     }
 
     public int getMoveX() {
