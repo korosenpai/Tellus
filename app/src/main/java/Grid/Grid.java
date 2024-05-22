@@ -24,7 +24,7 @@ public class Grid {
     private final int rows;
     private final int columns;
     public Particle[][] grid = {{}};
-    private final int gridOffset = 0               ; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
+    private final int gridOffset = 0; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
 
     private ThreadUpdates threadUpdates;
     public Chunk[][] gridChunk;
@@ -37,7 +37,9 @@ public class Grid {
         this.rows = this.screenHeight / tileDimension;
         this.columns = this.screenWidth / tileDimension;
         this.tileDimension = tileDimension;
+        
         grid = new Particle[this.rows][this.columns];
+        gridChunk = new Chunk[this.rows / this.chunkSize][this.columns / this.chunkSize];
         generateEmptyGrid();
 
         threadUpdates = new ThreadUpdates(this.columns);
@@ -76,6 +78,13 @@ public class Grid {
                 grid[j][i] = new Air();
             }
         }
+
+        // populate also the chunks
+        for (int j = 0; j < this.rows / chunkSize; j++) {
+            for (int i = 0; i < this.columns / chunkSize; i++) {
+                gridChunk[j][i] = new Chunk();
+            }
+        }
         
     }
 
@@ -83,22 +92,27 @@ public class Grid {
         return grid;
     }
 
+    public void updateParticle(int j, int i, int scanDirection) {
+        if (grid[j][i] instanceof Air || grid[j][i].scanDirection != scanDirection || grid[j][i].hasMoved) return;
+
+        // check if it is in a chunk that is not sleeping
+        if (!gridChunk[j / chunkSize][i / chunkSize].getShouldStep()) return;
+
+        grid[j][i].update(new int[]{j, i}, this);
+    }
+
     public void updateGrid() {
         // first scan, bottom to top
         for (int j = rows-1; j > -1; j--){
             for (int i = columns-1; i > -1; i--){
-                if (grid[j][i] instanceof Air || grid[j][i].scanDirection != 1 || grid[j][i].hasMoved) continue;
-
-                grid[j][i].update(new int[]{j, i}, this);
+                updateParticle(j, i, 1);
             }
         }
 
         // second scan, top to bottom
         for (int j = 0; j < rows; j++){
             for (int i = 0; i < columns; i++){
-                if (grid[j][i] instanceof Air || grid[j][i].scanDirection != 2 || grid[j][i].hasMoved) continue;
-
-                grid[j][i].update(new int[]{j, i}, this);
+                updateParticle(j, i, 2);
             }
         }
 
@@ -181,6 +195,17 @@ public class Grid {
             if (i < columns - 1) lowerNeighbors[2] = grid[j + 1][i + 1]; //bottomright
         }
         return lowerNeighbors;
+    }
+
+    public Particle getSingleUpperNeighbor(int j, int i, int offset) {
+        /* return the single lower cell of grid[i][j] 
+         * if neighbor is out of bound returns null
+        */
+
+        if (j > 0 + offset) { //check if element is not in the first row
+            return grid[j - 1][i]; //upper
+        }
+        return null;
     }
 
     public Particle getSingleLowerNeighbor(int j, int i, int offset) {
