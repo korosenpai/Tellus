@@ -21,6 +21,7 @@ import Blocks.ParticleList;
 import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
+import Grid.Chunk;
 import Grid.Grid;
 
 
@@ -152,7 +153,11 @@ public class Window extends JPanel implements ActionListener {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; // 2d gives more access on geometry, coords, ...
 
-        drawGrid(g2);
+        if (grid != null) {
+            drawGrid(g2);
+            drawChunks(g2);
+        }
+
         drawMouse(g2);
         drawPlayer(g2);
 
@@ -170,8 +175,6 @@ public class Window extends JPanel implements ActionListener {
 
     // TODO: change method to go j, i (if needed tbh idk if it will give problems)
     public void drawGrid(Graphics2D g){        
-        if (grid == null) return;
-
         // grid is saved perpewndicular so it must be draw in opposite way
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++) {
@@ -183,6 +186,31 @@ public class Window extends JPanel implements ActionListener {
                 g.fillRect(j*tileDimension, i*tileDimension, tileDimension, tileDimension);                
             }
         }
+    }
+
+    public void drawChunks(Graphics2D g) {
+        g.setColor(new Color(255, 255, 255));
+
+        for (int j = 1; j < grid.getChunkColumns(); j++) {
+            g.drawLine(
+                j * chunkSize * tileDimension,
+                0,
+                j * chunkSize * tileDimension,
+                screenHeight * tileDimension
+            );
+
+        }
+
+        for (int i = 1; i < grid.getChunkRows(); i++) {
+            g.drawLine(
+                0,
+                i * chunkSize * tileDimension,
+                screenWidth * tileDimension,
+                i * chunkSize * tileDimension
+            );
+
+        }
+
     }
 
     // // converts from window's coordinate to snapped window to grid coordinates for drawing

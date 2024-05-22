@@ -27,7 +27,9 @@ public class Grid {
     private final int gridOffset = 0; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
 
     private ThreadUpdates threadUpdates;
-    public Chunk[][] gridChunk;
+    private Chunk[][] gridChunk;
+    private final int ChunkRows;
+    private final int ChunkColumns;
     
 
     public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
@@ -37,9 +39,12 @@ public class Grid {
         this.rows = this.screenHeight / tileDimension;
         this.columns = this.screenWidth / tileDimension;
         this.tileDimension = tileDimension;
+
+        this.ChunkRows = this.rows / this.chunkSize;
+        this.ChunkColumns = this.columns / this.chunkSize;
         
         grid = new Particle[this.rows][this.columns];
-        gridChunk = new Chunk[this.rows / this.chunkSize][this.columns / this.chunkSize];
+        gridChunk = new Chunk[this.ChunkRows][this.ChunkColumns];
         generateEmptyGrid();
 
         threadUpdates = new ThreadUpdates(this.columns);
@@ -51,6 +56,14 @@ public class Grid {
     public int getColumns() {
         return columns;
     }
+
+    public int getChunkRows() {
+        return ChunkRows;
+    }
+    public int getChunkColumns() {
+        return ChunkColumns;
+    }
+
 
     public void generateEmptyGrid(){
         /*generates a 2d array of all zeros (id of empty cell)
@@ -82,7 +95,7 @@ public class Grid {
         // populate also the chunks
         for (int j = 0; j < this.rows / chunkSize; j++) {
             for (int i = 0; i < this.columns / chunkSize; i++) {
-                gridChunk[j][i] = new Chunk();
+                gridChunk[j][i] = new Chunk(chunkSize);
             }
         }
         
@@ -90,6 +103,9 @@ public class Grid {
 
     public Particle[][] getGrid() {
         return grid;
+    }
+    public Chunk[][] getChunks() {
+        return gridChunk;
     }
 
     public void updateParticle(int j, int i, int scanDirection) {
@@ -117,6 +133,13 @@ public class Grid {
         }
 
         // threadUpdates.update(this);
+        
+        // make all chunks ready for next frame
+        for (int j = 0; j < this.rows / chunkSize; j++) {
+            for (int i = 0; i < this.columns / chunkSize; i++) {
+                gridChunk[j][i].goToNextStep();
+            }
+        }
     }
 
     // after painting set all pixels who have moved
@@ -164,6 +187,7 @@ public class Grid {
                     if (ThreadLocalRandom.current().nextFloat(1) <= particle.spawnRate) {
                         if (getAtPosition(y + viewportOffsetY, x + viewportOffsetX).canBeOverridden) {
                             setParticleWithOffset(y, x, particleList.getNewParticle(particleID));
+                            wakeUpChunks(y + viewportOffsetY, x + viewportOffsetX);
                         }
                     }
                 }
@@ -197,17 +221,6 @@ public class Grid {
         return lowerNeighbors;
     }
 
-    public Particle getSingleUpperNeighbor(int j, int i, int offset) {
-        /* return the single lower cell of grid[i][j] 
-         * if neighbor is out of bound returns null
-        */
-
-        if (j > 0 + offset) { //check if element is not in the first row
-            return grid[j - 1][i]; //upper
-        }
-        return null;
-    }
-
     public Particle getSingleLowerNeighbor(int j, int i, int offset) {
         /* return the single lower cell of grid[i][j] 
          * if neighbor is out of bound returns null
@@ -215,17 +228,6 @@ public class Grid {
 
         if (j < rows - offset - 1) { //check if element is not in the last row
             return grid[j + 1 + offset][i]; //bottom
-            }
-        return null;
-    }
-
-    public Particle getSingleUpperNeighbor(int j, int i, int offset) {
-        /* return the single lower cell of grid[i][j] 
-         * if neighbor is out of bound returns null
-        */
-
-        if (j > 0 + offset) { //check if element is not in the first row
-            return grid[j - 1][i]; //upper
             }
         return null;
     }
@@ -242,6 +244,17 @@ public class Grid {
             if (i < columns - 1) upperNeighbors[2] = grid[j - 1][i + 1]; //upperright
         }
         return upperNeighbors;
+    }
+
+    public Particle getSingleUpperNeighbor(int j, int i, int offset) {
+        /* return the single upper cell of grid[i][j] 
+         * if neighbor is out of bound returns null
+        */
+
+        if (j > 0 + offset) { //check if element is not in the first row
+            return grid[j - 1][i]; //upper
+            }
+        return null;
     }
 
     public Particle[] getSideNeighbors(int j, int i){
@@ -273,7 +286,33 @@ public class Grid {
     }
 
 
-    // move viewport
+    // wake up all chunks in the vicinity of particle (adjacent chunks)
+    public void wakeUpChunks(int j, int i) {
+        j /= chunkSize;
+        i /= chunkSize;
+
+        gridChunk[j][i].setShouldStepNextFrame(); // the chunk the particle is in
+
+        if (j < ChunkRows - 1) {
+            gridChunk[j + 1][i].setShouldStepNextFrame(); // the chunk below
+            if (i > 0) gridChunk[j + 1][i - 1].setShouldStepNextFrame(); // bottom left
+            if (i < ChunkColumns - 1) gridChunk[j + 1][i + 1].setShouldStepNextFrame(); // bottom left
+        }
+
+        if (j > 0) {
+            gridChunk[j - 1][i].setShouldStepNextFrame(); // the chunk above
+            if (i > 0) gridChunk[j - 1][i - 1].setShouldStepNextFrame(); // above left
+            if (i < ChunkColumns - 1) gridChunk[j - 1][i + 1].setShouldStepNextFrame(); // above right
+        }
+
+        if (i > 0) gridChunk[j][i - 1].setShouldStepNextFrame(); // side left
+        if (i < ChunkColumns - 1) gridChunk[j][i + 1].setShouldStepNextFrame(); // side left
+
+
+
+    }
+
+
     public int getViewportOffsetX() {
         return viewportOffsetX;
     }
@@ -281,22 +320,4 @@ public class Grid {
         return viewportOffsetY;
     }
 
-    public void moveViewportDown() {
-        // add checks to see if we can moce
-        this.viewportOffsetY++;
-    };
-    public void moveViewportUp() {
-        this.viewportOffsetY--;
-    };
-    public void moveViewportLeft() {
-        this.viewportOffsetX--;
-    }
-    public void moveViewportRight() {
-        this.viewportOffsetX++;
-    }
-
-
-
-
-    
 }

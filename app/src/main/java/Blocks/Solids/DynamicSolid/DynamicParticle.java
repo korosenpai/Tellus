@@ -110,6 +110,9 @@ abstract class DynamicParticle extends SolidParticle {
                 coords[1]++;
             }
 
+            wakeUpAdjacentChunks(coords, grid);
+
+            // TODO: fix to merge with check to wake up chunks or remove if not needed
             // updated version for check in other specific classes
             isFreeFalling = under[1] instanceof Air || under[1].isFreeFalling || !(coords[0] == previousPosition[0] && coords[1] == previousPosition[1]);
             if (isFreeFalling) {
