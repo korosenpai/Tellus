@@ -155,7 +155,7 @@ public class Window extends JPanel implements ActionListener {
 
         if (grid != null) {
             drawGrid(g2);
-            drawChunks(g2);
+            //drawChunks(g2);
         }
 
         drawMouse(g2);
