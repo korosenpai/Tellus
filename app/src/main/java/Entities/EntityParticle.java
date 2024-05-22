@@ -21,12 +21,13 @@ public class EntityParticle extends Particle{
         super.update(coords, grid);
         
         previousPosition = coords.clone();
-        if (isFreeFalling && velocityY > 0) {
+        coords[0] = coords[0] + velocityY;
+        /* if (isFreeFalling && velocityY > 0) {
             coords[0] = coords[0] + velocityY;
             
         } else if (!isFreeFalling && velocityY < 0){
-            //coords[0] = coords[0] + velocityY;
-        }
+            
+        } */
 
         if (previousPosition != currentPosition){
             grid.setParticle(previousPosition[0], previousPosition[1], new Air());
