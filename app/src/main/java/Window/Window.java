@@ -21,6 +21,7 @@ import Blocks.ParticleList;
 import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
+import Grid.Chunk;
 import Grid.Grid;
 
 
@@ -154,7 +155,7 @@ public class Window extends JPanel implements ActionListener {
 
         if (grid != null) {
             drawGrid(g2);
-            //drawChunks(g2);
+            // drawChunks(g2);
         }
 
         drawMouse(g2);
@@ -208,6 +209,21 @@ public class Window extends JPanel implements ActionListener {
                 i * chunkSize * tileDimension
             );
 
+        }
+
+        // draw active chunks
+        for (int i = 0; i < grid.getChunkRows(); i++){
+            for (int j = 0; j < grid.getChunkColumns(); j++) {
+                if (grid.getChunks()[i][j].getShouldStep()) {
+                    g.setColor(new Color(255, 0, 0, 60));
+                    g.fillRect(
+                        j * chunkSize * tileDimension,
+                        i * chunkSize * tileDimension,
+                        chunkSize * tileDimension,
+                        chunkSize * tileDimension
+                    );                
+                }
+            }
         }
 
     }
