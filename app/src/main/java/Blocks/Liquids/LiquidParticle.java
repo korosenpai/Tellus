@@ -57,6 +57,8 @@ public abstract class LiquidParticle extends Particle {
     public int[] update(int[] coords, Grid grid) {
         super.update(coords, grid);
 
+        previousPosition = coords.clone();
+
         updateVelocity();
 
         for (int n = 0; n <= velocity; n++) {

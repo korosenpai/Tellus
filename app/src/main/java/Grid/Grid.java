@@ -301,8 +301,8 @@ public class Grid {
         
         // if particle is less than min or more than max it updates adjacent chunks
         // (it is close enough to the edges)
-        int minChunkOffset = 2;
-        int maxChunkOffset = chunkSize - 3;
+        int minChunkOffset = 6;
+        int maxChunkOffset = chunkSize - minChunkOffset - 1;
 
 
         // returns true if close to the chunks
