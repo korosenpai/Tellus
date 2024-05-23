@@ -84,7 +84,7 @@ public abstract class Particle {
 
         // NOTE: for water and other (if the particle doesnt update previous position)
         // i have no idea why it doesnt break anything but in case something breaks it probably for this
-        //previousPosition = coords.clone();
+        previousPosition = coords.clone();
 
 
 
