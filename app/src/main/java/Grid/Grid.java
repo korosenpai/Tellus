@@ -286,41 +286,47 @@ public class Grid {
     }
 
 
-    // wake up all chunks in the vicinity of particle (adjacent chunks)
-    public void wakeUpChunks(int j, int i) {
-        int chunkAtJ = j / chunkSize;
-        int chunkAtI = i / chunkSize;
-
-        gridChunk[chunkAtJ][chunkAtI].setShouldStepNextFrame(); // the chunk the particle is in
-
-        // TODO: finish to wake up chunks only if adjacent to the particle
-        // System.out.println(i % chunkSize);
-
-        if (chunkAtJ < ChunkRows - 1) {
-            gridChunk[chunkAtJ + 1][chunkAtI].setShouldStepNextFrame(); // the chunk below
-            if (chunkAtI > 0) gridChunk[chunkAtJ + 1][chunkAtI - 1].setShouldStepNextFrame(); // bottom left
-            if (chunkAtI < ChunkColumns - 1) gridChunk[chunkAtJ + 1][chunkAtI + 1].setShouldStepNextFrame(); // bottom left
-        }
-
-        if (chunkAtJ > 0) {
-            gridChunk[chunkAtJ - 1][chunkAtI].setShouldStepNextFrame(); // the chunk above
-            if (chunkAtI > 0) gridChunk[chunkAtJ - 1][chunkAtI - 1].setShouldStepNextFrame(); // above left
-            if (chunkAtI < ChunkColumns - 1) gridChunk[chunkAtJ - 1][chunkAtI + 1].setShouldStepNextFrame(); // above right
-        }
-
-        if (chunkAtI > 0 && i % chunkSize < 2) gridChunk[chunkAtJ][chunkAtI - 1].setShouldStepNextFrame(); // side left
-        if (chunkAtI < ChunkColumns - 1 && i % chunkSize > 29) gridChunk[chunkAtJ][chunkAtI + 1].setShouldStepNextFrame(); // side left
-
-
-
-    }
-
-
     public int getViewportOffsetX() {
         return viewportOffsetX;
     }
     public int getViewportOffsetY() {
         return viewportOffsetY;
     }
+
+
+    // wake up all chunks in the vicinity of particle (adjacent chunks)
+    public void wakeUpChunks(int j, int i) {
+        int chunkAtJ = j / chunkSize;
+        int chunkAtI = i / chunkSize;
+        
+        // if particle is less than min or more than max it updates adjacent chunks
+        // (it is close enough to the edges)
+        int minChunkOffset = 2;
+        int maxChunkOffset = chunkSize - 3;
+
+
+        // returns true if close to the chunks
+        boolean closeToLeft = chunkAtI > 0 && i % chunkSize < minChunkOffset;
+        boolean closeToRight = chunkAtI < ChunkColumns - 1 && i % chunkSize > maxChunkOffset;
+
+        gridChunk[chunkAtJ][chunkAtI].setShouldStepNextFrame(); // the chunk the particle is in
+
+        if (chunkAtJ < ChunkRows - 1 && j % chunkSize > maxChunkOffset) {
+            gridChunk[chunkAtJ + 1][chunkAtI].setShouldStepNextFrame(); // the chunk below
+            if (closeToLeft) gridChunk[chunkAtJ + 1][chunkAtI - 1].setShouldStepNextFrame(); // bottom left
+            if (closeToRight) gridChunk[chunkAtJ + 1][chunkAtI + 1].setShouldStepNextFrame(); // bottom right
+        }
+
+        if (chunkAtJ > 0 && j % chunkSize < minChunkOffset) {
+            gridChunk[chunkAtJ - 1][chunkAtI].setShouldStepNextFrame(); // the chunk above
+            if (closeToLeft) gridChunk[chunkAtJ - 1][chunkAtI - 1].setShouldStepNextFrame(); // above left
+            if (closeToRight) gridChunk[chunkAtJ - 1][chunkAtI + 1].setShouldStepNextFrame(); // above right
+        }
+
+        if (closeToLeft) gridChunk[chunkAtJ][chunkAtI - 1].setShouldStepNextFrame(); // side left
+        if (closeToRight) gridChunk[chunkAtJ][chunkAtI + 1].setShouldStepNextFrame(); // side left
+
+    }
+
 
 }
