@@ -13,7 +13,7 @@ public abstract class GasParticle extends Particle {
     boolean hasMovedLastFrame;
 
     // for how many frames it will live for
-    int lifetime = Math.max(200, SRandom.nextInt(300));
+    int lifetime = SRandom.randInt(200, 300);
     int hasLivedFor = 0; // how many frames particle has been alive for in respect of lifetime
 
     // behaviours

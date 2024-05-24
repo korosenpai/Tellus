@@ -8,7 +8,7 @@ import SRandom.SRandom;
 
 public class Fire extends GasParticle {
     
-    int lifetime = Math.max(50, SRandom.nextInt(fireLifetime));
+    int lifetime = SRandom.randInt(50, fireLifetime);
     int hasLivedFor = 0;
     boolean hasMovedLastFrame = false;
     

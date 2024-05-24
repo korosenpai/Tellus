@@ -21,6 +21,11 @@ public class SRandom {
         return RANDOM.nextInt(n);
     }
 
+    // random int between min and max
+    public static int randInt(int min, int max) {
+        return RANDOM.nextInt(max - 1 - min) + min;
+    }
+
     public static float nextFloat() {
         return RANDOM.nextFloat();
     }
