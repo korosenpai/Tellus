@@ -3,7 +3,6 @@ package Grid;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import Blocks.Air;
 
@@ -21,7 +20,7 @@ public class ThreadUpdates {
         this.screenColumns = screenColumns;
         this.chunkSize = screenColumns / nThreads;
         es = Executors.newFixedThreadPool(nThreads);
-        System.out.println("number of threads: " + nThreads);
+        // System.out.println("number of threads: " + nThreads);
     }
 
     public void update(Grid grid) {

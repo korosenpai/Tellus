@@ -2,14 +2,16 @@ package Launcher;
 
 import javax.swing.JFrame;
 
-import MusicPlayer.MusicPlayer;
+// import MusicPlayer.MusicPlayer;
+import SRandom.SRandom;
 import Window.Window;
 
 public class Launcher {
     static private JFrame screen;
     static private Window window;
 
-    // int seed = 69 // TODO: all random is determined with this seed
+    static final int SEED = 42; // TODO: all random is determined with this seed
+    
 
     // NOTE: leave them different to debug
     static final int TILE_SIZE = 5;
@@ -21,6 +23,9 @@ public class Launcher {
     static int FPS = 30;
 
     public static void main(String[] args) {
+        SRandom.setSeed(SEED);
+        System.out.println(SRandom.getSeed());
+
         screen = new JFrame();
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         screen.setResizable(false);

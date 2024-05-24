@@ -1,19 +1,19 @@
 package Blocks.Gases;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
 import Entities.EntityParticle;
 import Grid.Grid;
 
+import SRandom.SRandom;
+
 public abstract class GasParticle extends Particle {
 
     boolean hasMovedLastFrame;
 
     // for how many frames it will live for
-    int lifetime = Math.max(200, ThreadLocalRandom.current().nextInt(300));
+    int lifetime = Math.max(200, SRandom.nextInt(300));
     int hasLivedFor = 0; // how many frames particle has been alive for in respect of lifetime
 
     // behaviours
@@ -109,7 +109,7 @@ public abstract class GasParticle extends Particle {
 
         Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
 
-        if (moveLeft && side[0] != null && ThreadLocalRandom.current().nextInt(2) == 0 && !(side[0] instanceof SolidParticle || side[0] instanceof GasParticle || side[0] instanceof EntityParticle)) {
+        if (moveLeft && side[0] != null && SRandom.nextInt(2) == 0 && !(side[0] instanceof SolidParticle || side[0] instanceof GasParticle || side[0] instanceof EntityParticle)) {
             grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0], coords[1] - 1));
             grid.setParticle(coords[0], coords[1] - 1, this);
             coords[1]--;

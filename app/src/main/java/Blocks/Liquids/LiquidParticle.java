@@ -1,11 +1,10 @@
 package Blocks.Liquids;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import Blocks.Particle;
 import Blocks.Solids.SolidParticle;
 import Entities.EntityParticle;
 import Grid.Grid;
+import SRandom.SRandom;
 
 
 
@@ -14,7 +13,7 @@ public abstract class LiquidParticle extends Particle {
     private int maxSpeed = 0; // how many cells to move ain one frame
     private float acceleration = 0; // 32bits, will never need more
     private float velocity = 0;
-    private boolean isOnGround = false;
+    // private boolean isOnGround = false;
     private int density = 0;
     private int dispersionRate = 2;
 
@@ -77,7 +76,7 @@ public abstract class LiquidParticle extends Particle {
             // move sideways if there is no solid or liquid (will have to add a way to mix liquid but for now its good)
             // if liquid doesnt move it doesnt wake the chunk unnecessarily
 
-            float random = ThreadLocalRandom.current().nextFloat(); // go to same direction multiple times in a row
+            float random = SRandom.nextFloat(); // go to same direction multiple times in a row
             for (int i = 0; i <=  dispersionRate; i++) {
                 Particle[] side = grid.getSideNeighbors(coords[0], coords[1]);
                 if (side[0] != null && (random > 0.5f) && !(side[0] instanceof SolidParticle || side[0] instanceof LiquidParticle || side[0] instanceof EntityParticle)) {
