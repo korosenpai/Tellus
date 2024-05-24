@@ -61,7 +61,7 @@ public class Fire extends GasParticle {
                 grid.setParticle(coords[0], coords[1], new Smoke());
             }
             // spread to another particle if it is flammable (it substitutes any particle to fire) (to change method with oil)
-            else if (particle.isFlammable && ThreadLocalRandom.current().nextFloat() <= chanceToSpreadFire) {
+            else if (particle.isFlammable && SRandom.nextFloat() <= chanceToSpreadFire) {
                 int[] particlePos = particle.getCurrentPosition();
                 grid.setParticle(particlePos[0], particlePos[1], new Fire());
             }

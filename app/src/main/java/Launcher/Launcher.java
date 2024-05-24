@@ -24,7 +24,7 @@ public class Launcher {
 
     public static void main(String[] args) {
         SRandom.setSeed(SEED);
-        System.out.println(SRandom.getSeed());
+        // System.out.println("seed: " + SRandom.getSeed());
 
         screen = new JFrame();
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
