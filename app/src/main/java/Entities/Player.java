@@ -26,6 +26,7 @@ public class Player extends Entity{
         setMoveX(screenWidth/tileDimension/2);
         setMoveY(screenHeight/tileDimension/2);
         setMaxSpeed(4);
+        setInitialJump(8);
         setAccelerationX(0.5f);
         setAccelerationY(1.3f);
         setColor(111, 0, 161);

@@ -253,7 +253,7 @@ public class Grid {
         */
 
         if (j > 0 + offset) { //check if element is not in the first row
-            return grid[j - 1][i]; //upper
+            return grid[j - 1 - offset][i]; //upper
             }
         return null;
     }
@@ -264,6 +264,20 @@ public class Grid {
         if (i > 0) sideNeighbors[0] = grid[j][i - 1];
         if (i < columns - 1) sideNeighbors[1] = grid[j][i + 1];
         return sideNeighbors;
+    }
+
+    public Particle getSingleOffsetNeighbor(int j, int i, int offsetJ, int offsetI) {
+        /* return the single offset cell of grid[i][j] 
+         * if neighbor is out of bound returns null
+         * used for the diagonal of the player
+        */
+
+        if (j > 0 + Math.abs(offsetJ) && j < rows - 1 - Math.abs(offsetJ)) { //check if element is not in the first row
+            if (i > 0 + Math.abs(offsetI) && i < columns - 1 - Math.abs(offsetI)) {
+                return grid[j + offsetJ][i + offsetI];
+            }
+        }
+        return null;
     }
 
 
