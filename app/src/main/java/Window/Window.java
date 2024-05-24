@@ -21,7 +21,6 @@ import Blocks.ParticleList;
 import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
-import Grid.Chunk;
 import Grid.Grid;
 
 
@@ -86,7 +85,6 @@ public class Window extends JPanel implements ActionListener {
         this.addMouseWheelListener(mouse);// for mouse wheel detection, changes cursour radius
         this.addMouseMotionListener(mouse);
         this.addMouseListener(mouse);
-
 
     }
 

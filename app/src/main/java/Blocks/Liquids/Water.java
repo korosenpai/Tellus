@@ -1,9 +1,5 @@
 package Blocks.Liquids;
 
-import java.util.Random;
-
-import Blocks.Liquids.LiquidParticle;
-
 public class Water extends LiquidParticle{
     
     public Water() {

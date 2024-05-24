@@ -1,6 +1,6 @@
 package Blocks;
 
-import java.util.Random;
+import SRandom.SRandom;
 
 import Grid.Grid;
 
@@ -65,7 +65,7 @@ public abstract class Particle {
     // give random offset to add more texture to color
     public int getColorOffset() {
          //OFFSET IS += 100 quindi fare -50 da original rgb value
-        return new Random().nextInt(100);
+        return SRandom.nextInt(100);
     }
 
     public int[] getCurrentPosition() {

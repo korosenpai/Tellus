@@ -1,7 +1,5 @@
 package Blocks.Solids.DynamicSolid;
 
-import java.util.Random;
-
 public class Sand extends DynamicParticle {
     
     public Sand() {

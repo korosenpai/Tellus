@@ -1,15 +1,14 @@
 package Blocks.Gases;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.Liquids.LiquidParticle;
 import Grid.Grid;
+import SRandom.SRandom;
 
 public class Fire extends GasParticle {
     
-    int lifetime = Math.max(50, ThreadLocalRandom.current().nextInt(fireLifetime));
+    int lifetime = Math.max(50, SRandom.nextInt(fireLifetime));
     int hasLivedFor = 0;
     boolean hasMovedLastFrame = false;
     
@@ -22,7 +21,7 @@ public class Fire extends GasParticle {
         {240, 161, 65}
     };
 
-    int currentColor = ThreadLocalRandom.current().nextInt(availableColors.length);
+    int currentColor = SRandom.nextInt(availableColors.length);
 
 
 
