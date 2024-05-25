@@ -13,56 +13,53 @@ public class Grid {
     public ParticleList particleList = new ParticleList();
 
     // relative to viewport
-    final int screenWidth;
-    final int screenHeight;
-    final int chunkSize;
-    final int tileDimension;
+    private final int ROWS;
+    private final int COLS;
+    final int CHUNK_SIZE;
+    final int TILE_DIMENSION;
 
     // offset to draw viewport and not all grid
     private int viewportOffsetX = 0;
     private int viewportOffsetY = 0;
 
-    private final int rows;
-    private final int columns;
     public Particle[][] grid = {{}};
     private final int gridOffset = 0; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
 
     private ThreadUpdates threadUpdates;
     private Chunk[][] gridChunk;
-    private final int ChunkRows;
-    private final int ChunkColumns;
+    private final int CHUNK_ROWS;
+    private final int CHUNK_COLS;
     
 
     public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
-        this.screenWidth = screenWidth + gridOffset * chunkSize;
-        this.screenHeight = screenHeight + gridOffset * chunkSize;
-        this.chunkSize = chunkSize;
-        this.rows = this.screenHeight / tileDimension;
-        this.columns = this.screenWidth / tileDimension;
-        this.tileDimension = tileDimension;
+        CHUNK_SIZE = chunkSize;
+        TILE_DIMENSION = tileDimension;
 
-        this.ChunkRows = this.rows / this.chunkSize;
-        this.ChunkColumns = this.columns / this.chunkSize;
-        
-        grid = new Particle[this.rows][this.columns];
-        gridChunk = new Chunk[this.ChunkRows][this.ChunkColumns];
+        ROWS = screenHeight / TILE_DIMENSION;
+        COLS = screenWidth / TILE_DIMENSION;
+
+        CHUNK_ROWS = ROWS / CHUNK_SIZE;
+        CHUNK_COLS = COLS / CHUNK_SIZE;
+
+        grid = new Particle[ROWS][COLS];
+        gridChunk = new Chunk[CHUNK_ROWS][CHUNK_COLS];
         generateEmptyGrid();
 
-        threadUpdates = new ThreadUpdates(this.columns);
+        threadUpdates = new ThreadUpdates(this.COLS);
     }
 
     public int getRows() {
-        return rows;
+        return ROWS;
     }
     public int getColumns() {
-        return columns;
+        return COLS;
     }
 
     public int getChunkRows() {
-        return ChunkRows;
+        return CHUNK_ROWS;
     }
     public int getChunkColumns() {
-        return ChunkColumns;
+        return CHUNK_COLS;
     }
 
 
@@ -70,8 +67,8 @@ public class Grid {
         /*generates a 2d array of all zeros (id of empty cell)
         this is the general structure of the Grid
         WE NEED TO ITERATE FROM  BOTTOM TO TOP (L2R OR R2L DOESNT CHANGE ANYTHING) WHEN WE UPDATE
-        for (int j = columns-1; j > -1; j--) {
-            for (int i = rows-1; i >-1; i--) where
+        for (int j = COLS-1; j > -1; j--) {
+            for (int i = ROWS-1; i >-1; i--) where
         
         [^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ 
          0 0 0 0 0 0 0 0 0 0 0  |
@@ -87,16 +84,16 @@ public class Grid {
         */
 
 
-        for (int j = 0; j < this.rows; j++) {
-            for (int i = 0; i < this.columns; i++) {
+        for (int j = 0; j < this.ROWS; j++) {
+            for (int i = 0; i < this.COLS; i++) {
                 grid[j][i] = new Air();
             }
         }
 
         // populate also the chunks
-        for (int j = 0; j < this.rows / chunkSize; j++) {
-            for (int i = 0; i < this.columns / chunkSize; i++) {
-                gridChunk[j][i] = new Chunk(chunkSize);
+        for (int j = 0; j < CHUNK_ROWS; j++) {
+            for (int i = 0; i < CHUNK_COLS; i++) {
+                gridChunk[j][i] = new Chunk(CHUNK_SIZE);
             }
         }
         
@@ -111,7 +108,7 @@ public class Grid {
 
     public void updateParticle(int j, int i, int scanDirection) {
         // check if it is in a chunk that is not sleeping
-        if (!gridChunk[j / chunkSize][i / chunkSize].getShouldStep()) return;
+        if (!gridChunk[j / CHUNK_SIZE][i / CHUNK_SIZE].getShouldStep()) return;
 
         if (grid[j][i] instanceof Air || grid[j][i].scanDirection != scanDirection || grid[j][i].hasMoved) return;
 
@@ -120,15 +117,15 @@ public class Grid {
 
     public void updateGrid() {
         // first scan, bottom to top
-        for (int j = rows-1; j > -1; j--){
-            for (int i = columns-1; i > -1; i--){
+        for (int j = ROWS-1; j > -1; j--){
+            for (int i = COLS-1; i > -1; i--){
                 updateParticle(j, i, 1);
             }
         }
 
         // second scan, top to bottom
-        for (int j = 0; j < rows; j++){
-            for (int i = 0; i < columns; i++){
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++){
                 updateParticle(j, i, 2);
             }
         }
@@ -136,8 +133,8 @@ public class Grid {
         // threadUpdates.update(this);
         
         // make all chunks ready for next frame
-        for (int j = 0; j < this.rows / chunkSize; j++) {
-            for (int i = 0; i < this.columns / chunkSize; i++) {
+        for (int j = 0; j < CHUNK_ROWS; j++) {
+            for (int i = 0; i < CHUNK_COLS; i++) {
                 gridChunk[j][i].goToNextStep();
             }
         }
@@ -146,8 +143,8 @@ public class Grid {
     // after painting set all pixels who have moved
     //  able to make them move again
     public void setGridHasMovedFalse() {
-        for (int j = rows-1; j > -1; j--){
-            for (int i = columns-1; i > -1; i--){
+        for (int j = ROWS-1; j > -1; j--){
+            for (int i = COLS-1; i > -1; i--){
                 if (grid[j][i] instanceof Air) continue;
 
                 grid[j][i].hasMoved = false;
@@ -168,13 +165,13 @@ public class Grid {
     }
 
     public void setCursor(int mouseX, int mouseY, int radius, int particleID) {
-        int circleCentreX = mouseX / tileDimension;
-        int circleCentreY = mouseY / tileDimension;
+        int circleCentreX = mouseX / TILE_DIMENSION;
+        int circleCentreY = mouseY / TILE_DIMENSION;
         
         // min prevents to go out of bounds
-        int c0 = Math.min(circleCentreX + radius, columns - 1);
+        int c0 = Math.min(circleCentreX + radius, COLS - 1);
         int c180 = Math.max(circleCentreX - radius, 0);
-        int c90 = Math.min(circleCentreY + radius, rows - 1);
+        int c90 = Math.min(circleCentreY + radius, ROWS - 1);
         int c270 = Math.max(circleCentreY - radius, 0);
 
         // System.out.println(c0 + " : " + c180 + " : " + c90 + " : " + c270);
@@ -214,10 +211,10 @@ public class Grid {
         */
         Particle[] lowerNeighbors = new Particle[]{null, null, null};
 
-        if (j < rows - 1) { //check if element is not in the last row
+        if (j < ROWS - 1) { //check if element is not in the last row
             if (i > 0) lowerNeighbors[0] = grid[j + 1][i - 1]; //bottomleft
             lowerNeighbors[1] = grid[j + 1][i]; //bottom
-            if (i < columns - 1) lowerNeighbors[2] = grid[j + 1][i + 1]; //bottomright
+            if (i < COLS - 1) lowerNeighbors[2] = grid[j + 1][i + 1]; //bottomright
         }
         return lowerNeighbors;
     }
@@ -227,7 +224,7 @@ public class Grid {
          * if neighbor is out of bound returns null
         */
 
-        if (j < rows - offset - 1) { //check if element is not in the last row
+        if (j < ROWS - offset - 1) { //check if element is not in the last row
             return grid[j + 1 + offset][i]; //bottom
             }
         return null;
@@ -242,7 +239,7 @@ public class Grid {
         if (j > 0) { //check if element is not in the last row
             if (i > 0) upperNeighbors[0] = grid[j - 1][i - 1]; //upperleft
             upperNeighbors[1] = grid[j - 1][i]; //upper
-            if (i < columns - 1) upperNeighbors[2] = grid[j - 1][i + 1]; //upperright
+            if (i < COLS - 1) upperNeighbors[2] = grid[j - 1][i + 1]; //upperright
         }
         return upperNeighbors;
     }
@@ -262,7 +259,7 @@ public class Grid {
         Particle[] sideNeighbors = new Particle[]{null, null};
         
         if (i > 0) sideNeighbors[0] = grid[j][i - 1];
-        if (i < columns - 1) sideNeighbors[1] = grid[j][i + 1];
+        if (i < COLS - 1) sideNeighbors[1] = grid[j][i + 1];
         return sideNeighbors;
     }
 
@@ -272,8 +269,8 @@ public class Grid {
          * used for the diagonal of the player
         */
 
-        if (j > 0 + Math.abs(offsetJ) && j < rows - 1 - Math.abs(offsetJ)) { //check if element is not in the first row
-            if (i > 0 + Math.abs(offsetI) && i < columns - 1 - Math.abs(offsetI)) {
+        if (j > 0 + Math.abs(offsetJ) && j < ROWS - 1 - Math.abs(offsetJ)) { //check if element is not in the first row
+            if (i > 0 + Math.abs(offsetI) && i < COLS - 1 - Math.abs(offsetI)) {
                 return grid[j + offsetJ][i + offsetI];
             }
         }
@@ -311,28 +308,28 @@ public class Grid {
 
     // wake up all chunks in the vicinity of particle (adjacent chunks)
     public void wakeUpChunks(int j, int i) {
-        int chunkAtJ = j / chunkSize;
-        int chunkAtI = i / chunkSize;
+        int chunkAtJ = j / CHUNK_SIZE;
+        int chunkAtI = i / CHUNK_SIZE;
         
         // if particle is less than min or more than max it updates adjacent chunks
         // (it is close enough to the edges)
         int minChunkOffset = 6;
-        int maxChunkOffset = chunkSize - minChunkOffset - 1;
+        int maxChunkOffset = CHUNK_SIZE - minChunkOffset - 1;
 
 
         // returns true if close to the chunks
-        boolean closeToLeft = chunkAtI > 0 && i % chunkSize < minChunkOffset;
-        boolean closeToRight = chunkAtI < ChunkColumns - 1 && i % chunkSize > maxChunkOffset;
+        boolean closeToLeft = chunkAtI > 0 && i % CHUNK_SIZE < minChunkOffset;
+        boolean closeToRight = chunkAtI < CHUNK_COLS - 1 && i % CHUNK_SIZE > maxChunkOffset;
 
         gridChunk[chunkAtJ][chunkAtI].setShouldStepNextFrame(); // the chunk the particle is in
 
-        if (chunkAtJ < ChunkRows - 1 && j % chunkSize > maxChunkOffset) {
+        if (chunkAtJ < CHUNK_ROWS - 1 && j % CHUNK_SIZE > maxChunkOffset) {
             gridChunk[chunkAtJ + 1][chunkAtI].setShouldStepNextFrame(); // the chunk below
             if (closeToLeft) gridChunk[chunkAtJ + 1][chunkAtI - 1].setShouldStepNextFrame(); // bottom left
             if (closeToRight) gridChunk[chunkAtJ + 1][chunkAtI + 1].setShouldStepNextFrame(); // bottom right
         }
 
-        if (chunkAtJ > 0 && j % chunkSize < minChunkOffset) {
+        if (chunkAtJ > 0 && j % CHUNK_SIZE < minChunkOffset) {
             gridChunk[chunkAtJ - 1][chunkAtI].setShouldStepNextFrame(); // the chunk above
             if (closeToLeft) gridChunk[chunkAtJ - 1][chunkAtI - 1].setShouldStepNextFrame(); // above left
             if (closeToRight) gridChunk[chunkAtJ - 1][chunkAtI + 1].setShouldStepNextFrame(); // above right
