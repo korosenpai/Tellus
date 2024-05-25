@@ -1,6 +1,8 @@
 package Blocks.Liquids;
 
+import Blocks.Air;
 import Blocks.Particle;
+import Blocks.Gases.GasParticle;
 import Blocks.Solids.SolidParticle;
 import Entities.EntityParticle;
 import Grid.Grid;
@@ -67,7 +69,13 @@ public abstract class LiquidParticle extends Particle {
 
             // move down
             if (under[1] != null && !(under[1] instanceof SolidParticle || under[1] instanceof LiquidParticle || under[1] instanceof EntityParticle) ) {
-                grid.setParticle(coords[0], coords[1], grid.getAtPosition(coords[0] + 1, coords[1]));
+                Particle toMove = grid.getAtPosition(coords[0] + 1, coords[1]);
+                // remove gas particles
+                if (toMove instanceof GasParticle)
+                    grid.setParticle(coords[0], coords[1], new Air());
+                else
+                    grid.setParticle(coords[0], coords[1], toMove);
+
                 grid.setParticle(coords[0] + 1, coords[1], this);
                 coords[0]++;
             }
