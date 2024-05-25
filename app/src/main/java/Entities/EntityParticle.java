@@ -46,6 +46,10 @@ public class EntityParticle extends Particle{
         this.goDownRight = goDownRight;
     } */
 
+    public int getEntityID() {
+        return entityID;
+    }
+
     public void setMaxSpeed(int speed) {
         maxSpeed = speed;
     }
