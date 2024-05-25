@@ -69,167 +69,73 @@ public class Entity extends JPanel{
         Particle upperN = new Particle() {};
         Particle sideN = new Particle() {};
         Particle diagonalN = new Particle() {};
+        Particle neighbor = new Particle() {};
 
         // flags
         boolean shouldFreeFall = true;
         boolean canGoUp = true;
         boolean  canGoSide = true;
         boolean canGoDiagonal = true;
+        boolean canGo = true;
 
         int[] coords;
         ArrayList <int[]> totalCoords = new ArrayList<>(); // list of coordinates
-        int currentVelX = Math.abs(velocityX);
-        int vy = 0, vx = 0;
+        int vy = 0, vx = 0, err = 0, neighborID = -1;
+        int absVx = Math.abs(velocityX), absVy = Math.abs(velocityY);
 
-
-        // loop that boundes the movement of the entity on the y axis
-        for (; vy < Math.abs(velocityY); vy++) {
-            if (currentJumpVel == 0) {
-
-                // loop that boundes the horizontal movement of the Entity
-                for (; vx < currentVelX; vx++) {
-                    //System.out.println(vx);
-        
-                    // checks if the entity is going left
-                    if (directionX < 0) {
-        
-                        // iterates the entity particles in the list
-                        for (int i = 0; i < particleList.size(); i++){
-                            // local coordinates
-                            coords = fromPosToCoords(i);
-                        
-                            if (i <= particleList.size() - getDimensionX()){
-                                if (i % getDimensionX() == 0){
-                                    // left side logic
-                                    sideN = grid.getSideNeighbors(coords[0], coords[1]-vx)[0];
-                                    canGoSide = (canGoSide && !(sideN == null) && !(sideN instanceof  SolidParticle));
-                                }
-                            }
-                            if (i == particleList.size() - getDimensionX()){
-                                // left-down diagonal logic
-                                for (int dy = 1; dy < vy+1; dy++) {
-                                    for (int dx = 1; dx < vx+1; dx++){
-                                        diagonalN = grid.getSingleOffsetNeighbor(coords[0], coords[1], dy, -dx);
-                                        canGoDiagonal = (canGoDiagonal && !(diagonalN == null) && !(diagonalN instanceof SolidParticle));
-                                    }
-                                }
-                            }
-                            if (i >= particleList.size() - getDimensionX()){
-                                // lower side logic
-                                lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], vy);
-                                shouldFreeFall = (shouldFreeFall && !(lowerN == null) && !(lowerN instanceof SolidParticle && lowerN.isFreeFalling == false));
-                            }
-                        }
-                        if (!shouldFreeFall && !canGoSide && !canGoDiagonal) break;
-        
-                    // checks if the entity is going right
-                    } else if (directionX > 0) {
-        
-                        // iterates the entity particles in the list
-                        for (int i = 0; i < particleList.size(); i++){
-                            // local coordinates
-                            coords = fromPosToCoords(i);
-                        
-                            if (i <= particleList.size() - 1){
-                                if (i % getDimensionX() - 1 == 0){
-                                    // right side logic
-                                    sideN = grid.getSideNeighbors(coords[0], coords[1]-vx)[1];
-                                    canGoSide = (canGoSide && !(sideN == null) && !(sideN instanceof  SolidParticle));
-                                }
-                            }
-                            if (i == particleList.size() - 1){
-                                // right-down diagonal logic
-                                for (int dy = 1; dy < vy+1; dy++) {
-                                    for (int dx = 1; dx < vx+1; dx++){
-                                        diagonalN = grid.getSingleOffsetNeighbor(coords[0], coords[1], dy, dx);
-                                        canGoDiagonal = (canGoDiagonal && !(diagonalN == null) && !(diagonalN instanceof SolidParticle));
-                                    }
-                                }
-                            }
-                            if (i >= particleList.size() - getDimensionX()){
-                                // lower side logic
-                                lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], vy);
-                                shouldFreeFall = (shouldFreeFall && !(lowerN == null) && !(lowerN instanceof SolidParticle && lowerN.isFreeFalling == false));
-                            }
-                        }
-                        if (!shouldFreeFall && !canGoSide && !canGoDiagonal) break;
-                    }
-                }
-                
-            } else {
-
-                // loop that boundes the horizontal movement of the Entity
-                for (; vx < currentVelX; vx++) {
-                    //System.out.println(vx);
-        
-                    // checks if the entity is going left
-                    if (directionX < 0) {
-        
-                        // iterates the entity particles in the list
-                        for (int i = 0; i < particleList.size(); i++){
-                            // local coordinates
-                            coords = fromPosToCoords(i);
-                        
-                            if (i <= particleList.size() - getDimensionX()){
-                                if (i % getDimensionX() == 0){
-                                    // left side logic
-                                    sideN = grid.getSideNeighbors(coords[0], coords[1]-vx)[0];
-                                    canGoSide = (canGoSide && !(sideN == null) && !(sideN instanceof  SolidParticle));
-                                }
-                            }
-                            if (i == 0){
-                                // left-up diagonal logic
-                                for (int dy = 1; dy < vy+1; dy++) {
-                                    for (int dx = 1; dx < vx+1; dx++){
-                                        diagonalN = grid.getSingleOffsetNeighbor(coords[0], coords[1], -dy, -dx);
-                                        canGoDiagonal = (canGoDiagonal && !(diagonalN == null) && !(diagonalN instanceof SolidParticle));
-                                    }
-                                }
-                            }
-                            if (i <= getDimensionX() - 1){
-                                // upper side logic
-                                upperN = grid.getSingleUpperNeighbor(coords[0], coords[1], vy);
-                                canGoUp = (canGoUp && !(upperN == null) && !(upperN instanceof SolidParticle));
-                            }
-                        }
-                        if (!canGoUp && !canGoSide && !canGoDiagonal) break;
-        
-                    // checks if the entity is going right
-                    } else if (directionX > 0) {
-        
-                        // iterates the entity particles in the list
-                        for (int i = 0; i < particleList.size(); i++){
-                            // local coordinates
-                            coords = fromPosToCoords(i);
-                        
-                            if (i <= particleList.size() - 1){
-                                if (i % getDimensionX() == 0){
-                                    // right side logic
-                                    sideN = grid.getSideNeighbors(coords[0], coords[1]-vx)[1];
-                                    canGoSide = (canGoSide && !(sideN == null) && !(sideN instanceof  SolidParticle));
-                                }
-                            }
-                            if (i == getDimensionX() - 1){
-                                // right-up diagonal logic
-                                for (int dy = 1; dy < vy+1; dy++) {
-                                    for (int dx = 1; dx < vx+1; dx++){
-                                        diagonalN = grid.getSingleOffsetNeighbor(coords[0], coords[1], -dy, dx);
-                                        canGoDiagonal = (canGoDiagonal && !(diagonalN == null) && !(diagonalN instanceof SolidParticle));
-                                    }
-                                }
-                            }
-                            if (i <= getDimensionX() - 1){
-                                // upper side logic
-                                upperN = grid.getSingleLowerNeighbor(coords[0], coords[1], vy);
-                                canGoUp = (canGoUp && !(upperN == null) && !(upperN instanceof SolidParticle));
-                            }
-                        }
-                        if (!canGoUp && !canGoSide && !canGoDiagonal) break;
-                    }
-                }
-            }
+        if (!isOnGround) {
+            directionY = 1;
         }
 
+        if (absVx > absVy) {
+            int derr = absVy;
+            for (;vx < absVx;) {
+                vx += directionX;
+                err += derr;
+                if (err >= absVx) {
+                    vy += directionY;
+                    err -= absVx;
+                }
+                for (int j = moveY + vy; j < moveY + vy + getDimensionY(); j++) {
+                    for (int i = moveX + vx; i < moveX + vx + getDimensionX(); i++) {
+                        neighbor = grid.getAtPosition(j, i);
+                        neighborID = -1;
+                        if (neighbor instanceof EntityParticle) {
+                            EntityParticle entityNeighbor = (EntityParticle) neighbor;
+                            neighborID = entityNeighbor.getEntityID();
+                        }
+                        canGo = ((neighbor != null && !(neighbor instanceof SolidParticle)) || (neighbor instanceof EntityParticle && neighborID == entityID));
+                        if (!canGo) break;
+                    }
+                    if (!canGo) break;
+                }
+                if (!canGo) break;
+            }
+        } else {
+            int derr = absVx;
+            for (;vy < absVy;) {
+                vx += directionX;
+                err += derr;
+                if (err >= absVy) {
+                    vx += directionX;
+                    err -= absVy;
+                }
+                for (int j = moveY + vy; j < moveY + vy + getDimensionY(); j++) {
+                    for (int i = moveX + vx; i < moveX + vx + getDimensionX(); i++) {
+                        neighbor = grid.getAtPosition(j, i);
+                        neighborID = -1;
+                        if (neighbor instanceof EntityParticle) {
+                            EntityParticle entityNeighbor = (EntityParticle) neighbor;
+                            neighborID = entityNeighbor.getEntityID();
+                        }
+                        canGo = ((neighbor != null && !(neighbor instanceof SolidParticle)) || (neighbor instanceof EntityParticle && neighborID == entityID));
+                        if (!canGo) break;
+                    }
+                    if (!canGo) break;
+                }
+                if (!canGo) break;
+            }
+        }
 
         if (isOnGround){
             if (directionY < 0) {
@@ -244,48 +150,10 @@ public class Entity extends JPanel{
             }
         }
 
-        // loops the whole entity to update every particle
-        for (int j = 0; j < particleList.size(); j++) {
-            coords = fromPosToCoords(j);
-            EntityParticle tempParticle = particleList.get(j);
+        for (int i = particleList.size() - getDimensionX(); i < particleList.size(); i++) {
 
-            //boolean isInJumpState = false; 
-            if (shouldFreeFall){
-                tempParticle.isFreeFalling = true;
-            } else {
-                tempParticle.isFreeFalling = false;
-                resetVelocityY();
-            }
-
-            totalCoords.add(tempParticle.update(coords, grid, lowerN, vx*directionX, vy*directionY));
         }
-        
-        //local update section
-        updateVelocityX(directionX);
-        //System.out.println("Y: " + directionY);
-        updateVelocityY(directionY); // gravity
-        
-        if (directionY >= 0 || !canGoUp){
-            resetJump();
-        }
-        //System.out.println("velocity : " + vy + " in dirY: " + directionY);
 
-        setMoveX(totalCoords.get(0)[1]);
-        setMoveY(totalCoords.get(0)[0]);
-
-        //System.out.println("X: " + totalCoords.get(0)[1] + " Y: " + totalCoords.get(0)[0]);
-        // System.out.println("Grid rows: " + grid.getRows());
-        //set particles in the grid section
-        for (int i = 0; i < totalCoords.size(); i++) {
-            //System.out.println("X: " + totalCoords.get(i)[1] + " Y: " + totalCoords.get(i)[0]);
-            
-             grid.setParticle(totalCoords.get(i)[0],totalCoords.get(i)[1], particleList.get(i));
-        
-        }
-       
-        isOnGround = !shouldFreeFall;
-
-        return;
     } */
 
 
@@ -464,7 +332,7 @@ public class Entity extends JPanel{
         if (direction >= 0){
             velocityY = Math.min(Math.round(Math.abs(velocityY) + accelerationY), maxSpeed); 
         } else {
-            velocityY = -currentJumpVel; //+ (int) accelerationY;
+            velocityY = -currentJumpVel;
         }
         //System.out.println("before: " + velocityY);       
         //System.out.println("velY: " + velocityY);
