@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
-
+import Blocks.Liquids.Water;
 import SRandom.SRandom;
 
 public class Grid {
@@ -23,12 +23,15 @@ public class Grid {
     private int viewportOffsetY = 0;
 
     public Particle[][] grid = {{}};
+    public UnloadingZone uz;
     private final int gridOffset = 0; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
 
     private ThreadUpdates threadUpdates;
     private Chunk[][] gridChunk;
     private final int CHUNK_ROWS;
     private final int CHUNK_COLS;
+    public int chunkOffsetX; // TODO: shift while moving with uz
+    public int chunkOffsetY;
     
 
     public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
@@ -46,14 +49,23 @@ public class Grid {
         generateEmptyGrid();
 
         threadUpdates = new ThreadUpdates(this.COLS);
+
+        uz = new UnloadingZone(CHUNK_SIZE, ROWS, COLS);
     }
 
     public int getRows() {
         return ROWS;
     }
+
     public int getColumns() {
         return COLS;
     }
+
+    // get entire row / col
+    public Particle[] getRow(int rowN) {
+        return grid[rowN];
+    }
+    public void getCol() {}
 
     public int getChunkRows() {
         return CHUNK_ROWS;
@@ -62,6 +74,15 @@ public class Grid {
         return CHUNK_COLS;
     }
 
+    public Particle[][] getGrid() {
+        return grid;
+    }
+    public UnloadingZone getUnloadingZone() {
+        return uz;
+    }
+    public Chunk[][] getChunks() {
+        return gridChunk;
+    }
 
     public void generateEmptyGrid(){
         /*generates a 2d array of all zeros (id of empty cell)
@@ -99,12 +120,16 @@ public class Grid {
         
     }
 
-    public Particle[][] getGrid() {
-        return grid;
+    public Particle[] generateEmptyParticleArray(int len) {
+        Particle[] res = new Particle[len];
+
+        for (int i = 0; i < len; i++) {
+            res[i] = new Air();
+        }
+
+        return res;
     }
-    public Chunk[][] getChunks() {
-        return gridChunk;
-    }
+
 
     public void updateParticle(int j, int i, int scanDirection) {
         // check if it is in a chunk that is not sleeping
@@ -295,6 +320,7 @@ public class Grid {
         for (Particle[] row : grid) {
             System.out.println(Arrays.toString(row));
         }
+        System.out.println("-----------");
     }
 
 
@@ -313,7 +339,7 @@ public class Grid {
         
         // if particle is less than min or more than max it updates adjacent chunks
         // (it is close enough to the edges)
-        int minChunkOffset = 6;
+        int minChunkOffset = Water.maxSpeed / 2 + 1; // NOTE: to not make water outpace this
         int maxChunkOffset = CHUNK_SIZE - minChunkOffset - 1;
 
 
@@ -340,5 +366,44 @@ public class Grid {
 
     }
 
+    // shift grid and uz when moving
+    public void shiftUp(int moveDistance) {
+        uz.shiftUp(this, moveDistance);
+    }
+    public void shiftDown(int moveDistance) {
+        uz.shiftDown(this, moveDistance);
+    }
+    public void shiftLeft(int moveDistance) {
+        uz.shiftLeft(this, moveDistance);
+    }
+    public void shiftRight(int moveDistance) {
+        uz.shiftRight(this, moveDistance);
+    }
+
+    public void shiftGridDown(int moveDistance) {
+        System.arraycopy(grid, 0, grid, moveDistance, ROWS- moveDistance);
+    }
+    public void shiftGridUp(int moveDistance) {
+        System.arraycopy(grid, moveDistance, grid, 0, ROWS - moveDistance);
+    }
+    public void shiftGridLeft(int moveDistance) {
+        for (int j = 0; j < ROWS; j++) {
+            System.arraycopy(grid[j], moveDistance, grid[j], 0, COLS - moveDistance);
+        }
+    }
+    public void shiftGridRight(int moveDistance) {
+        for (int j = 0; j < ROWS; j++) {
+            System.arraycopy(grid[j], 0, grid[j], moveDistance, COLS - moveDistance);
+        }
+    }
+
+    // called after shiftUp to remove references to shifted particels
+    public void clearRow(int rowN) {
+        grid[rowN] = generateEmptyParticleArray(COLS);
+    }
+    public void clearColumn(int colN) {
+        for (int j = 0; j < ROWS; j++)
+            grid[j][colN] = new Air();
+    }
 
 }

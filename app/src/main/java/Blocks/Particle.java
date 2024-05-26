@@ -4,7 +4,7 @@ import SRandom.SRandom;
 
 import Grid.Grid;
 
-public abstract class Particle {
+public abstract class Particle implements Cloneable {
     
     // to be abstracted by the solids
     // they are readonly
@@ -77,6 +77,18 @@ public abstract class Particle {
         if (coords[0] != previousPosition[0] || coords[1] != previousPosition[1])
             grid.wakeUpChunks(coords[0], coords[1]);
     }
+
+    @Override
+    public Particle clone() {
+        try {
+            return (Particle)super.clone();
+        }
+        catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public int[] update(int[] coords, Grid grid) {
         hasMoved = true;
