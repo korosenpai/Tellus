@@ -76,9 +76,9 @@ public class Entity extends JPanel{
         int[] coords;
         ArrayList <int[]> oldTotalCoords = new ArrayList<>(); // list of old coordinates
         ArrayList <int[]> newTotalCoords = new ArrayList<>(); // list of new coordinates
-        int vy = 0, vx = 0, err = 0, neighborID = -1; // err is the accumulated error in the calculation of the trajectory of the entity
+        int vy = 0, vx = 0, err = 0; // err is the accumulated error in the calculation of the trajectory of the entity
         int absVx = Math.abs(velocityX), absVy = Math.abs(velocityY);
-        //System.out.println("absVx: " + absVx + "\nabsVy: " + absVy);
+        System.out.println("absVx: " + absVx + "\nabsVy: " + absVy);
 
         if (isOnGround){
             if (directionY < 0) {
@@ -87,10 +87,11 @@ public class Entity extends JPanel{
         } else {
             if (directionY < 0){
                 if (currentJumpVel == 0) directionY = 1;
-            }
+            } else if (directionY == 0) directionY = 1;
         }
 
         if (absVx > absVy) { // if the entity is moving mostly on the X axis
+            System.out.println("X priority");
             int derr = absVy;
             for (;vx < absVx;) { // loop to check every step in the grid
                 vx++;
@@ -127,7 +128,7 @@ public class Entity extends JPanel{
                     if (availablePosition(grid, (vx-1)*directionX, vy*directionY)) {
                         vx--;
                     } else if (availablePosition(grid, vx*directionX, (vy-1)*directionY)) {
-                        System.out.println("avanzi diminuendo vy");
+                        //System.out.println("avanzi diminuendo vy");
                         vy--;
                     } else {
                         vx--;
@@ -210,6 +211,13 @@ public class Entity extends JPanel{
             if (!canGo) break;
         }
         return canGo;
+    } */
+
+    /* public Particle getAtPosition(int j, int i) {
+        if (j < ROWS && j >= 0 && i < COLS && i >= 0) {
+            return grid[j][i];
+        }
+        return null;
     } */
 
 
