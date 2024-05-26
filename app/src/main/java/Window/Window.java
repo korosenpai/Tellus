@@ -42,6 +42,7 @@ public class Window extends JPanel implements ActionListener {
     private boolean currentlyRendering;
 
     private static Grid grid;
+    private boolean toDrawChunks;
     private boolean restart;
 
     private Mouse mouse = new Mouse();
@@ -153,7 +154,7 @@ public class Window extends JPanel implements ActionListener {
 
         if (grid != null) {
             drawGrid(g2);
-            // drawChunks(g2);
+            if (toDrawChunks) drawChunks(g2);
         }
 
         drawMouse(g2);
@@ -300,6 +301,7 @@ public class Window extends JPanel implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
+            //System.out.println(key);
             switch (key) {
                 //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
                 case 10: // enter
@@ -380,14 +382,19 @@ public class Window extends JPanel implements ActionListener {
             // TODO: multiple keys pressed at the same time
             if (key == 68){ // D
                 playerDirectionX = 1;
+                grid.shiftLeft(2);
+
             } else if (key == 65){ // A
                 playerDirectionX = -1;
+                grid.shiftRight(2);
             }
             if (key == 87 || key == 32){ // W or sapce
                 playerDirectionY = -1;
+                grid.shiftDown(2);
 
             } else if (key == 83){ // S
                 playerDirectionY = 1;
+                grid.shiftUp(2);
             }
 
 
@@ -413,6 +420,11 @@ public class Window extends JPanel implements ActionListener {
             } else if (key == 83){
                 playerDirectionY = 1;
             }
+
+            if (key == 67) // c
+                toDrawChunks = !toDrawChunks;
+            if (key == 80) // p
+                grid.print();
         }
 
     }

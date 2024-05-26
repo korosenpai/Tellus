@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import Blocks.Particle;
 
+// NOTE: DEPRECATED, save with CHUNK UNLOADER
 
 public class GridTemplates implements Serializable{
     
