@@ -23,6 +23,7 @@ public class Player extends Entity{
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
 
+        setBehaviours(false, true);
         setMoveX(screenWidth/tileDimension/2);
         setMoveY(screenHeight/tileDimension/2);
         setMaxSpeed(4);
