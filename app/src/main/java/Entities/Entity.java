@@ -72,15 +72,13 @@ public class Entity extends JPanel{
 
         // temporary istances
         Particle lowerN = new Particle() {};
-        Particle neighbor = new Particle() {};
-
-        boolean canGo = true; // flag
 
         int[] coords;
         ArrayList <int[]> oldTotalCoords = new ArrayList<>(); // list of old coordinates
         ArrayList <int[]> newTotalCoords = new ArrayList<>(); // list of new coordinates
         int vy = 0, vx = 0, err = 0, neighborID = -1; // err is the accumulated error in the calculation of the trajectory of the entity
         int absVx = Math.abs(velocityX), absVy = Math.abs(velocityY);
+        //System.out.println("absVx: " + absVx + "\nabsVy: " + absVy);
 
         if (isOnGround){
             if (directionY < 0) {
@@ -95,55 +93,47 @@ public class Entity extends JPanel{
         if (absVx > absVy) { // if the entity is moving mostly on the X axis
             int derr = absVy;
             for (;vx < absVx;) { // loop to check every step in the grid
-                // double for loop to check the space of the step
-                for (int j = moveY + directionY*vy; j < moveY + directionY*vy + getDimensionY(); j++) {
-                    for (int i = moveX + directionX*vx; i < moveX + directionX*vx + getDimensionX(); i++) {
-                        neighbor = grid.getAtPosition(j, i); // particle at coordinates
-                        neighborID = -1;
-                        if (neighbor instanceof EntityParticle) { // check if it's himself
-                            EntityParticle entityNeighbor = (EntityParticle) neighbor;
-                            neighborID = entityNeighbor.getEntityID();
-                        }
-                        // flag for one step movement
-                        canGo = (canGo && (neighbor != null && !(neighbor instanceof SolidParticle && neighbor.isFreeFalling == false)) || (neighbor instanceof EntityParticle && neighborID == entityID));
-                        if (!canGo) break;
-                    }
-                    if (!canGo) break;
-                }
-                if (!canGo) break;
                 vx++;
                 err += derr;
                 if (err >= absVx) { // if the error overtake the X velocity, update the Y step
                     vy++;
                     err -= absVx;
                 }
+                if (!availablePosition(grid, vx*directionX, vy*directionY)) {
+                    System.out.println("non puoi avanzare");
+                    if (availablePosition(grid, (vx-1)*directionX, vy*directionY)) {
+                        vx--;
+                    } else if (availablePosition(grid, vx*directionX, (vy-1)*directionY)) {
+                        vy--;
+                    } else {
+                        vx--;
+                        vy--;
+                    }
+                    break;
+                }
+                
             }
         } else { // if the entity is moving mostly on the Y axis
             int derr = absVx;
             for (;vy < absVy;) { // loop to check every step in the grid
-                
-                // double for loop to check the space of the step
-                for (int j = moveY + directionY*vy; j < moveY + directionY*vy + getDimensionY(); j++) {
-                    //System.out.println("absVx: " + absVx + "\nabsVy: " + absVy);
-                    for (int i = moveX + directionX*vx; i < moveX + directionX*vx + getDimensionX(); i++) {
-                        neighbor = grid.getAtPosition(j, i);
-                        neighborID = -1;
-                        if (neighbor instanceof EntityParticle) { // check if it's himself
-                            EntityParticle entityNeighbor = (EntityParticle) neighbor;
-                            neighborID = entityNeighbor.getEntityID();
-                        }
-                        // flag for one step movement
-                        canGo = (canGo && (neighbor != null && !(neighbor instanceof SolidParticle && neighbor.isFreeFalling == false)) || (neighbor instanceof EntityParticle && neighborID == entityID));
-                        if (!canGo) break;
-                    }
-                    if (!canGo) break;
-                }
-                if (!canGo) break;
                 vy++;
                 err += derr;
                 if (err >= absVy) { // if the error overtake the Y velocity, update the X step
                     vx++;
                     err -= absVy;
+                }                
+                if (!availablePosition(grid, vx*directionX, vy*directionY)) {
+                    //System.out.println("non puoi avanzare");
+                    if (availablePosition(grid, (vx-1)*directionX, vy*directionY)) {
+                        vx--;
+                    } else if (availablePosition(grid, vx*directionX, (vy-1)*directionY)) {
+                        System.out.println("avanzi diminuendo vy");
+                        vy--;
+                    } else {
+                        vx--;
+                        vy--;
+                    }
+                    break;
                 }
             }
         }        
@@ -165,13 +155,18 @@ public class Entity extends JPanel{
             newTotalCoords.add(tempParticle.update(coords, grid, lowerN, vx*directionX, vy*directionY));
         }
 
+        //System.out.println("\n");
         // replace the entity with other particles
         for (int i = 0; i < oldTotalCoords.size(); i++) {
+            //System.out.println(oldTotalCoords.get(i)[0] + " " + oldTotalCoords.get(i)[1]);
             grid.setParticle(oldTotalCoords.get(i)[0], oldTotalCoords.get(i)[1], new Air());
         }
 
+        //System.out.println("\n");
+
         // place the entity in the grid again
         for (int i = 0; i < newTotalCoords.size(); i++) {
+            //System.out.println(newTotalCoords.get(i)[0] + " " + newTotalCoords.get(i)[1]);
             grid.setParticle(newTotalCoords.get(i)[0], newTotalCoords.get(i)[1], particleList.get(i));
         }
 
@@ -179,9 +174,9 @@ public class Entity extends JPanel{
         updateVelocityX(directionX);
         updateVelocityY(directionY);
 
-        setMoveX(newTotalCoords.get(0)[1]);
-        setMoveY(newTotalCoords.get(0)[0]);
-        System.out.println("X: " + moveX + "\nY: " + moveY);
+        moveX += vx*directionX;
+        moveY += vy*directionY;
+        //System.out.println("X: " + moveX + "\nY: " + moveY);
 
         isOnGround = true;
         for (int i = particleList.size() - getDimensionX(); i < particleList.size(); i++) {
@@ -190,6 +185,31 @@ public class Entity extends JPanel{
             isOnGround = (isOnGround && (lowerN == null || (lowerN instanceof SolidParticle && lowerN.isFreeFalling == false)));
         }
 
+        return;
+
+    }
+
+    private boolean availablePosition(Grid grid, int vx, int vy){
+        Particle neighbor = new Particle() {};
+        int neighborID = -1;
+        boolean canGo = true;
+
+        // double for loop to check the space of the step
+        for (int j = moveY + vy; j < moveY + vy + getDimensionY(); j++) {
+            for (int i = moveX + vx; i < moveX + vx + getDimensionX(); i++) {
+                neighbor = grid.getAtPosition(j, i); // particle at coordinates
+                neighborID = -1;
+                if (neighbor instanceof EntityParticle) { // check if it's himself
+                    EntityParticle entityNeighbor = (EntityParticle) neighbor;
+                    neighborID = entityNeighbor.getEntityID();
+                }
+                // flag for one step movement
+                canGo = (canGo && (neighbor != null && !(neighbor instanceof SolidParticle && neighbor.isFreeFalling == false)) || (neighbor instanceof EntityParticle && neighborID == entityID));
+                if (!canGo) break;
+            }
+            if (!canGo) break;
+        }
+        return canGo;
     } */
 
 
