@@ -61,7 +61,7 @@ public class Grid {
 
         uz = new UnloadingZone(CHUNK_SIZE, ROWS, COLS);
         noiseGrid = new int[ROWS][COLS]; //used for generating the world
-        generateRandomNoiseGrid(60); //to be changed with generateWorld once im done with the bestemmie
+        
     }
 
     public int getRows() {
@@ -190,43 +190,30 @@ public class Grid {
 
     // generating cave system -------------------------------------------------------------------------------------------------------------------------
 
-    public void generateRandomNoiseGrid(int noiseDensity) {
-        for (int j = 0; j < ROWS -1; j++){
-            for (int i = 0; i < COLS -1; i++){
-                int tempNum = ThreadLocalRandom.current().nextInt(101);
-                if (tempNum > noiseDensity) noiseGrid[j][i] = 0;
-                else noiseGrid[j][i] = 1;
-            }
+
+    public void generateWorld() {
+        noiseGrid = new int[ROWS][COLS];
+        generateRandomNoiseGrid(60);
+        for (int i = 0; i < 12; i++) {
+            smoothNoiseGrid();    
         }
+        
+        
+        
+        convertNoiseGrid();
+        
     }
 
-    public int[][] generateEmptyNoiseGrid(){
+    private int[][] generateEmptyNoiseGrid(){
         return new int[ROWS][COLS];
     }
 
 
-    public void procedurallyGenerateWorld() {
-        //https://github.com/GiunoSheetDev/visual-simulations/blob/main/cellular-automata-procedural-generation/main.py
-        int[][] newNoiseGrid = generateEmptyNoiseGrid();
-        for (int j = 0; j < ROWS -1; j++) {
-            for (int i = 0; i < COLS -1; i++) {
-                int[] neighbors = getIntNeighbors(j, i);
-                int counter = 0;
-                for (int obj: neighbors)
-                    if (obj == 0) counter++;
-                if (counter > 4) newNoiseGrid[j][i] = 0;
-                else newNoiseGrid[j][i] = 1;
-            }
-        }
-        noiseGrid = newNoiseGrid;
-    }
-
-    public void convertWorldToGrid(){
-        for (int j = 0; j < ROWS -1; j++) {
-            for (int i = 0; i < COLS -1; i++) {
-                if (noiseGrid[j][i] == 0) grid[j][i] = new Stone();
-                else if (noiseGrid[j][i] == 1) grid[j][i] = new Air();
-                
+    private void convertNoiseGrid() {
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++) {
+                if (noiseGrid[j][i] == 1) grid[j][i] = new Stone();
+                else if (noiseGrid[j][i] == 0) grid[j][i] = new Air();
             }
         }
     }
@@ -234,59 +221,51 @@ public class Grid {
 
 
 
-    // NOTE: GETNEIGHBORS IN A INT 2D ARRAY FUNCTIONS 
-    // input: j = y; i = x
-    // gives particles from left to right
-
-    public int[] getIntNeighbors(int j, int i) {
-        // concatenate in array all three methods to get neighbor from top left to bottom right
-        int[] array1 = getIntUpperNeighbors(j, i, noiseGrid);
-        int[] array2 = getIntSideNeighbors(j, i, noiseGrid);
-        int[] array3 = getIntLowerNeighbors(j, i, noiseGrid);
-        int totalLength = array1.length + array2.length + array3.length;
-        int[] concatenatedArray = new int[totalLength];
-        System.arraycopy(array1, 0, concatenatedArray, 0, array1.length);
-        System.arraycopy(array2, 0, concatenatedArray, array1.length, array2.length);
-        System.arraycopy(array3, 0, concatenatedArray, array1.length + array2.length, array3.length);
-
-        return concatenatedArray;
-    }
-
-    public int[] getIntLowerNeighbors(int j, int i, int[][] array) {
-        /* return the three lower cells of grid[i][j] 
-         * if neighbor is out of bound returns null
-        */
-        int[] lowerNeighbors = new int[]{1,1,1};
-
-        if (j < ROWS - 1) { //check if element is not in the last row
-            if (i > 0) lowerNeighbors[0] = array[j + 1][i - 1]; //bottomleft
-            lowerNeighbors[1] = array[j + 1][i]; //bottom
-            if (i < COLS - 1) lowerNeighbors[2] = array[j + 1][i + 1]; //bottomright
+    private void generateRandomNoiseGrid(int noiseDensity) {
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++) {
+                if (i == 0 || i == COLS-1 || j == 0 || j == ROWS-1) noiseGrid[j][i] = 1;
+                else noiseGrid[j][i] = (ThreadLocalRandom.current().nextInt(101) < noiseDensity)? 1: 0;
+            }
         }
-        return lowerNeighbors;
     }
 
-    public int[] getIntUpperNeighbors(int j, int i, int[][] array) {
-        /* return the three lower cells of grid[i][j] 
-         * if neighbor is out of bound returns null
-        */
-        int[] upperNeighbors = new int[]{1,1,1};
-
-        if (j > 0) { //check if element is not in the last row
-            if (i > 0) upperNeighbors[0] = array[j - 1][i - 1]; //upperleft
-            upperNeighbors[1] = array[j - 1][i]; //upper
-            if (i < COLS - 1) upperNeighbors[2] = array[j - 1][i + 1]; //upperright
+    private void smoothNoiseGrid(){
+        int[][] newGrid = generateEmptyNoiseGrid();
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++) {
+                int neighborWallCount = getSurroundingWallCount(i, j);
+                if (neighborWallCount > 4) newGrid[j][i] = 1;
+                else if (neighborWallCount <= 4) newGrid[j][i] = 0;
+            }
         }
-        return upperNeighbors;
-    }
 
-    public int[] getIntSideNeighbors(int j, int i, int[][] array){
-        int[] sideNeighbors = new int[]{1,1};
+        noiseGrid = generateEmptyNoiseGrid();
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++) {
+                noiseGrid[j][i] = newGrid[j][i];
+            }
+        }
         
-        if (i > 0) sideNeighbors[0] = array[j][i - 1];
-        if (i < COLS - 1) sideNeighbors[1] = array[j][i + 1];
-        return sideNeighbors;
     }
+
+    private int getSurroundingWallCount(int gridX, int gridY) {
+        int wallCount = 0;
+		for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX ++) {
+			for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY ++) {
+				if (neighbourX >= 0 && neighbourX < COLS && neighbourY >= 0 && neighbourY < ROWS) {
+					if (neighbourX != gridX || neighbourY != gridY) {
+						wallCount += noiseGrid[neighbourY][neighbourX];
+					}
+				}
+				else {
+					wallCount ++;
+				}
+			}
+		}
+
+		return wallCount;
+	}
 
 
 

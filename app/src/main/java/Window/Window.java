@@ -103,6 +103,7 @@ public class Window extends JPanel implements ActionListener {
         entityList = new ArrayList<>();
         player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
         entityList.add(player);
+        grid.generateWorld();
 
     }
     
@@ -367,13 +368,8 @@ public class Window extends JPanel implements ActionListener {
                     if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
                     
                 case 96:// numPad 0 
-                    grid.generateRandomNoiseGrid(50);
-
-                case 97: //numpad 1
-                    grid.procedurallyGenerateWorld();
+                    grid.generateWorld();
                 
-                case 98: //numpad 2
-                    grid.convertWorldToGrid();
 
                 case 77:
                     //GridTemplates.saveCurrentGrid(grid);
