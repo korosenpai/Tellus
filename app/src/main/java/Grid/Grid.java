@@ -194,31 +194,35 @@ public class Grid {
         for (int j = 0; j < ROWS -1; j++){
             for (int i = 0; i < COLS -1; i++){
                 int tempNum = ThreadLocalRandom.current().nextInt(101);
-                if (tempNum > noiseDensity) noiseGrid[j][i] = 0;
-                else noiseGrid[j][i] = 1;
+                noiseGrid[j][i] = (tempNum < noiseDensity) ? 1 : 0;
             }
         }
     }
 
-    public int[][] generateEmptyNoiseGrid(){
-        return new int[ROWS][COLS];
+    public int getSurroundingWallCount(int j, int i){
+        int counter = 0;
+        for (int neighborX = i-1; neighborX < i+1; neighborX ++){
+            for (int neighborY = j-1; neighborY < j+1; neighborY++){
+                if (neighborX >= 0 && neighborX < noiseGrid[0].length && neighborY >= 0 && neighborY < noiseGrid.length){
+                    if (neighborX != i || neighborY != j) {
+                        counter = counter + noiseGrid[j][i];
+                    }
+                }
+                else counter++;
+            }
+        }
     }
 
 
-    public void procedurallyGenerateWorld() {
-        //https://github.com/GiunoSheetDev/visual-simulations/blob/main/cellular-automata-procedural-generation/main.py
-        int[][] newNoiseGrid = generateEmptyNoiseGrid();
+    public void smoothNoiseGrid() {
         for (int j = 0; j < ROWS -1; j++) {
             for (int i = 0; i < COLS -1; i++) {
-                int[] neighbors = getIntNeighbors(j, i);
-                int counter = 0;
-                for (int obj: neighbors)
-                    if (obj == 0) counter++;
-                if (counter > 4) newNoiseGrid[j][i] = 0;
-                else newNoiseGrid[j][i] = 1;
+                int neighborWallTiles = getSurroundingWallCount(j, i);
+
+                if (neighborWallTiles >4) noiseGrid[j][i] = 1;
+                else noiseGrid[j][i] = 0;
             }
         }
-        noiseGrid = newNoiseGrid;
     }
 
     public void convertWorldToGrid(){
@@ -226,7 +230,7 @@ public class Grid {
             for (int i = 0; i < COLS -1; i++) {
                 if (noiseGrid[j][i] == 0) grid[j][i] = new Stone();
                 else if (noiseGrid[j][i] == 1) grid[j][i] = new Air();
-                
+
             }
         }
     }
@@ -234,61 +238,7 @@ public class Grid {
 
 
 
-    // NOTE: GETNEIGHBORS IN A INT 2D ARRAY FUNCTIONS 
-    // input: j = y; i = x
-    // gives particles from left to right
-
-    public int[] getIntNeighbors(int j, int i) {
-        // concatenate in array all three methods to get neighbor from top left to bottom right
-        int[] array1 = getIntUpperNeighbors(j, i, noiseGrid);
-        int[] array2 = getIntSideNeighbors(j, i, noiseGrid);
-        int[] array3 = getIntLowerNeighbors(j, i, noiseGrid);
-        int totalLength = array1.length + array2.length + array3.length;
-        int[] concatenatedArray = new int[totalLength];
-        System.arraycopy(array1, 0, concatenatedArray, 0, array1.length);
-        System.arraycopy(array2, 0, concatenatedArray, array1.length, array2.length);
-        System.arraycopy(array3, 0, concatenatedArray, array1.length + array2.length, array3.length);
-
-        return concatenatedArray;
-    }
-
-    public int[] getIntLowerNeighbors(int j, int i, int[][] array) {
-        /* return the three lower cells of grid[i][j] 
-         * if neighbor is out of bound returns null
-        */
-        int[] lowerNeighbors = new int[]{1,1,1};
-
-        if (j < ROWS - 1) { //check if element is not in the last row
-            if (i > 0) lowerNeighbors[0] = array[j + 1][i - 1]; //bottomleft
-            lowerNeighbors[1] = array[j + 1][i]; //bottom
-            if (i < COLS - 1) lowerNeighbors[2] = array[j + 1][i + 1]; //bottomright
-        }
-        return lowerNeighbors;
-    }
-
-    public int[] getIntUpperNeighbors(int j, int i, int[][] array) {
-        /* return the three lower cells of grid[i][j] 
-         * if neighbor is out of bound returns null
-        */
-        int[] upperNeighbors = new int[]{1,1,1};
-
-        if (j > 0) { //check if element is not in the last row
-            if (i > 0) upperNeighbors[0] = array[j - 1][i - 1]; //upperleft
-            upperNeighbors[1] = array[j - 1][i]; //upper
-            if (i < COLS - 1) upperNeighbors[2] = array[j - 1][i + 1]; //upperright
-        }
-        return upperNeighbors;
-    }
-
-    public int[] getIntSideNeighbors(int j, int i, int[][] array){
-        int[] sideNeighbors = new int[]{1,1};
-        
-        if (i > 0) sideNeighbors[0] = array[j][i - 1];
-        if (i < COLS - 1) sideNeighbors[1] = array[j][i + 1];
-        return sideNeighbors;
-    }
-
-
+    
 
 
 

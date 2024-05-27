@@ -370,7 +370,7 @@ public class Window extends JPanel implements ActionListener {
                     grid.generateRandomNoiseGrid(50);
 
                 case 97: //numpad 1
-                    grid.procedurallyGenerateWorld();
+                    grid.smoothNoiseGrid();
                 
                 case 98: //numpad 2
                     grid.convertWorldToGrid();
