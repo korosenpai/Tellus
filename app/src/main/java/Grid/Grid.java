@@ -316,7 +316,10 @@ public class Grid {
 
 
     public Particle getAtPosition(int j, int i) {
-        return grid[j][i];
+        if (j < ROWS && j >= 0 && i < COLS && i >= 0) {
+            return grid[j][i];
+        }
+        return null;
     }
 
     public void setParticle(int j, int i, Particle particle) {
