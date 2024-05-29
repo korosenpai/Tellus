@@ -7,6 +7,7 @@ import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
 import Blocks.Liquids.Water;
+import FileHandler.FileHandler;
 import SRandom.SRandom;
 
 public class Grid {
@@ -15,23 +16,20 @@ public class Grid {
     // relative to viewport
     private final int ROWS;
     private final int COLS;
-    final int CHUNK_SIZE;
-    final int TILE_DIMENSION;
+    public final int CHUNK_SIZE;
+    public final int TILE_DIMENSION;
 
     // offset to draw viewport and not all grid
     private int viewportOffsetX = 0;
     private int viewportOffsetY = 0;
 
     public Particle[][] grid = {{}};
-    public UnloadingZone uz;
     private final int gridOffset = 0; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
 
     private ThreadUpdates threadUpdates;
     private Chunk[][] gridChunk;
-    private final int CHUNK_ROWS;
+    private final int CHUNK_ROWS; // NOTE: to these change?
     private final int CHUNK_COLS;
-    public int chunkOffsetX; // TODO: shift while moving with uz
-    public int chunkOffsetY;
     
 
     public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
@@ -47,10 +45,16 @@ public class Grid {
         grid = new Particle[ROWS][COLS];
         gridChunk = new Chunk[CHUNK_ROWS][CHUNK_COLS];
         generateEmptyGrid();
+        print();
+        System.out.println("\n\n\n");
 
-        threadUpdates = new ThreadUpdates(this.COLS);
+        // TODO: load chunks from grid
+        loadChunkRowFromDisk(0);
 
-        uz = new UnloadingZone(CHUNK_SIZE, ROWS, COLS);
+        print();
+
+        // threadUpdates = new ThreadUpdates(this.COLS);
+
     }
 
     public int getRows() {
@@ -65,6 +69,9 @@ public class Grid {
     public Particle[] getRow(int rowN) {
         return grid[rowN];
     }
+    public void setRow(int rowN, Particle[] row) {
+        grid[rowN] = row;
+    }
     public void getCol() {}
 
     public int getChunkRows() {
@@ -76,9 +83,6 @@ public class Grid {
 
     public Particle[][] getGrid() {
         return grid;
-    }
-    public UnloadingZone getUnloadingZone() {
-        return uz;
     }
     public Chunk[][] getChunks() {
         return gridChunk;
@@ -366,21 +370,49 @@ public class Grid {
 
     }
 
-    // shift grid and uz when moving
-    public void shiftUp(int moveDistance) {
-        uz.shiftUp(this, moveDistance);
+    public void saveChunkToDisk(int[] chunkCoords) {
+        FileHandler.saveChunkToDisk(chunkCoords, this);
     }
-    public void shiftDown(int moveDistance) {
-        uz.shiftDown(this, moveDistance);
+    public void saveChunkRowToDisk(int rowN) {
+        FileHandler.saveChunkRowToDisk(rowN, this);
     }
-    public void shiftLeft(int moveDistance) {
-        uz.shiftLeft(this, moveDistance);
+    public void saveChunkColToDisk(int colN) {
+        FileHandler.saveChunkColToDisk(colN, this);
     }
-    public void shiftRight(int moveDistance) {
-        uz.shiftRight(this, moveDistance);
+    public void saveGridtoDisk() {
+
     }
 
+    public void loadChunkFromDisk(int[] chunkCoords) {
+        FileHandler.loadChunkFromDisk(chunkCoords, this);
+    }
+    public void loadChunkRowFromDisk(int rowN) {
+        Particle[][] loaded = FileHandler.loadChunkRowFromDisk(rowN, this);
+
+        // inject int grid chunks
+        for (int i = 0; i < loaded.length; i++) {
+            setRow(rowN + i, loaded[i]);
+        }
+
+        // wake up every chunk in row
+        // take element at half j for each chunk, middle elem in each chunk in i
+        for (int i = 0; i < loaded[0].length / CHUNK_SIZE; i++) {
+            wakeUpChunks(rowN + CHUNK_SIZE / 2, i * CHUNK_SIZE + CHUNK_SIZE / 2);
+        }
+
+        // set chunks injected to update
+    }
+    public void loadChunkColFromDisk(int colN) {
+        FileHandler.loadChunkColFromDisk(colN, this);
+    }
+    public void loadGridFromDisk() {
+
+    }
+
+
+
     public void shiftGridDown(int moveDistance) {
+        // src, srcIndex, dest, destIndex, len
         System.arraycopy(grid, 0, grid, moveDistance, ROWS- moveDistance);
     }
     public void shiftGridUp(int moveDistance) {

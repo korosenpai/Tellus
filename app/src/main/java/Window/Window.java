@@ -92,17 +92,18 @@ public class Window extends JPanel implements ActionListener {
     
 
     public void start() {
+
+        grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension);
+        entityList = new ArrayList<>();
+        player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
+        entityList.add(player);
+
         restart = false;
         if (timer == null) { // keep same timer even if restarted
             timer = new Timer(DELAY, this);
             timer.setRepeats(true);
             timer.start();
         }
-
-        grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension);
-        entityList = new ArrayList<>();
-        player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
-        entityList.add(player);
 
     }
     
@@ -128,7 +129,8 @@ public class Window extends JPanel implements ActionListener {
         if (getWindowShouldClose()) stop();
 
 
-        grid.updateGrid();
+        if (grid != null)
+            grid.updateGrid();
 
         if (mouse.isDragged() || mouse.isPressed()) {
             setOnClick(); // set particle on the position of the mouse, when clicked
@@ -301,7 +303,7 @@ public class Window extends JPanel implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
-            //System.out.println(key);
+            // System.out.println(key);
             switch (key) {
                 //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
                 case 10: // enter
@@ -310,6 +312,7 @@ public class Window extends JPanel implements ActionListener {
 
                 case 27: // esc
                     windowShouldClose = true;
+                    // TODO: save grid
                     break;
 
                 // arrows up and down to increase / decrease cursor
@@ -382,19 +385,15 @@ public class Window extends JPanel implements ActionListener {
             // TODO: multiple keys pressed at the same time
             if (key == 68){ // D
                 playerDirectionX = 1;
-                grid.shiftLeft(2);
 
             } else if (key == 65){ // A
                 playerDirectionX = -1;
-                grid.shiftRight(2);
             }
             if (key == 87 || key == 32){ // W or sapce
                 playerDirectionY = -1;
-                grid.shiftDown(2);
 
             } else if (key == 83){ // S
                 playerDirectionY = 1;
-                grid.shiftUp(2);
             }
 
 
@@ -425,6 +424,13 @@ public class Window extends JPanel implements ActionListener {
                 toDrawChunks = !toDrawChunks;
             if (key == 80) // p
                 grid.print();
+            if (key == 79) { // o
+                // grid.saveChunkToDisk(new int[]{0, 1});
+                grid.saveChunkRowToDisk(0);
+            }
+            if (key == 73) // i
+                // grid.loadChunkFromDisk(new int[]{0, 1});
+                grid.loadChunkRowFromDisk(0);
         }
 
     }

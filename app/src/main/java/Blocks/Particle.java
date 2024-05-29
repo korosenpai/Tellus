@@ -2,9 +2,11 @@ package Blocks;
 
 import SRandom.SRandom;
 
+import java.io.Serializable;
+
 import Grid.Grid;
 
-public abstract class Particle implements Cloneable {
+public abstract class Particle implements Cloneable, Serializable {
     
     // to be abstracted by the solids
     // they are readonly
