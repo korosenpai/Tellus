@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
-import Blocks.Liquids.Water;
 import FileHandler.FileHandler;
 import SRandom.SRandom;
 
@@ -14,30 +13,41 @@ public class Grid {
     public ParticleList particleList = new ParticleList();
 
     // relative to viewport
-    private final int ROWS;
+    private final int VIEWPORT_ROWS; // n of rows that will be rendered by viewport
+    private final int VIEWPORT_COLS;
+    private final int ROWS; // real number of rows
     private final int COLS;
     public final int CHUNK_SIZE;
     public final int TILE_DIMENSION;
 
+    // TODO: move to its own class?
     // offset to draw viewport and not all grid
+    private final int gridOffset = 2; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
+    private int chunkOffsetX = 0; // how many chunks moved in each direction
+    private int chunkOffsetY = 0; // used for loader to know in which chunk we are
     private int viewportOffsetX = 0;
     private int viewportOffsetY = 0;
 
-    public Particle[][] grid = {{}};
-    private final int gridOffset = 0; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
+    public Particle[][] grid;
 
-    private ThreadUpdates threadUpdates;
+    //private ThreadUpdates threadUpdates;
+
     private Chunk[][] gridChunk;
-    private final int CHUNK_ROWS; // NOTE: to these change?
+    private final int CHUNK_ROWS; // should never change
     private final int CHUNK_COLS;
-    
+
 
     public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
         CHUNK_SIZE = chunkSize;
         TILE_DIMENSION = tileDimension;
 
-        ROWS = screenHeight / TILE_DIMENSION;
-        COLS = screenWidth / TILE_DIMENSION;
+        VIEWPORT_ROWS = screenHeight / TILE_DIMENSION;
+        VIEWPORT_COLS = screenWidth / tileDimension;
+        ROWS = VIEWPORT_ROWS + 2 * gridOffset * CHUNK_SIZE;
+        COLS = VIEWPORT_COLS + 2 * gridOffset * CHUNK_SIZE;
+
+        // make viewport start at center of offset grid
+        resetViewportOffset();
 
         CHUNK_ROWS = ROWS / CHUNK_SIZE;
         CHUNK_COLS = COLS / CHUNK_SIZE;
@@ -45,13 +55,10 @@ public class Grid {
         grid = new Particle[ROWS][COLS];
         gridChunk = new Chunk[CHUNK_ROWS][CHUNK_COLS];
         generateEmptyGrid();
-        print();
-        System.out.println("\n\n\n");
 
-        // TODO: load chunks from grid
-        loadChunkRowFromDisk(0);
+        FileHandler.createDefaultChunkFile(CHUNK_SIZE);
 
-        print();
+        // loadGridFromDisk();
 
         // threadUpdates = new ThreadUpdates(this.COLS);
 
@@ -65,6 +72,14 @@ public class Grid {
         return COLS;
     }
 
+    public int getViewportRows() {
+        return VIEWPORT_ROWS;
+    }
+
+    public int getViewportColumns() {
+        return VIEWPORT_COLS;
+    }
+
     // get entire row / col
     public Particle[] getRow(int rowN) {
         return grid[rowN];
@@ -72,7 +87,7 @@ public class Grid {
     public void setRow(int rowN, Particle[] row) {
         grid[rowN] = row;
     }
-    public void getCol() {}
+    public void getCol() {} // TODO:
 
     public int getChunkRows() {
         return CHUNK_ROWS;
@@ -86,6 +101,17 @@ public class Grid {
     }
     public Chunk[][] getChunks() {
         return gridChunk;
+    }
+
+    public int getGridOffset() {
+        return gridOffset;
+    }
+
+    public int getViewportOffsetX() {
+        return viewportOffsetX;
+    }
+    public int getViewportOffsetY() {
+        return viewportOffsetY;
     }
 
     public void generateEmptyGrid(){
@@ -152,7 +178,7 @@ public class Grid {
             }
         }
 
-        // second scan, top to bottom
+        // second scan, top to bottom (for gases)
         for (int j = 0; j < ROWS; j++){
             for (int i = 0; i < COLS; i++){
                 updateParticle(j, i, 2);
@@ -321,18 +347,19 @@ public class Grid {
     */
 
     public void print() {
+        int idx = 0;
         for (Particle[] row : grid) {
-            System.out.println(Arrays.toString(row));
+            System.out.println(idx + ": " + Arrays.toString(row));
+            idx++;
         }
-        System.out.println("-----------");
-    }
-
-
-    public int getViewportOffsetX() {
-        return viewportOffsetX;
-    }
-    public int getViewportOffsetY() {
-        return viewportOffsetY;
+        // for (int j = 0; j < ROWS; j++) {
+        //     System.out.print(j + ": ");
+        //     for (int i = 0; i < COLS; i++) {
+        //         System.out.print(grid[j][i].getClass().getName() + " ");
+        //     }
+        //     System.out.println();
+        // }
+        // System.out.println("-----------");
     }
 
 
@@ -343,7 +370,7 @@ public class Grid {
         
         // if particle is less than min or more than max it updates adjacent chunks
         // (it is close enough to the edges)
-        int minChunkOffset = Water.maxSpeed / 2 + 1; // NOTE: to not make water outpace this
+        int minChunkOffset = 6; // NOTE: to not make water outpace this
         int maxChunkOffset = CHUNK_SIZE - minChunkOffset - 1;
 
 
@@ -370,6 +397,48 @@ public class Grid {
 
     }
 
+
+    private void resetViewportOffset() {
+        viewportOffsetX = viewportOffsetY = gridOffset * CHUNK_SIZE;
+    }
+
+    // TODO: check if these operations can be done
+    // (in theory with chunk loading they should always be possible)
+
+    public void moveViewUpOne() {
+        viewportOffsetY--;
+        if (viewportOffsetY <= CHUNK_SIZE) {
+            System.out.println("unloading bottom and loading top...");
+            chunkOffsetY--; // grid is shifting from origin to new chunks
+
+            FileHandler.saveChunkRowToDisk(CHUNK_ROWS - 1, this); // save last row to disk
+
+            resetViewportOffset();
+            shiftGridDown(CHUNK_SIZE);
+
+            loadChunkRowFromDisk(0);
+        }
+    }
+    public void moveViewDownOne() {
+        viewportOffsetY++;
+        // when approaching last chunk
+        if (viewportOffsetY + VIEWPORT_ROWS >= ROWS - CHUNK_SIZE) {
+            chunkOffsetY++;
+            System.out.println("unloading...");
+            // save row 0
+            resetViewportOffset();
+            shiftGridUp(CHUNK_SIZE);
+            loadChunkRowFromDisk(CHUNK_ROWS - 1);
+        }
+    }
+
+    public void moveViewRightOne() {
+        viewportOffsetX++;
+    }
+    public void moveViewLeftOne() {
+        viewportOffsetX--;
+    }
+
     public void saveChunkToDisk(int[] chunkCoords) {
         FileHandler.saveChunkToDisk(chunkCoords, this);
     }
@@ -380,6 +449,8 @@ public class Grid {
         FileHandler.saveChunkColToDisk(colN, this);
     }
     public void saveGridtoDisk() {
+        // TODO:  make this accept chunkCOord (only y is needed i think)
+        FileHandler.saveWholeGridToDisk(this);
 
     }
 
@@ -387,11 +458,11 @@ public class Grid {
         FileHandler.loadChunkFromDisk(chunkCoords, this);
     }
     public void loadChunkRowFromDisk(int rowN) {
-        Particle[][] loaded = FileHandler.loadChunkRowFromDisk(rowN, this);
+        Particle[][] loaded = FileHandler.loadChunkRowFromDisk(rowN + chunkOffsetY, this);
 
         // inject int grid chunks
         for (int i = 0; i < loaded.length; i++) {
-            setRow(rowN + i, loaded[i]);
+            setRow(rowN * CHUNK_SIZE + i, loaded[i]);
         }
 
         // wake up every chunk in row
@@ -406,6 +477,8 @@ public class Grid {
         FileHandler.loadChunkColFromDisk(colN, this);
     }
     public void loadGridFromDisk() {
+        // TODO: implement chunk coords
+        grid = FileHandler.loadWholeGridFromDisk(new int[]{0, 0}, this);
 
     }
 
@@ -413,7 +486,7 @@ public class Grid {
 
     public void shiftGridDown(int moveDistance) {
         // src, srcIndex, dest, destIndex, len
-        System.arraycopy(grid, 0, grid, moveDistance, ROWS- moveDistance);
+        System.arraycopy(grid, 0, grid, moveDistance, ROWS - moveDistance);
     }
     public void shiftGridUp(int moveDistance) {
         System.arraycopy(grid, moveDistance, grid, 0, ROWS - moveDistance);

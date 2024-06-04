@@ -1,4 +1,4 @@
-package Viewport;
+package Grid;
 
 public class Viewport {
 

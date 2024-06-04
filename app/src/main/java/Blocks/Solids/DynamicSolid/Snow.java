@@ -36,6 +36,8 @@ public class Snow extends DynamicParticle {
         if (!hasMovedLastFrame) super.update(coords, grid);
         hasMovedLastFrame = !hasMovedLastFrame;
 
+        grid.wakeUpChunks(coords[0], coords[1]);
+
 
         //check if the any neighbor particle is Liquid
         Particle[] neighbors = grid.getNeighbors(coords[0], coords[1]); 
