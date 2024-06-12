@@ -7,3 +7,7 @@ build
 # vscode run scripts
 **/.settings/
 app/bin/
+
+
+# ignore save files (NOTE: FOR NOW, they will be useful in the examples)
+app/src/main/saves
