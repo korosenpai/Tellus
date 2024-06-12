@@ -2,6 +2,9 @@ package Launcher;
 
 import javax.swing.JFrame;
 
+import Blocks.Particle;
+import Blocks.Solids.DynamicSolid.Sand;
+import FileHandler.FileHandler;
 // import MusicPlayer.MusicPlayer;
 import SRandom.SRandom;
 import Window.Window;
@@ -19,6 +22,11 @@ public class Launcher {
     static final int WIDTH = CHUNK_SIZE * TILE_SIZE * 8; // 1.280
     static final int HEIGHT = CHUNK_SIZE * TILE_SIZE * 6; // 960
     static final int SIDEBAR_WIDTH = 0; //(int)(WIDTH * .3);
+
+    // static final int TILE_SIZE = 20;
+    // static final int CHUNK_SIZE = 5;
+    // static final int WIDTH = CHUNK_SIZE * TILE_SIZE * 3; // 1.280
+    // static final int HEIGHT = CHUNK_SIZE * TILE_SIZE * 2; // 960
 
     static int FPS = 30;
 

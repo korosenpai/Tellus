@@ -34,6 +34,7 @@ public class UnloadingZone {
         UZIndex++;
     }
 
+    // NOTE: chunks dont need to be moved as long as player moves slower than particles, (now it does)
     // save UZ_* to disk if it gets full and reset it, or save it back to the grid if it gets emptier
     public void shiftUp(Grid grid, int moveDistance) {
         // System.out.println("shift up");
