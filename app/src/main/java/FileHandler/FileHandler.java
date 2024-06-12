@@ -74,7 +74,6 @@ public class FileHandler {
     // TODO: all other functions must pass chunkCoords, simply increment counter holded by the grid
     // THIS IS ALL WRONG, EVERY FUNCTION HAS TO TAKE CHUNKCOORDS AS PARAMETER
     // MUST BE IN CHUNK_ROW FORMAT (ROW / CHUNKSIZE)
-    :q
 
     public static void saveChunkToDisk(int[] chunkCoords, Grid grid) {
         Particle[][] toSave = new Particle[grid.CHUNK_SIZE][grid.CHUNK_SIZE];
