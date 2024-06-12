@@ -1,13 +1,20 @@
 package Grid;
 
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
+
+import javax.crypto.AEADBadTagException;
 
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
-import FileHandler.FileHandler;
+import Blocks.Liquids.Water;
+import Blocks.Solids.StaticSolid.Stone;
+import Blocks.Solids.StaticSolid.Wood;
+
 import SRandom.SRandom;
+import FileHandler.FileHandler;
 
 public class Grid {
     public ParticleList particleList = new ParticleList();
@@ -36,6 +43,9 @@ public class Grid {
     private final int CHUNK_ROWS; // should never change
     private final int CHUNK_COLS;
 
+    public int[][] noiseGrid; //used for generating the world
+
+    
 
     public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
         CHUNK_SIZE = chunkSize;
@@ -207,9 +217,100 @@ public class Grid {
         }
     }
 
+    // generating cave system -------------------------------------------------------------------------------------------------------------------------
+
+
+    public void generateWorld() {
+        noiseGrid = new int[ROWS][COLS];
+        generateRandomNoiseGrid(60);
+        for (int i = 0; i < 12; i++) {
+            smoothNoiseGrid();    
+        }
+        
+        
+        
+        convertNoiseGrid();
+        
+    }
+
+    private int[][] generateEmptyNoiseGrid(){
+        return new int[ROWS][COLS];
+    }
+
+
+    private void convertNoiseGrid() {
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++) {
+                if (noiseGrid[j][i] == 1) grid[j][i] = new Stone();
+                else if (noiseGrid[j][i] == 0) grid[j][i] = new Air();
+            }
+        }
+    }
+
+
+
+
+    private void generateRandomNoiseGrid(int noiseDensity) {
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++) {
+                if (i == 0 || i == COLS-1 || j == 0 || j == ROWS-1) noiseGrid[j][i] = 1;
+                else noiseGrid[j][i] = (ThreadLocalRandom.current().nextInt(101) < noiseDensity)? 1: 0;
+            }
+        }
+    }
+
+    private void smoothNoiseGrid(){
+        int[][] newGrid = generateEmptyNoiseGrid();
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++) {
+                int neighborWallCount = getSurroundingWallCount(i, j);
+                if (neighborWallCount > 4) newGrid[j][i] = 1;
+                else if (neighborWallCount <= 4) newGrid[j][i] = 0;
+            }
+        }
+
+        noiseGrid = generateEmptyNoiseGrid();
+        for (int j = 0; j < ROWS; j++){
+            for (int i = 0; i < COLS; i++) {
+                noiseGrid[j][i] = newGrid[j][i];
+            }
+        }
+        
+    }
+
+    private int getSurroundingWallCount(int gridX, int gridY) {
+        int wallCount = 0;
+		for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX ++) {
+			for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY ++) {
+				if (neighbourX >= 0 && neighbourX < COLS && neighbourY >= 0 && neighbourY < ROWS) {
+					if (neighbourX != gridX || neighbourY != gridY) {
+						wallCount += noiseGrid[neighbourY][neighbourX];
+					}
+				}
+				else {
+					wallCount ++;
+				}
+			}
+		}
+
+		return wallCount;
+	}
+
+
+
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
 
     public Particle getAtPosition(int j, int i) {
-        return grid[j][i];
+        if (j < ROWS && j >= 0 && i < COLS && i >= 0) {
+            return grid[j][i];
+        }
+        return null;
     }
 
     public void setParticle(int j, int i, Particle particle) {
@@ -249,7 +350,11 @@ public class Grid {
 
     }
 
-    // NOTE: GETNEIGHBORS FUNCTIONS
+
+
+
+
+    // NOTE: GETNEIGHBORS IN THE GRID FUNCTIONS 
     // input: j = y; i = x
     // gives particles from left to right
 
@@ -510,5 +615,8 @@ public class Grid {
         for (int j = 0; j < ROWS; j++)
             grid[j][colN] = new Air();
     }
+
+
+
 
 }

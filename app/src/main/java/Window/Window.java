@@ -104,7 +104,7 @@ public class Window extends JPanel implements ActionListener {
             timer.setRepeats(true);
             timer.start();
         }
-
+      
     }
     
     public void stop() {
@@ -367,10 +367,10 @@ public class Window extends JPanel implements ActionListener {
                     currentSelectedParticle = (currentSelectedParticle -1);
                     if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
                     
-                /* case 32:// space 
-                    currentlySelectedTemplate = (currentlySelectedTemplate +1 ) % (GridTemplates.templates.size() +1);
-                    System.out.println(currentlySelectedTemplate); */
-                    
+                case 96:// numPad 0 
+                    grid.generateWorld();
+                
+
                 case 77:
                     //GridTemplates.saveCurrentGrid(grid);
                     break;
