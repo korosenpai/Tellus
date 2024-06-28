@@ -76,6 +76,7 @@ public class FileHandler {
     // MUST BE IN CHUNK_ROW FORMAT (ROW / CHUNKSIZE)
 
     public static void saveChunkToDisk(int[] chunkCoords, Grid grid) {
+
         Particle[][] toSave = new Particle[grid.CHUNK_SIZE][grid.CHUNK_SIZE];
 
         // clone chunk from grid
@@ -99,6 +100,11 @@ public class FileHandler {
                 // toSave[j][i] = PToSave instanceof Particle ? PToSave : new Air(); // skip player, problem, it skips all entities
             }
         }
+
+        // these new coords are the "virtual" chunk we are at (obtained via the offset)
+        // and its the coords that will create the filename
+        chunkCoords[0] += grid.getChunkOffsetY();
+        chunkCoords[1] += grid.getChunkOffsetX();
 
         // save to file
         String filename = getChunkFilenameFromCoords(chunkCoords, grid.CHUNK_SIZE);
@@ -200,13 +206,15 @@ public class FileHandler {
     }
     public static Particle[][] loadChunkColFromDisk(int colN, Grid grid) {return new Particle[0][0];}
 
-    public static Particle[][] loadWholeGridFromDisk(int[] chunkCoords, Grid grid) {
+    public static Particle[][] loadWholeGridFromDisk(Grid grid) {
+        int[] chunkCoords = {grid.getChunkOffsetY(), grid.getChunkOffsetX()};
+
         Particle[][] newGrid = new Particle[grid.getRows()][grid.getColumns()];
 
         // go to each row and save it
         for (int j = 0; j < grid.getRows() / grid.CHUNK_SIZE; j++) {
             for (int i = 0; i < grid.getColumns() / grid.CHUNK_SIZE; i++) {
-                Particle[][] singleChunk = loadChunkFromDisk(new int[]{j, i}, grid);
+                Particle[][] singleChunk = loadChunkFromDisk(new int[]{ j + chunkCoords[0], i + chunkCoords[1] }, grid);
 
 
                 for (int singleChunkJ = 0; singleChunkJ < singleChunk.length; singleChunkJ++) {

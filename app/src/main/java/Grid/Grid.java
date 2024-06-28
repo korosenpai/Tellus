@@ -9,9 +9,7 @@ import javax.crypto.AEADBadTagException;
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
-import Blocks.Liquids.Water;
 import Blocks.Solids.StaticSolid.Stone;
-import Blocks.Solids.StaticSolid.Wood;
 
 import SRandom.SRandom;
 import FileHandler.FileHandler;
@@ -29,6 +27,8 @@ public class Grid {
 
     // TODO: move to its own class?
     // offset to draw viewport and not all grid
+    // NOTE: girdOffset must ALWAYS BE > 1, unloading checks if in one of the border chunks, if this is set to < 1 this loops unloading 
+    // (if it is one it unloades everytime the viewport moves)
     private final int gridOffset = 2; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
     private int chunkOffsetX = 0; // how many chunks moved in each direction
     private int chunkOffsetY = 0; // used for loader to know in which chunk we are
@@ -122,6 +122,13 @@ public class Grid {
     }
     public int getViewportOffsetY() {
         return viewportOffsetY;
+    }
+
+    public int getChunkOffsetX() {
+        return chunkOffsetX;
+    }
+    public int getChunkOffsetY() {
+        return chunkOffsetY;
     }
 
     public void generateEmptyGrid(){
@@ -226,11 +233,8 @@ public class Grid {
         for (int i = 0; i < 12; i++) {
             smoothNoiseGrid();    
         }
-        
-        
-        
+
         convertNoiseGrid();
-        
     }
 
     private int[][] generateEmptyNoiseGrid(){
@@ -507,11 +511,10 @@ public class Grid {
         viewportOffsetX = viewportOffsetY = gridOffset * CHUNK_SIZE;
     }
 
-    // TODO: check if these operations can be done
     // (in theory with chunk loading they should always be possible)
-
     public void moveViewUpOne() {
         viewportOffsetY--;
+
         if (viewportOffsetY <= CHUNK_SIZE) {
             System.out.println("unloading bottom and loading top...");
             chunkOffsetY--; // grid is shifting from origin to new chunks
@@ -526,11 +529,15 @@ public class Grid {
     }
     public void moveViewDownOne() {
         viewportOffsetY++;
+
         // when approaching last chunk
         if (viewportOffsetY + VIEWPORT_ROWS >= ROWS - CHUNK_SIZE) {
-            chunkOffsetY++;
             System.out.println("unloading...");
+            chunkOffsetY++;
+
             // save row 0
+
+
             resetViewportOffset();
             shiftGridUp(CHUNK_SIZE);
             loadChunkRowFromDisk(CHUNK_ROWS - 1);
@@ -582,8 +589,7 @@ public class Grid {
         FileHandler.loadChunkColFromDisk(colN, this);
     }
     public void loadGridFromDisk() {
-        // TODO: implement chunk coords
-        grid = FileHandler.loadWholeGridFromDisk(new int[]{0, 0}, this);
+        grid = FileHandler.loadWholeGridFromDisk(this);
 
     }
 
