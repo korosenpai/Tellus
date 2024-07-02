@@ -10,7 +10,7 @@ import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
 import Blocks.Solids.StaticSolid.Stone;
-
+import Entities.EntityParticle;
 import SRandom.SRandom;
 import FileHandler.FileHandler;
 
@@ -29,7 +29,7 @@ public class Grid {
     // offset to draw viewport and not all grid
     // NOTE: girdOffset must ALWAYS BE > 1, unloading checks if in one of the border chunks, if this is set to < 1 this loops unloading 
     // (if it is one it unloades everytime the viewport moves)
-    private final int gridOffset = 2; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
+    private final int GRID_OFFSET; // number of more chunks loaded in both directions more than viewport (offset / 2 in each direction)
     private int chunkOffsetX = 0; // how many chunks moved in each direction
     private int chunkOffsetY = 0; // used for loader to know in which chunk we are
     private int viewportOffsetX = 0;
@@ -47,14 +47,15 @@ public class Grid {
 
     
 
-    public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension){
+    public Grid(int screenWidth, int screenHeight, int chunkSize, int tileDimension, int gridOffset){
         CHUNK_SIZE = chunkSize;
         TILE_DIMENSION = tileDimension;
 
         VIEWPORT_ROWS = screenHeight / TILE_DIMENSION;
         VIEWPORT_COLS = screenWidth / tileDimension;
-        ROWS = VIEWPORT_ROWS + 2 * gridOffset * CHUNK_SIZE;
-        COLS = VIEWPORT_COLS + 2 * gridOffset * CHUNK_SIZE;
+        GRID_OFFSET = gridOffset;
+        ROWS = VIEWPORT_ROWS + 2 * GRID_OFFSET * CHUNK_SIZE;
+        COLS = VIEWPORT_COLS + 2 * GRID_OFFSET * CHUNK_SIZE;
 
         // make viewport start at center of offset grid
         resetViewportOffset();
@@ -68,7 +69,7 @@ public class Grid {
 
         FileHandler.createDefaultChunkFile(CHUNK_SIZE);
 
-        // loadGridFromDisk();
+        loadGridFromDisk();
 
         // threadUpdates = new ThreadUpdates(this.COLS);
 
@@ -90,7 +91,7 @@ public class Grid {
         return VIEWPORT_COLS;
     }
 
-    // get entire row / col
+    // get entire row or col
     public Particle[] getRow(int rowN) {
         return grid[rowN];
     }
@@ -98,12 +99,26 @@ public class Grid {
         grid[rowN] = row;
     }
     public void getCol() {} // TODO:
+    public void setCol(int colN, Particle[] col) {
+        for (int j = 0; j < ROWS; j++) {
+            //grid[j][colN] = col[j];
+            //System.out.println(ROWS + " " + col.length);
+        }
+    }
 
     public int getChunkRows() {
         return CHUNK_ROWS;
     }
     public int getChunkColumns() {
         return CHUNK_COLS;
+    }
+
+    // number of chunk rows visible in viewport
+    public int getVisibleChunkRows() {
+        return CHUNK_ROWS - 2 * GRID_OFFSET;
+    }
+    public int getVisibleChunkColumns() {
+        return CHUNK_COLS - 2 * GRID_OFFSET;
     }
 
     public Particle[][] getGrid() {
@@ -114,7 +129,7 @@ public class Grid {
     }
 
     public int getGridOffset() {
-        return gridOffset;
+        return GRID_OFFSET;
     }
 
     public int getViewportOffsetX() {
@@ -182,7 +197,11 @@ public class Grid {
         // check if it is in a chunk that is not sleeping
         if (!gridChunk[j / CHUNK_SIZE][i / CHUNK_SIZE].getShouldStep()) return;
 
-        if (grid[j][i] instanceof Air || grid[j][i].scanDirection != scanDirection || grid[j][i].hasMoved) return;
+        if (grid[j][i] instanceof Air ||
+            grid[j][i] instanceof EntityParticle ||
+            grid[j][i].scanDirection != scanDirection ||
+            grid[j][i].hasMoved)
+            return;
 
         grid[j][i].update(new int[]{j, i}, this);
     }
@@ -508,7 +527,7 @@ public class Grid {
 
 
     private void resetViewportOffset() {
-        viewportOffsetX = viewportOffsetY = gridOffset * CHUNK_SIZE;
+        viewportOffsetX = viewportOffsetY = GRID_OFFSET * CHUNK_SIZE;
     }
 
     // (in theory with chunk loading they should always be possible)
@@ -516,14 +535,16 @@ public class Grid {
         viewportOffsetY--;
 
         if (viewportOffsetY <= CHUNK_SIZE) {
-            System.out.println("unloading bottom and loading top...");
-            chunkOffsetY--; // grid is shifting from origin to new chunks
+            System.out.println("loading chunks above...");
 
             FileHandler.saveChunkRowToDisk(CHUNK_ROWS - 1, this); // save last row to disk
 
-            resetViewportOffset();
+
+            //resetViewportOffset(); // TODO: reuse this method when multithreading we can load more rows easily
+            viewportOffsetY += CHUNK_SIZE;
             shiftGridDown(CHUNK_SIZE);
 
+            chunkOffsetY--; // grid is shifting from origin to new chunks
             loadChunkRowFromDisk(0);
         }
     }
@@ -532,23 +553,48 @@ public class Grid {
 
         // when approaching last chunk
         if (viewportOffsetY + VIEWPORT_ROWS >= ROWS - CHUNK_SIZE) {
-            System.out.println("unloading...");
-            chunkOffsetY++;
+            System.out.println("loading chunks below...");
 
-            // save row 0
+            FileHandler.saveChunkRowToDisk(0, this); // save first row to disk
 
 
-            resetViewportOffset();
+            viewportOffsetY -= CHUNK_SIZE;
             shiftGridUp(CHUNK_SIZE);
+
+            chunkOffsetY++;
             loadChunkRowFromDisk(CHUNK_ROWS - 1);
         }
     }
 
-    public void moveViewRightOne() {
-        viewportOffsetX++;
-    }
     public void moveViewLeftOne() {
         viewportOffsetX--;
+
+        if (viewportOffsetX <= CHUNK_SIZE) {
+            System.out.println("loading chunks on the left");
+
+            FileHandler.saveChunkColToDisk(CHUNK_COLS - 1, this);
+
+            viewportOffsetX += CHUNK_SIZE;
+            shiftGridRight(CHUNK_SIZE);
+
+            chunkOffsetX--;
+            loadChunkColFromDisk(0);
+        }
+    }
+    public void moveViewRightOne() {
+        viewportOffsetX++;
+
+        if (viewportOffsetX + VIEWPORT_COLS >= COLS - CHUNK_SIZE) {
+            System.out.println("loading chunks on the right");
+
+            FileHandler.saveChunkColToDisk(0, this);
+
+            viewportOffsetX -= CHUNK_SIZE;
+            shiftGridLeft(CHUNK_SIZE);
+
+            chunkOffsetX++;
+            loadChunkColFromDisk(CHUNK_COLS - 1);
+        }
     }
 
     public void saveChunkToDisk(int[] chunkCoords) {
@@ -561,7 +607,6 @@ public class Grid {
         FileHandler.saveChunkColToDisk(colN, this);
     }
     public void saveGridtoDisk() {
-        // TODO:  make this accept chunkCOord (only y is needed i think)
         FileHandler.saveWholeGridToDisk(this);
 
     }
@@ -572,24 +617,43 @@ public class Grid {
     public void loadChunkRowFromDisk(int rowN) {
         Particle[][] loaded = FileHandler.loadChunkRowFromDisk(rowN + chunkOffsetY, this);
 
-        // inject int grid chunks
+        // inject in grid chunks
         for (int i = 0; i < loaded.length; i++) {
             setRow(rowN * CHUNK_SIZE + i, loaded[i]);
         }
 
         // wake up every chunk in row
         // take element at half j for each chunk, middle elem in each chunk in i
+        // TODO: (when loading chunks like the bottom one the top doesnt update) fix this
         for (int i = 0; i < loaded[0].length / CHUNK_SIZE; i++) {
             wakeUpChunks(rowN + CHUNK_SIZE / 2, i * CHUNK_SIZE + CHUNK_SIZE / 2);
         }
-
-        // set chunks injected to update
     }
     public void loadChunkColFromDisk(int colN) {
-        FileHandler.loadChunkColFromDisk(colN, this);
+        Particle[][] loaded = FileHandler.loadChunkColFromDisk(colN + chunkOffsetX, this);
+
+        // inject in grid
+        // for (int j = 0; j < loaded.length; j++) {
+        //     //setCol(colN * CHUNK_SIZE + j, loaded);
+        //     for (int j2 = 0; j < ROWS; j++) {
+        //         grid[j2][j] = loaded[j][j2];
+
+        //     }
+        // }
+
+        for (int j = 0; j < loaded.length; j++) {
+            for (int i = 0; i < loaded[0].length; i++) {
+                grid[j][i] = loaded[j][i];
+            }
+        }
     }
     public void loadGridFromDisk() {
         grid = FileHandler.loadWholeGridFromDisk(this);
+        
+        // wake up all chunks
+        for (int j = 0; j < gridChunk.length - 1; j++)
+            for (int i = 0; i < gridChunk[0].length - 1; i++)
+                gridChunk[j][i].setShouldStepNextFrame();
 
     }
 

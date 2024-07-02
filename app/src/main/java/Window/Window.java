@@ -40,6 +40,7 @@ public class Window extends JPanel implements ActionListener {
     private boolean currentlyRendering;
 
     private static Grid grid;
+    private int gridOffset;
     private boolean toDrawChunks;
     private boolean restart;
 
@@ -59,9 +60,10 @@ public class Window extends JPanel implements ActionListener {
 
     public ArrayList<Entity> entityList;
 
-    public Window(int screenWidth, int screenHeight,int chunkSize, int sidebarWidth, int tileDimension, int fps) {
+    public Window(int screenWidth, int screenHeight,int chunkSize, int gridOffset, int sidebarWidth, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.gridOffset = gridOffset;
         this.chunkSize = chunkSize;
         this.sidebarWidth = sidebarWidth;
         this.tileDimension = tileDimension;
@@ -91,12 +93,12 @@ public class Window extends JPanel implements ActionListener {
 
     public void start() {
 
-        grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension);
+        grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension, gridOffset);
         entityList = new ArrayList<>();
-        if (player == null) { // FIX: avoid creating double player
-            player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
-            entityList.add(player);
-        }
+        // if (player == null) { // avoid creating double player
+        //     player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
+        //     entityList.add(player);
+        // }
 
         restart = false;
         if (timer == null) { // keep same timer even if restarted
@@ -104,7 +106,6 @@ public class Window extends JPanel implements ActionListener {
             timer.setRepeats(true);
             timer.start();
         }
-      
     }
     
     public void stop() {
@@ -120,7 +121,10 @@ public class Window extends JPanel implements ActionListener {
     // NOTE: MAIN LOOP
     //called every timer clock cycle
     public void actionPerformed(ActionEvent event){
-        if (currentlyRendering) return;
+        if (currentlyRendering) {
+            System.out.println("[DEBUG]: frame skipped");
+            return;
+        };
         currentlyRendering = true;
 
         //equivalent to pygame.display.update()
@@ -160,7 +164,10 @@ public class Window extends JPanel implements ActionListener {
         }
 
         drawMouse(g2);
-        drawPlayer(g2);
+
+        if (player != null) {
+            drawPlayer(g2);
+        }
 
         g2.dispose(); // frees up memory
     }
@@ -181,46 +188,59 @@ public class Window extends JPanel implements ActionListener {
             for (int j = 0; j < grid.getViewportColumns(); j++) {
                 Particle curr = grid.getAtPosition(i + grid.getViewportOffsetY(), j + grid.getViewportOffsetX());
                 g.setColor(new Color(curr.getColorRed(), curr.getColorGreen(), curr.getColorBlue()));
-                g.fillRect(j*tileDimension, i*tileDimension, tileDimension, tileDimension);                
+                g.fillRect(j*tileDimension, i*tileDimension, tileDimension, tileDimension);
             }
         }
     }
 
-    // FIX: make it work with new viewport
     public void drawChunks(Graphics2D g) {
+        // drawline(x1, y1, x2, y2)
+
         g.setColor(new Color(255, 255, 255));
 
-        for (int j = 1; j < grid.getChunkColumns(); j++) {
+        // how distant the bottom of the first chunk is to be drawn to the screen
+        int offsetX = grid.CHUNK_SIZE - grid.getViewportOffsetX() % grid.CHUNK_SIZE;
+        int offsetY = grid.CHUNK_SIZE - grid.getViewportOffsetY() % grid.CHUNK_SIZE;
+
+        // vertical lines
+        for (int i = 0; i < grid.getVisibleChunkColumns(); i++) {
             g.drawLine(
-                j * chunkSize * tileDimension,
+                (offsetX + i * chunkSize) * tileDimension,
                 0,
-                j * chunkSize * tileDimension,
-                screenHeight * tileDimension
+                (offsetX + i * chunkSize) * tileDimension,
+                screenHeight
             );
 
         }
 
-        for (int i = 1; i < grid.getChunkRows(); i++) {
+        // horizontal lines
+        for (int j = 0; j < grid.getVisibleChunkRows(); j++) {
             g.drawLine(
                 0,
-                i * chunkSize * tileDimension,
-                screenWidth * tileDimension,
-                i * chunkSize * tileDimension
+                (offsetY + j * chunkSize) * tileDimension,
+                screenWidth,
+                (offsetY + j * chunkSize) * tileDimension
             );
 
         }
 
         // draw active chunks
-        for (int i = 0; i < grid.getChunkRows(); i++){
-            for (int j = 0; j < grid.getChunkColumns(); j++) {
-                if (grid.getChunks()[i][j].getShouldStep()) {
+        // <= in case we are in middle of chunks so we need to render one more
+        for (int j = 0; j <= grid.getVisibleChunkRows(); j++){
+            for (int i = 0; i <= grid.getVisibleChunkColumns(); i++) {
+                if (grid.getChunks()[j + grid.getGridOffset()][i + grid.getGridOffset()].getShouldStep()) {
+                    System.out.println("ji: " + j + " " + i);
+                    System.out.println("offsety/x: " + offsetY + " " + offsetX);
+                    System.out.println(offsetY - grid.CHUNK_SIZE);
                     g.setColor(new Color(255, 0, 0, 60));
                     g.fillRect(
-                        j * chunkSize * tileDimension,
-                        i * chunkSize * tileDimension,
+                        // math wizardry
+                        // give possibility of starting pos of rect to be negative to take care of small rects when they appear from borders
+                        (i * chunkSize) * tileDimension,
+                        (offsetY - grid.CHUNK_SIZE + j * chunkSize) * tileDimension,
                         chunkSize * tileDimension,
                         chunkSize * tileDimension
-                    );                
+                    );
                 }
             }
         }
@@ -273,7 +293,6 @@ public class Window extends JPanel implements ActionListener {
 
     // this sends the direction of the player to the player's position updater and draws it
     public void drawPlayer(Graphics2D p) {
-        if (player == null) return;
         player.updatePosition(grid, playerDirectionX, playerDirectionY);
         player.paintComponent(p);
     }

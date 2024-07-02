@@ -13,6 +13,7 @@ import SRandom.SRandom;
 import Blocks.Particle;
 import Blocks.Air;
 import Blocks.Solids.StaticSolid.Stone;
+import Entities.EntityParticle;
 import Grid.Grid;
 
 // TODO: to refactor the shit out of this
@@ -71,8 +72,8 @@ public class FileHandler {
 
 
     // unload a particle chunk at certain chunkCoords
-    // TODO: all other functions must pass chunkCoords, simply increment counter holded by the grid
-    // THIS IS ALL WRONG, EVERY FUNCTION HAS TO TAKE CHUNKCOORDS AS PARAMETER
+    // NOTE: all other functions must pass chunkCoords with the chunk offset
+    // it will not automatically check for it in case you need something off from chunk offset
     // MUST BE IN CHUNK_ROW FORMAT (ROW / CHUNKSIZE)
 
     public static void saveChunkToDisk(int[] chunkCoords, Grid grid) {
@@ -87,17 +88,9 @@ public class FileHandler {
                     i + chunkCoords[1] * grid.CHUNK_SIZE
                 ).clone();
 
-                // TODO: ABSOLUTELY CHANGE THIS
-                // if (PToSave.getClass().getName() != "Entities.EntityParticle") {
-                //     toSave[j][i] = PToSave;
-                // }
-                // else {
-                //     toSave[j][i] = new Air();
-                //     // System.out.println("skipped player");
-                // }
-                toSave[j][i] = PToSave;
+                if (PToSave instanceof EntityParticle) PToSave = new Air();
 
-                // toSave[j][i] = PToSave instanceof Particle ? PToSave : new Air(); // skip player, problem, it skips all entities
+                toSave[j][i] = PToSave;
             }
         }
 
@@ -123,7 +116,11 @@ public class FileHandler {
         }
 
     }
-    public static void saveChunkColToDisk(int colN, Grid grid) {}
+    public static void saveChunkColToDisk(int colN, Grid grid) {
+        for (int j = 0; j < grid.getRows() / grid.CHUNK_SIZE; j++) {
+            saveChunkToDisk(new int[]{j, colN}, grid);
+        }
+    }
 
     public static void saveWholeGridToDisk(Grid grid) {
         // should NEVER fail (in theory)
@@ -204,7 +201,22 @@ public class FileHandler {
 
         return loaded;
     }
-    public static Particle[][] loadChunkColFromDisk(int colN, Grid grid) {return new Particle[0][0];}
+    public static Particle[][] loadChunkColFromDisk(int colN, Grid grid) {
+
+        Particle[][] loaded = new Particle[grid.getRows()][grid.CHUNK_SIZE];
+
+        for (int j = 0; j < grid.getRows() / grid.CHUNK_SIZE; j++) {
+            Particle[][] singleChunk = loadChunkFromDisk(new int[]{j, colN}, grid);
+
+            for (int singleChunkJ = 0; singleChunkJ < singleChunk.length; singleChunkJ++) {
+                for (int singleChunkI = 0; singleChunkI < singleChunk[0].length; singleChunkI++) {
+                    loaded[singleChunkJ + j * grid.CHUNK_SIZE][singleChunkI] = singleChunk[singleChunkJ][singleChunkI];
+                }
+            }
+        }
+
+        return loaded;
+    }
 
     public static Particle[][] loadWholeGridFromDisk(Grid grid) {
         int[] chunkCoords = {grid.getChunkOffsetY(), grid.getChunkOffsetX()};
@@ -217,6 +229,7 @@ public class FileHandler {
                 Particle[][] singleChunk = loadChunkFromDisk(new int[]{ j + chunkCoords[0], i + chunkCoords[1] }, grid);
 
 
+                // cannot use something like array copy because it is Lparticle type? idk serialization problems
                 for (int singleChunkJ = 0; singleChunkJ < singleChunk.length; singleChunkJ++) {
                     for (int singleChunkI = 0; singleChunkI < singleChunk[0].length; singleChunkI++) {
                         newGrid[singleChunkJ + j * grid.CHUNK_SIZE][singleChunkI + i * grid.CHUNK_SIZE] = singleChunk[singleChunkJ][singleChunkI];
