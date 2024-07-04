@@ -38,7 +38,7 @@ public class Player extends Entity{
         super.paintComponent(p);
 
         p.setColor(color);
-        p.fillRect((int)moveX*tileDimension, (int)moveY*tileDimension, getDimensionX() * tileDimension, getDimensionY() * tileDimension);
+        p.fillRect(moveX*tileDimension, moveY*tileDimension, getDimensionX() * tileDimension, getDimensionY() * tileDimension);
     }
 
     public void updatePosition(Grid grid, int directionX, int directionY) {

@@ -68,7 +68,7 @@ public class Entity extends JPanel{
         entityDimensionY = y;
     }
 
-    /* public void update(Grid grid, int directionX, int directionY) {
+    public void update(Grid grid, int directionX, int directionY) {
 
         // temporary istances
         Particle lowerN = new Particle() {};
@@ -78,7 +78,7 @@ public class Entity extends JPanel{
         ArrayList <int[]> newTotalCoords = new ArrayList<>(); // list of new coordinates
         int vy = 0, vx = 0, err = 0; // err is the accumulated error in the calculation of the trajectory of the entity
         int absVx = Math.abs(velocityX), absVy = Math.abs(velocityY);
-        System.out.println("absVx: " + absVx + "\nabsVy: " + absVy);
+        //System.out.println("absVx: " + absVx + "\nabsVy: " + absVy);
 
         if (isOnGround){
             if (directionY < 0) {
@@ -91,7 +91,7 @@ public class Entity extends JPanel{
         }
 
         if (absVx > absVy) { // if the entity is moving mostly on the X axis
-            System.out.println("X priority");
+            //System.out.println("X priority");
             int derr = absVy;
             for (;vx < absVx;) { // loop to check every step in the grid
                 vx++;
@@ -101,7 +101,7 @@ public class Entity extends JPanel{
                     err -= absVx;
                 }
                 if (!availablePosition(grid, vx*directionX, vy*directionY)) {
-                    System.out.println("non puoi avanzare");
+                    //System.out.println("non puoi avanzare in X");
                     if (availablePosition(grid, (vx-1)*directionX, vy*directionY)) {
                         vx--;
                     } else if (availablePosition(grid, vx*directionX, (vy-1)*directionY)) {
@@ -115,6 +115,7 @@ public class Entity extends JPanel{
                 
             }
         } else { // if the entity is moving mostly on the Y axis
+            //System.out.println("Y priority");
             int derr = absVx;
             for (;vy < absVy;) { // loop to check every step in the grid
                 vy++;
@@ -124,7 +125,7 @@ public class Entity extends JPanel{
                     err -= absVy;
                 }                
                 if (!availablePosition(grid, vx*directionX, vy*directionY)) {
-                    //System.out.println("non puoi avanzare");
+                    //System.out.println("non puoi avanzare in Y");
                     if (availablePosition(grid, (vx-1)*directionX, vy*directionY)) {
                         vx--;
                     } else if (availablePosition(grid, vx*directionX, (vy-1)*directionY)) {
@@ -177,13 +178,16 @@ public class Entity extends JPanel{
 
         moveX += vx*directionX;
         moveY += vy*directionY;
-        //System.out.println("X: " + moveX + "\nY: " + moveY);
+        System.out.println("moveX: " + moveX + "\nmoveY: " + moveY);
+        System.out.println("gridX: " + newTotalCoords.get(0)[1] + " \ngridY: " + newTotalCoords.get(0)[0]);
 
-        isOnGround = true;
+        isOnGround = false;
         for (int i = particleList.size() - getDimensionX(); i < particleList.size(); i++) {
             coords = fromPosToCoords(i);
-            lowerN = grid.getSingleLowerNeighbor(coords[1], coords[0], 0);
-            isOnGround = (isOnGround && (lowerN == null || (lowerN instanceof SolidParticle && lowerN.isFreeFalling == false)));
+            lowerN = grid.getSingleLowerNeighbor(coords[0], coords[1], 0);
+            //System.out.println("lowerN: " + lowerN);
+            isOnGround = (isOnGround || (lowerN == null || (lowerN instanceof SolidParticle && lowerN.isFreeFalling == false)));
+            //System.out.println("isOnGround: " + isOnGround);
         }
 
         return;
@@ -211,7 +215,7 @@ public class Entity extends JPanel{
             if (!canGo) break;
         }
         return canGo;
-    } */
+    }
 
     /* public Particle getAtPosition(int j, int i) {
         if (j < ROWS && j >= 0 && i < COLS && i >= 0) {
@@ -221,7 +225,7 @@ public class Entity extends JPanel{
     } */
 
 
-    public void update(Grid grid, int directionX, int directionY) {
+    /* public void update(Grid grid, int directionX, int directionY) {
  
         // temporary istances
         Particle lowerN = new Particle() {};
@@ -363,7 +367,7 @@ public class Entity extends JPanel{
         isOnGround = !shouldFreeFall;
 
         return;
-    }
+    } */
 
     
     public int[] fromPosToCoords(int index){
