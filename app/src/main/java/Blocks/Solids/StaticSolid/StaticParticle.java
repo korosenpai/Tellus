@@ -14,6 +14,7 @@ abstract class StaticParticle extends SolidParticle {
     
     public StaticParticle() {
         super();
+        this.isFreeFalling = false;
     }
 
     public void setMaxSpeed(int max) {

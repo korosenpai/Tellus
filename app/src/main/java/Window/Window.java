@@ -284,7 +284,7 @@ public class Window extends JPanel implements ActionListener {
     
         for(int e = 0; e < entityList.size(); e++){
             Entity tempEntity = entityList.get(e);
-            ArrayList tempParticleList = tempEntity.getParticleList();
+            ArrayList<EntityParticle> tempParticleList = tempEntity.getParticleList();
             for(int p = 0; p < tempParticleList.size(); p++){
                 int[] coords = tempEntity.fromPosToCoords(p);
                 EntityParticle tempParticle = (EntityParticle)tempParticleList.get(p);
