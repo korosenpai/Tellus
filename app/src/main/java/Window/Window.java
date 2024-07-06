@@ -397,13 +397,13 @@ public class Window extends JPanel implements ActionListener {
 
             // debug // move viewport
             if (key == 72) // h
-                grid.moveViewRightOne();
+                grid.moveViewRight(1);
             if (key == 70) // f
-                grid.moveViewLeftOne();
+                grid.moveViewLeft(1);
             if (key == 84) // t
-                grid.moveViewUpOne();
+                grid.moveViewUp(1);
             if (key == 71) // g
-                grid.moveViewDownOne();;
+                grid.moveViewDown(1);;
 
 
 
