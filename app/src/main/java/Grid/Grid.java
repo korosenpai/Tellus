@@ -512,12 +512,12 @@ public class Grid {
     }
 
     // (in theory with chunk loading they should always be possible)
-    public void moveViewUpOne() {
-        viewportOffsetY--;
+    public void moveViewUp(int n) {
+        viewportOffsetY -= n;
 
         if (viewportOffsetY <= CHUNK_SIZE) {
             System.out.println("unloading bottom and loading top...");
-            chunkOffsetY--; // grid is shifting from origin to new chunks
+            chunkOffsetY -= n; // grid is shifting from origin to new chunks
 
             FileHandler.saveChunkRowToDisk(CHUNK_ROWS - 1, this); // save last row to disk
 
@@ -527,13 +527,13 @@ public class Grid {
             loadChunkRowFromDisk(0);
         }
     }
-    public void moveViewDownOne() {
-        viewportOffsetY++;
+    public void moveViewDown(int n) {
+        viewportOffsetY += n;
 
         // when approaching last chunk
         if (viewportOffsetY + VIEWPORT_ROWS >= ROWS - CHUNK_SIZE) {
             System.out.println("unloading...");
-            chunkOffsetY++;
+            chunkOffsetY += n;
 
             // save row 0
 
@@ -544,11 +544,11 @@ public class Grid {
         }
     }
 
-    public void moveViewRightOne() {
-        viewportOffsetX++;
+    public void moveViewRight(int n) {
+        viewportOffsetX += n;
     }
-    public void moveViewLeftOne() {
-        viewportOffsetX--;
+    public void moveViewLeft(int n) {
+        viewportOffsetX -= n;
     }
 
     public void saveChunkToDisk(int[] chunkCoords) {
