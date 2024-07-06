@@ -37,7 +37,7 @@ public class Grid {
 
     public Particle[][] grid;
 
-    //private ThreadUpdates threadUpdates;
+    private ThreadLoadUnload threadLU;
 
     private Chunk[][] gridChunk;
     private final int CHUNK_ROWS; // should never change
@@ -67,6 +67,8 @@ public class Grid {
         generateEmptyGrid();
 
         FileHandler.createDefaultChunkFile(CHUNK_SIZE);
+
+        threadLU = new ThreadLoadUnload();
 
         // loadGridFromDisk();
 
@@ -519,7 +521,7 @@ public class Grid {
             System.out.println("unloading bottom and loading top...");
             chunkOffsetY -= n; // grid is shifting from origin to new chunks
 
-            FileHandler.saveChunkRowToDisk(CHUNK_ROWS - 1, this); // save last row to disk
+            saveChunkRowToDisk(CHUNK_ROWS - 1); // save last row to disk
 
             resetViewportOffset();
             shiftGridDown(CHUNK_SIZE);
@@ -535,8 +537,7 @@ public class Grid {
             System.out.println("unloading...");
             chunkOffsetY += n;
 
-            // save row 0
-
+            saveChunkRowToDisk(0); // save row 0
 
             resetViewportOffset();
             shiftGridUp(CHUNK_SIZE);
@@ -555,10 +556,10 @@ public class Grid {
         FileHandler.saveChunkToDisk(chunkCoords, this);
     }
     public void saveChunkRowToDisk(int rowN) {
-        FileHandler.saveChunkRowToDisk(rowN, this);
+        threadLU.saveChunkRowToDisk(rowN, this);
     }
     public void saveChunkColToDisk(int colN) {
-        FileHandler.saveChunkColToDisk(colN, this);
+        threadLU.saveChunkColToDisk(colN, this);
     }
     public void saveGridtoDisk() {
         // TODO:  make this accept chunkCOord (only y is needed i think)

@@ -49,9 +49,11 @@ public class Player extends Entity{
 
         super.update(grid, directionX, directionY);
 
+        // calcola la differenza tra nuove e vecchie coordinate
         int diffX = moveX - oldX;
         int diffY = moveY - oldY;
 
+        // muove la grid in modo da compensare il movimento del player e farlo rimanere al centro dello schermo
         for (int i = 0; i < Math.abs(diffX); i++)
             if (diffX < 0)
                 grid.moveViewLeft(1);
