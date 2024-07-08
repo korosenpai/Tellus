@@ -95,10 +95,10 @@ public class Window extends JPanel implements ActionListener {
 
         grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension, gridOffset);
         entityList = new ArrayList<>();
-        if (player == null) { // avoid creating double player
-            player = new Player(tileDimension, grid.getRows() / 2, grid.getColumns() / 2, entityList.size()+1);
-            entityList.add(player);
-        }
+        // if (player == null) { // avoid creating double player
+        //     player = new Player(tileDimension, grid.getRows() / 2, grid.getColumns() / 2, entityList.size()+1);
+        //     entityList.add(player);
+        // }
 
         restart = false;
         if (timer == null) { // keep same timer even if restarted
@@ -229,9 +229,9 @@ public class Window extends JPanel implements ActionListener {
         for (int j = 0; j <= grid.getVisibleChunkRows(); j++){
             for (int i = 0; i <= grid.getVisibleChunkColumns(); i++) {
                 if (grid.getChunks()[j + grid.getGridOffset()][i + grid.getGridOffset()].getShouldStep()) {
-                    System.out.println("ji: " + j + " " + i);
-                    System.out.println("offsety/x: " + offsetY + " " + offsetX);
-                    System.out.println(offsetY - grid.CHUNK_SIZE);
+                    // System.out.println("ji: " + j + " " + i);
+                    // System.out.println("offsety/x: " + offsetY + " " + offsetX);
+                    // System.out.println(offsetY - grid.CHUNK_SIZE);
                     g.setColor(new Color(255, 0, 0, 60));
                     g.fillRect(
                         // math wizardry
@@ -293,7 +293,7 @@ public class Window extends JPanel implements ActionListener {
 
     // this sends the direction of the player to the player's position updater and draws it
     public void drawPlayer(Graphics2D p) {
-        player.moveInGrid(grid, playerDirectionX, playerDirectionY);
+        player.updatePosition(grid, playerDirectionX, playerDirectionY);
         player.paintComponent(p);
     }
 

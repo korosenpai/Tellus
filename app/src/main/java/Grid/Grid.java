@@ -19,7 +19,7 @@ public class Grid {
 
     // relative to viewport
     private final int VIEWPORT_ROWS; // n of rows that will be rendered by viewport
-    private final int VIEWPORT_COLS;
+    private final int VIEWPORT_COLS; // size(resolution) of viewport
     private final int ROWS; // real number of rows
     private final int COLS;
     public final int CHUNK_SIZE;
@@ -632,6 +632,10 @@ public class Grid {
     public void loadChunkColFromDisk(int colN) {
         Particle[][] loaded = FileHandler.loadChunkColFromDisk(colN + chunkOffsetX, this);
 
+        // for (Particle[] c: loaded) {
+        //     System.out.println(Arrays.toString(c));
+        // }
+
         // inject in grid
         // for (int j = 0; j < loaded.length; j++) {
         //     //setCol(colN * CHUNK_SIZE + j, loaded);
@@ -643,9 +647,11 @@ public class Grid {
 
         for (int j = 0; j < loaded.length; j++) {
             for (int i = 0; i < loaded[0].length; i++) {
-                grid[j][i] = loaded[j][i];
+                grid[j][colN * CHUNK_SIZE + i] = loaded[j][i];
             }
         }
+
+        // TODO: wake up chunk
     }
     public void loadGridFromDisk() {
         grid = FileHandler.loadWholeGridFromDisk(this);

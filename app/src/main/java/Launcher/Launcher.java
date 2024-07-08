@@ -17,19 +17,19 @@ public class Launcher {
     
 
     // NOTE: leave them different to debug
-    static final int TILE_SIZE = 5;
-    static final int CHUNK_SIZE = 32;
-    static final int WIDTH = CHUNK_SIZE * TILE_SIZE * 8; // 1.280
-    static final int HEIGHT = CHUNK_SIZE * TILE_SIZE * 6; // 960
+    // static final int TILE_SIZE = 5;
+    // static final int CHUNK_SIZE = 32;
+    // static final int WIDTH = CHUNK_SIZE * TILE_SIZE * 8; // 1.280
+    // static final int HEIGHT = CHUNK_SIZE * TILE_SIZE * 6; // 960
     static final int GRID_OFFSET = 2; // how many chunk to load more ON ONE SIDE
 
     static final int SIDEBAR_WIDTH = 0; //(int)(WIDTH * .3);
     // static final int SIDEBAR_WIDTH = (int)(WIDTH * .3);
 
-    // static final int TILE_SIZE = 20;
-    // static final int CHUNK_SIZE = 5;
-    // static final int WIDTH = CHUNK_SIZE * TILE_SIZE * 3; // 1.280
-    // static final int HEIGHT = CHUNK_SIZE * TILE_SIZE * 2; // 960
+    static final int TILE_SIZE = 20;
+    static final int CHUNK_SIZE = 5;
+    static final int WIDTH = CHUNK_SIZE * TILE_SIZE * 3; // 1.280
+    static final int HEIGHT = CHUNK_SIZE * TILE_SIZE * 2; // 960
 
     static int FPS = 30;
 
