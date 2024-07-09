@@ -94,7 +94,7 @@ public class Window extends JPanel implements ActionListener {
         grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension);
         entityList = new ArrayList<>();
         if (player == null) { // FIX: avoid creating double player
-            player = new Player(tileDimension, screenHeight, screenWidth, entityList.size()+1);
+            player = new Player(tileDimension, screenHeight/tileDimension/2 + 2*chunkSize, screenWidth/tileDimension/2 + 2*chunkSize, entityList.size()+1);
             entityList.add(player);
         }
 
