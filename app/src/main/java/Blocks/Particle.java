@@ -1,8 +1,7 @@
 package Blocks;
 
-import SRandom.SRandom;
-
 import Grid.Grid;
+import SRandom.SRandom;
 
 public abstract class Particle {
     

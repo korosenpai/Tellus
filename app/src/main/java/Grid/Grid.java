@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
-
 import SRandom.SRandom;
 
 public class Grid {
@@ -157,7 +156,10 @@ public class Grid {
 
 
     public Particle getAtPosition(int j, int i) {
-        return grid[j][i];
+        if (j < rows && j >= 0 && i < columns && i >= 0) {
+            return grid[j][i];
+        }
+        return null;
     }
 
     public void setParticle(int j, int i, Particle particle) {
