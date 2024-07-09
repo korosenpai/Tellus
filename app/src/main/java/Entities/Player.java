@@ -12,21 +12,21 @@ import Grid.Grid;
 public class Player extends Entity{
 
     final int tileDimension;
-    final int screenHeight;
-    final int screenWidth;
+    final int centerY;
+    final int centerX;
 
-    public Player(int tileDimension, int screenHeight, int screenWidth, int entityID) {
+    public Player(int tileDimension, int centerY, int centerX, int entityID) {
         
         super(entityID, 3, 5, tileDimension);
         //System.out.println(entityID);
 
         this.tileDimension = tileDimension;
-        this.screenHeight = screenHeight;
-        this.screenWidth = screenWidth;
+        this.centerY = centerY;
+        this.centerX = centerX;
 
         setBehaviours(false, true);
-        setMoveX(screenWidth/tileDimension/2 + 2*32);
-        setMoveY(screenHeight/tileDimension/2 + 2*32);
+        setMoveX(centerX);
+        setMoveY(centerY);
         setMaxSpeed(4);
         setInitialJump(8);
         setAccelerationX(0.5f);
@@ -49,9 +49,11 @@ public class Player extends Entity{
 
         super.update(grid, directionX, directionY);
 
+        // difference between new coordinates and old coordinates
         int diffX = moveX - oldX;
         int diffY = moveY - oldY;
 
+        // moves the grid to compensate the movement of the player
         for (int i = 0; i < Math.abs(diffX); i++)
             if (diffX < 0)
                 grid.moveViewLeft(1);
