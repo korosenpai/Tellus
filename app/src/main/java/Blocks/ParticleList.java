@@ -28,6 +28,9 @@ public class ParticleList {
         
 
         switch (id) {
+            case -1:
+                return new Air(); // pickaxe
+
             case 0:
                 return new Air();
 
@@ -65,6 +68,9 @@ public class ParticleList {
 
     public Color getColorOfParticle(int id) {
         switch (id) {
+            case -1:
+                return new Color(255, 255, 255, 127); // white at half opacity
+
             case 1:
                 return new Color(182, 155, 99);
 

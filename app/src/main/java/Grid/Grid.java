@@ -362,7 +362,10 @@ public class Grid {
                     Particle particle = particleList.getNewParticle(particleID);
                     // chance to not spawn all the blocks in the cursor
                     if (SRandom.nextFloat(1) <= particle.spawnRate) {
-                        if (getAtPosition(y + viewportOffsetY, x + viewportOffsetX).canBeOverridden) {
+                        if (
+                            particleID == -1 || // pickaxe selected
+                            getAtPosition(y + viewportOffsetY, x + viewportOffsetX).canBeOverridden
+                        ) {
                             setParticleWithOffset(y, x, particleList.getNewParticle(particleID));
                             wakeUpChunks(y + viewportOffsetY, x + viewportOffsetX);
                         }

@@ -349,6 +349,10 @@ public class Window extends JPanel implements ActionListener {
                     break;
 
                 
+                case 80:
+                    currentSelectedParticle = -1;
+                    break;
+
                 // TODO: add all in one check
                 //keyboards input to switch currently selected particle
                 case 49: //F1
@@ -457,8 +461,8 @@ public class Window extends JPanel implements ActionListener {
 
             if (key == 67) // c
                 toDrawChunks = !toDrawChunks;
-            if (key == 80) // p
-                grid.print();
+            // if (key == 80) // p
+            //     grid.print();
             if (key == 79) { // o
                 // grid.saveChunkToDisk(new int[]{0, 1});
                 // grid.saveChunkRowToDisk(0);
