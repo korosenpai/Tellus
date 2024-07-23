@@ -36,6 +36,10 @@ public class Window extends JPanel implements ActionListener {
     int DELAY;
     Timer timer;
 
+
+    int calculatedFps = 0;
+    long timeAtLastFrame = 0;
+
     // if not rendering in time for timer wait that first is done rendering and skip frame
     private boolean currentlyRendering;
 
@@ -127,6 +131,8 @@ public class Window extends JPanel implements ActionListener {
         };
         currentlyRendering = true;
 
+        //System.out.println("millies elapsed since last frame: " + System.currentTimeMillis() - timeAtLastFrame); // aim at 15
+
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
         if (restart) start();
@@ -151,6 +157,8 @@ public class Window extends JPanel implements ActionListener {
         System.gc();
 
         currentlyRendering = false;
+
+        timeAtLastFrame = System.currentTimeMillis();
     }
 
     //called by repaint in actionPerformed

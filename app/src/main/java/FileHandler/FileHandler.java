@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import SRandom.SRandom;
+import WorldGen.Caves;
 import Blocks.Particle;
 import Blocks.Air;
 import Blocks.Solids.StaticSolid.Stone;
@@ -170,7 +171,8 @@ public class FileHandler {
         }
         catch (Exception e) {
             // System.out.println("could not load chunk: " + filename);
-            loaded = loadDefaultChunk(grid.CHUNK_SIZE);
+            //loaded = loadDefaultChunk(grid.CHUNK_SIZE);
+            loaded = Caves.generateChunk(grid.CHUNK_SIZE, chunkCoords);
         }
 
         // for (Particle[] x: loaded) {
