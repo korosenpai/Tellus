@@ -131,7 +131,12 @@ public class Window extends JPanel implements ActionListener {
         };
         currentlyRendering = true;
 
-        //System.out.println("millies elapsed since last frame: " + System.currentTimeMillis() - timeAtLastFrame); // aim at 15
+        //System.out.println("millies elapsed since last frame: " + (System.currentTimeMillis() - timeAtLastFrame)); // aim at 15
+
+        System.out.println("chunk offset xy: "+ grid.getChunkOffsetX() + " " + grid.getChunkOffsetY() +
+            "\t viewport offset xy: " + grid.getViewportOffsetX() + " " + grid.getViewportOffsetY()
+
+        );
 
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
@@ -398,9 +403,6 @@ public class Window extends JPanel implements ActionListener {
                     currentSelectedParticle = (currentSelectedParticle -1);
                     if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
                     
-                case 96:// numPad 0 
-                    grid.generateWorld();
-                
 
                 case 77:
                     //GridTemplates.saveCurrentGrid(grid);

@@ -69,7 +69,7 @@ public class ParticleList {
     public Color getColorOfParticle(int id) {
         switch (id) {
             case -1:
-                return new Color(255, 255, 255, 127); // white at half opacity
+                return new Color(255, 255, 255, 100); // white at half opacity
 
             case 1:
                 return new Color(182, 155, 99);

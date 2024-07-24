@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
-import javax.crypto.AEADBadTagException;
-
 import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
@@ -25,7 +23,6 @@ public class Grid {
     public final int CHUNK_SIZE;
     public final int TILE_DIMENSION;
 
-    // TODO: move to its own class?
     // offset to draw viewport and not all grid
     // NOTE: girdOffset must ALWAYS BE > 1, unloading checks if in one of the border chunks, if this is set to < 1 this loops unloading 
     // (if it is one it unloades everytime the viewport moves)
@@ -66,8 +63,6 @@ public class Grid {
         grid = new Particle[ROWS][COLS];
         gridChunk = new Chunk[CHUNK_ROWS][CHUNK_COLS];
         generateEmptyGrid();
-
-        FileHandler.createDefaultChunkFile(CHUNK_SIZE);
 
         loadGridFromDisk();
 
@@ -242,91 +237,6 @@ public class Grid {
             }
         }
     }
-
-    // generating cave system -------------------------------------------------------------------------------------------------------------------------
-
-
-    public void generateWorld() {
-        noiseGrid = new int[ROWS][COLS];
-        generateRandomNoiseGrid(60);
-        for (int i = 0; i < 12; i++) {
-            smoothNoiseGrid();    
-        }
-
-        convertNoiseGrid();
-    }
-
-    private int[][] generateEmptyNoiseGrid(){
-        return new int[ROWS][COLS];
-    }
-
-
-    private void convertNoiseGrid() {
-        for (int j = 0; j < ROWS; j++){
-            for (int i = 0; i < COLS; i++) {
-                if (noiseGrid[j][i] == 1) grid[j][i] = new Stone();
-                else if (noiseGrid[j][i] == 0) grid[j][i] = new Air();
-            }
-        }
-    }
-
-
-
-
-    private void generateRandomNoiseGrid(int noiseDensity) {
-        for (int j = 0; j < ROWS; j++){
-            for (int i = 0; i < COLS; i++) {
-                if (i == 0 || i == COLS-1 || j == 0 || j == ROWS-1) noiseGrid[j][i] = 1;
-                else noiseGrid[j][i] = (ThreadLocalRandom.current().nextInt(101) < noiseDensity)? 1: 0;
-            }
-        }
-    }
-
-    private void smoothNoiseGrid(){
-        int[][] newGrid = generateEmptyNoiseGrid();
-        for (int j = 0; j < ROWS; j++){
-            for (int i = 0; i < COLS; i++) {
-                int neighborWallCount = getSurroundingWallCount(i, j);
-                if (neighborWallCount > 4) newGrid[j][i] = 1;
-                else if (neighborWallCount <= 4) newGrid[j][i] = 0;
-            }
-        }
-
-        noiseGrid = generateEmptyNoiseGrid();
-        for (int j = 0; j < ROWS; j++){
-            for (int i = 0; i < COLS; i++) {
-                noiseGrid[j][i] = newGrid[j][i];
-            }
-        }
-        
-    }
-
-    private int getSurroundingWallCount(int gridX, int gridY) {
-        int wallCount = 0;
-		for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX ++) {
-			for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY ++) {
-				if (neighbourX >= 0 && neighbourX < COLS && neighbourY >= 0 && neighbourY < ROWS) {
-					if (neighbourX != gridX || neighbourY != gridY) {
-						wallCount += noiseGrid[neighbourY][neighbourX];
-					}
-				}
-				else {
-					wallCount ++;
-				}
-			}
-		}
-
-		return wallCount;
-	}
-
-
-
-
-
-    //--------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
 
 
     public Particle getAtPosition(int j, int i) {

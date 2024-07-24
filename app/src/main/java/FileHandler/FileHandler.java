@@ -53,23 +53,22 @@ public class FileHandler {
         }
     }
 
-    // NOTE: to be removed when worldgen is here
     // this is the chunk that gets loaded in absence of worldGen (when there is not file saved)
-    public static void createDefaultChunkFile(int chunkSize) {
-        Particle[][] defaultChunk = new Particle[chunkSize][chunkSize];
+    // public static void createDefaultChunkFile(int chunkSize) {
+    //     Particle[][] defaultChunk = new Particle[chunkSize][chunkSize];
 
-        // all air except last layer is Stone
-        for (int j = 0; j < chunkSize - 1; j++) {
-            for (int i = 0; i < chunkSize; i++) {
-                defaultChunk[j][i] = new Air();
-            }
-        }
-        for (int i = 0; i < chunkSize; i++) {
-            defaultChunk[chunkSize - 1][i] = new Stone();
-        }
+    //     // all air except last layer is Stone
+    //     for (int j = 0; j < chunkSize - 1; j++) {
+    //         for (int i = 0; i < chunkSize; i++) {
+    //             defaultChunk[j][i] = new Air();
+    //         }
+    //     }
+    //     for (int i = 0; i < chunkSize; i++) {
+    //         defaultChunk[chunkSize - 1][i] = new Stone();
+    //     }
 
-        saveToDisk(defaultChunk, getChunkSaveDir(chunkSize) + "default.ser");
-    }
+    //     saveToDisk(defaultChunk, getChunkSaveDir(chunkSize) + "default.ser");
+    // }
 
 
     // unload a particle chunk at certain chunkCoords
@@ -132,26 +131,26 @@ public class FileHandler {
     }
 
     // should never fail (file is created at startup)
-    public static Particle[][] DEFAULT_CHUNK; // to open file only once
-    private static Particle[][] loadDefaultChunk(int chunkSize) {
-        System.out.println("loading default chunk...");
-        if (DEFAULT_CHUNK != null) return DEFAULT_CHUNK.clone();
+    // public static Particle[][] DEFAULT_CHUNK; // to open file only once
+    // private static Particle[][] loadDefaultChunk(int chunkSize) {
+    //     System.out.println("loading default chunk...");
+    //     if (DEFAULT_CHUNK != null) return DEFAULT_CHUNK.clone();
 
-        Particle[][] loaded = new Particle[chunkSize][chunkSize];
-        try {
-            FileInputStream fileIn = new FileInputStream(getChunkSaveDir(chunkSize) + "default.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+    //     Particle[][] loaded = new Particle[chunkSize][chunkSize];
+    //     try {
+    //         FileInputStream fileIn = new FileInputStream(getChunkSaveDir(chunkSize) + "default.ser");
+    //         ObjectInputStream in = new ObjectInputStream(fileIn);
 
-            loaded = (Particle[][])in.readObject();
-            DEFAULT_CHUNK = loaded;
+    //         loaded = (Particle[][])in.readObject();
+    //         DEFAULT_CHUNK = loaded;
 
-            in.close();
-            fileIn.close();
-        }
-        catch (Exception e) {}
+    //         in.close();
+    //         fileIn.close();
+    //     }
+    //     catch (Exception e) {}
 
-        return loaded.clone();
-    }
+    //     return loaded.clone();
+    // }
 
     // NOTE: can fail, if it doesnt find the file simply get chunk from grid
     public static Particle[][] loadChunkFromDisk(int[] chunkCoords, Grid grid) {
@@ -231,6 +230,7 @@ public class FileHandler {
                 Particle[][] singleChunk = loadChunkFromDisk(new int[]{ j + chunkCoords[0], i + chunkCoords[1] }, grid);
 
 
+                // manually insert singleChunk in newGrid
                 // cannot use something like array copy because it is Lparticle type? idk serialization problems
                 for (int singleChunkJ = 0; singleChunkJ < singleChunk.length; singleChunkJ++) {
                     for (int singleChunkI = 0; singleChunkI < singleChunk[0].length; singleChunkI++) {
