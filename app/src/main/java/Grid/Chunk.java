@@ -6,8 +6,6 @@ public class Chunk {
     private boolean shouldStep = true;
     private boolean shouldStepNextFrame = false;
 
-    private int[] topLeft;
-
     public Chunk(int size) {
         SIZE = size;
     }

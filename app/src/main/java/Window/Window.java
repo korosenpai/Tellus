@@ -195,7 +195,7 @@ public class Window extends JPanel implements ActionListener {
 
 
     // TODO: change method to go j, i (if needed tbh idk if it will give problems)
-    public void drawGrid(Graphics2D g){        
+    public void drawGrid(Graphics2D g){
         // grid is saved perpewndicular so it must be draw in opposite way
         for (int i = 0; i < grid.getViewportRows(); i++){
             for (int j = 0; j < grid.getViewportColumns(); j++) {

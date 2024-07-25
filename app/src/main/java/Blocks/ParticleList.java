@@ -11,6 +11,7 @@ import Blocks.Solids.DynamicSolid.Sand;
 import Blocks.Solids.DynamicSolid.Snow;
 import Blocks.Solids.StaticSolid.Stone;
 import Blocks.Solids.StaticSolid.Wood;
+import Debug.Debug;
 ;
 
 // functions as big ass lookup table to get new instance of any particle
@@ -62,7 +63,7 @@ public class ParticleList {
                 return new Stone();
         }
 
-        System.out.println("GET NEW PARTICLE PARTICLE WAS NOT INDEED FOUND");
+        Debug.error("GET NEW PARTICLE PARTICLE WAS NOT INDEED FOUND");
         return new Air();
     }
 
@@ -99,7 +100,7 @@ public class ParticleList {
                 return new Color(83, 84, 78);
         }
 
-        System.out.println("COULD NOT FIND COLOR BOHO");
+        Debug.error("COULD NOT FIND COLOR BOHO");
         return new Color(255, 255, 255);
    }
 }

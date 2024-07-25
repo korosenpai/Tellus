@@ -8,6 +8,7 @@ import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
 import Blocks.Solids.StaticSolid.Stone;
+import Debug.Debug;
 import Entities.EntityParticle;
 import SRandom.SRandom;
 import FileHandler.FileHandler;
@@ -448,12 +449,11 @@ public class Grid {
         viewportOffsetY--;
 
         if (viewportOffsetY <= CHUNK_SIZE) {
-            System.out.println("loading chunks above...");
+            Debug.debug("loading chunks above...");
 
             FileHandler.saveChunkRowToDisk(CHUNK_ROWS - 1, this); // save last row to disk
 
 
-            //resetViewportOffset(); // TODO: reuse this method when multithreading we can load more rows easily
             viewportOffsetY += CHUNK_SIZE;
             shiftGridDown(CHUNK_SIZE);
 
@@ -466,7 +466,7 @@ public class Grid {
 
         // when approaching last chunk
         if (viewportOffsetY + VIEWPORT_ROWS >= ROWS - CHUNK_SIZE) {
-            System.out.println("loading chunks below...");
+            Debug.debug("loading chunks below...");
 
             FileHandler.saveChunkRowToDisk(0, this); // save first row to disk
 
@@ -483,7 +483,7 @@ public class Grid {
         viewportOffsetX--;
 
         if (viewportOffsetX <= CHUNK_SIZE) {
-            System.out.println("loading chunks on the left");
+            Debug.debug("loading chunks on the left");
 
             FileHandler.saveChunkColToDisk(CHUNK_COLS - 1, this);
 
@@ -498,7 +498,7 @@ public class Grid {
         viewportOffsetX++;
 
         if (viewportOffsetX + VIEWPORT_COLS >= COLS - CHUNK_SIZE) {
-            System.out.println("loading chunks on the right");
+            Debug.debug("loading chunks on the right");
 
             FileHandler.saveChunkColToDisk(0, this);
 
