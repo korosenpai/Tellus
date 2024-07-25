@@ -14,6 +14,7 @@ import WorldGen.Caves;
 import Blocks.Particle;
 import Blocks.Air;
 import Blocks.Solids.StaticSolid.Stone;
+import Debug.Debug;
 import Entities.EntityParticle;
 import Grid.Grid;
 
@@ -49,7 +50,7 @@ public class FileHandler {
         }
         catch (Exception e) {
             e.printStackTrace();
-            System.out.println("could not save to file: " + filename);
+            Debug.error("could not save to file: " + filename);
         }
     }
 
@@ -101,7 +102,7 @@ public class FileHandler {
 
         // save to file
         String filename = getChunkFilenameFromCoords(chunkCoords, grid.CHUNK_SIZE);
-        System.out.println("saving chunk in: " + filename);
+        Debug.debug("saving chunk in: " + filename);
         saveToDisk(toSave, filename);
 
     }
@@ -157,8 +158,6 @@ public class FileHandler {
         Particle[][] loaded = new Particle[grid.CHUNK_SIZE][grid.CHUNK_SIZE];
         String filename = getChunkFilenameFromCoords(chunkCoords, grid.CHUNK_SIZE);
 
-        System.out.println("loading chunk from: " + filename);
-
         try {
             FileInputStream fileIn = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -167,6 +166,8 @@ public class FileHandler {
 
             in.close();
             fileIn.close();
+
+            Debug.debug("loaded chunk : " + filename);
         }
         catch (Exception e) {
             // System.out.println("could not load chunk: " + filename);

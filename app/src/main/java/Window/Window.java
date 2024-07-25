@@ -18,6 +18,7 @@ import javax.swing.Timer;
 
 import Blocks.Particle;
 import Blocks.ParticleList;
+import Debug.Debug;
 import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
@@ -126,17 +127,16 @@ public class Window extends JPanel implements ActionListener {
     //called every timer clock cycle
     public void actionPerformed(ActionEvent event){
         if (currentlyRendering) {
-            System.out.println("[DEBUG]: frame skipped");
+            Debug.debug("frame skipped");
             return;
         };
         currentlyRendering = true;
 
         //System.out.println("millies elapsed since last frame: " + (System.currentTimeMillis() - timeAtLastFrame)); // aim at 15
 
-        System.out.println("chunk offset xy: "+ grid.getChunkOffsetX() + " " + grid.getChunkOffsetY() +
-            "\t viewport offset xy: " + grid.getViewportOffsetX() + " " + grid.getViewportOffsetY()
-
-        );
+        // Debug.debug("chunk offset xy: "+ grid.getChunkOffsetX() + " " + grid.getChunkOffsetY() +
+        //     "\t viewport offset xy: " + grid.getViewportOffsetX() + " " + grid.getViewportOffsetY()
+        // );
 
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
@@ -474,6 +474,16 @@ public class Window extends JPanel implements ActionListener {
                 // grid.loadChunkFromDisk(new int[]{0, 1});
                 // grid.loadChunkRowFromDisk(0);
                 grid.loadGridFromDisk();
+
+            if (key == 96) { // numpad 0
+                Debug.toggleDebugInfo();
+            }
+            if (key == 97) { // numpad 1
+                Debug.toggleWarnings();
+            }
+            if (key == 98) { // numpad 2
+                Debug.toggleErrors();
+            }
         }
 
     }
