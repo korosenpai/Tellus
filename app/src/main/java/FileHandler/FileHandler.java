@@ -15,6 +15,7 @@ import Blocks.Particle;
 import Blocks.Air;
 import Blocks.Solids.StaticSolid.Stone;
 import Debug.Debug;
+import Entities.BlobParticle;
 import Entities.EntityParticle;
 import Grid.Grid;
 
@@ -89,7 +90,7 @@ public class FileHandler {
                     i + chunkCoords[1] * grid.CHUNK_SIZE
                 ).clone();
 
-                if (PToSave instanceof EntityParticle) PToSave = new Air();
+                if (PToSave instanceof BlobParticle) PToSave = new Air();
 
                 toSave[j][i] = PToSave;
             }

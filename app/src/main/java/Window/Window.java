@@ -3,6 +3,7 @@ package Window;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -19,6 +20,7 @@ import javax.swing.Timer;
 import Blocks.Particle;
 import Blocks.ParticleList;
 import Debug.Debug;
+import Entities.Blob;
 import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
@@ -62,8 +64,9 @@ public class Window extends JPanel implements ActionListener {
     public Player player;
     public int playerDirectionX = 0;
     public int playerDirectionY = 1;
+    public Blob bplayer;
 
-    public ArrayList<Entity> entityList;
+    //public ArrayList<Entity> entityList;
 
     public Window(int screenWidth, int screenHeight,int chunkSize, int gridOffset, int sidebarWidth, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
@@ -99,11 +102,13 @@ public class Window extends JPanel implements ActionListener {
     public void start() {
 
         grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension, gridOffset);
-        entityList = new ArrayList<>();
+        //entityList = new ArrayList<>();
         // if (player == null) { // avoid creating double player
-        //     player = new Player(tileDimension, grid.getRows() / 2, grid.getColumns() / 2, entityList.size()+1);
-        //     entityList.add(player);
+        //     player = new Player(tileDimension, grid.getRows() / 2, grid.getColumns() / 2, 0);
+        //     //entityList.add(player);
         // }
+
+        if (bplayer == null) bplayer = new Blob(grid, grid.getRows() / 2, grid.getColumns() / 2);
 
         restart = false;
         if (timer == null) { // keep same timer even if restarted
@@ -134,9 +139,6 @@ public class Window extends JPanel implements ActionListener {
 
         //System.out.println("millies elapsed since last frame: " + (System.currentTimeMillis() - timeAtLastFrame)); // aim at 15
 
-        // Debug.debug("chunk offset xy: "+ grid.getChunkOffsetX() + " " + grid.getChunkOffsetY() +
-        //     "\t viewport offset xy: " + grid.getViewportOffsetX() + " " + grid.getViewportOffsetY()
-        // );
 
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
@@ -152,6 +154,11 @@ public class Window extends JPanel implements ActionListener {
         };
 
         //setEntities();
+
+        if (player != null)
+            player.updatePosition(grid, playerDirectionX, playerDirectionY);
+
+        if (bplayer != null) bplayer.update(grid);
 
         repaint(); // calls paintComponent
     
@@ -180,6 +187,22 @@ public class Window extends JPanel implements ActionListener {
 
         if (player != null) {
             drawPlayer(g2);
+        }
+
+        // print offsets on screen
+        if (grid != null) {
+            g2.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 30));
+            g2.setColor(Color.WHITE);
+
+            g2.drawString(
+                "chunk offset xy: " + grid.getChunkOffsetX() + " " + grid.getChunkOffsetY(),
+                20, 40
+            );
+
+            g2.drawString(
+                "viewport offset xy: " + grid.getViewportOffsetX() + " " + grid.getViewportOffsetY(),
+                20, 80
+            );
         }
 
         g2.dispose(); // frees up memory
@@ -306,24 +329,23 @@ public class Window extends JPanel implements ActionListener {
 
     // this sends the direction of the player to the player's position updater and draws it
     public void drawPlayer(Graphics2D p) {
-        player.updatePosition(grid, playerDirectionX, playerDirectionY);
         player.paintComponent(p);
     }
 
 
     // It should set in the grid the particles of all the Entities
-    public void setEntities() {
-    
-        for(int e = 0; e < entityList.size(); e++){
-            Entity tempEntity = entityList.get(e);
-            ArrayList tempParticleList = tempEntity.getParticleList();
-            for(int p = 0; p < tempParticleList.size(); p++){
-                int[] coords = tempEntity.fromPosToCoords(p);
-                EntityParticle tempParticle = (EntityParticle)tempParticleList.get(p);
-                grid.setParticle(coords[0], coords[1], tempParticle);
-            }
-        }
-    }
+    // public void setEntities() {
+    // 
+    //     for(int e = 0; e < entityList.size(); e++){
+    //         Entity tempEntity = entityList.get(e);
+    //         ArrayList tempParticleList = tempEntity.getParticleList();
+    //         for(int p = 0; p < tempParticleList.size(); p++){
+    //             int[] coords = tempEntity.fromPosToCoords(p);
+    //             EntityParticle tempParticle = (EntityParticle)tempParticleList.get(p);
+    //             grid.setParticle(coords[0], coords[1], tempParticle);
+    //         }
+    //     }
+    // }
 
     
     
@@ -413,18 +435,23 @@ public class Window extends JPanel implements ActionListener {
             }
 
             // checks the motion key pressed
-            // TODO: multiple keys pressed at the same time
             if (key == 68){ // D
                 playerDirectionX = 1;
+                bplayer.directionI = 1;
 
-            } else if (key == 65){ // A
+            } 
+            if (key == 65){ // A
                 playerDirectionX = -1;
+                bplayer.directionI = -1;
             }
             if (key == 87 || key == 32){ // W or sapce
                 playerDirectionY = -1;
+                bplayer.directionJ = -1;
 
-            } else if (key == 83){ // S
+            }
+            if (key == 83){ // S
                 playerDirectionY = 1;
+                bplayer.directionJ = 1;
             }
 
 
@@ -452,13 +479,17 @@ public class Window extends JPanel implements ActionListener {
             int key = e.getKeyCode();
             if (key == 68){
                 playerDirectionX = 0;
+                bplayer.directionI = 0;
             } else if (key == 65){
                 playerDirectionX = 0;
+                bplayer.directionI = 0;
             }
             if (key == 87 || key == 32){
                 playerDirectionY = 1;
+                bplayer.directionJ = 0;
             } else if (key == 83){
                 playerDirectionY = 1;
+                bplayer.directionJ = 0;
             }
 
             if (key == 67) // c

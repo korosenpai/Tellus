@@ -445,7 +445,8 @@ public class Grid {
     }
 
     // (in theory with chunk loading they should always be possible)
-    public void moveViewUpOne() {
+    // NOTE: returns true if jumping of chunks happened, so coords in player need to be reajusted
+    public boolean moveViewUpOne() {
         viewportOffsetY--;
 
         if (viewportOffsetY <= CHUNK_SIZE) {
@@ -459,9 +460,12 @@ public class Grid {
 
             chunkOffsetY--; // grid is shifting from origin to new chunks
             loadChunkRowFromDisk(0);
+
+            return true;
         }
+        return false;
     }
-    public void moveViewDownOne() {
+    public boolean moveViewDownOne() {
         viewportOffsetY++;
 
         // when approaching last chunk
@@ -476,10 +480,13 @@ public class Grid {
 
             chunkOffsetY++;
             loadChunkRowFromDisk(CHUNK_ROWS - 1);
+
+            return true;
         }
+        return false;
     }
 
-    public void moveViewLeftOne() {
+    public boolean moveViewLeftOne() {
         viewportOffsetX--;
 
         if (viewportOffsetX <= CHUNK_SIZE) {
@@ -492,9 +499,12 @@ public class Grid {
 
             chunkOffsetX--;
             loadChunkColFromDisk(0);
+
+            return true;
         }
+        return false;
     }
-    public void moveViewRightOne() {
+    public boolean moveViewRightOne() {
         viewportOffsetX++;
 
         if (viewportOffsetX + VIEWPORT_COLS >= COLS - CHUNK_SIZE) {
@@ -507,7 +517,10 @@ public class Grid {
 
             chunkOffsetX++;
             loadChunkColFromDisk(CHUNK_COLS - 1);
+
+            return true;
         }
+        return false;
     }
 
     public void saveChunkToDisk(int[] chunkCoords) {
