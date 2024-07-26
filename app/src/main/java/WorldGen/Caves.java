@@ -1,6 +1,7 @@
 package WorldGen;
 
 import Blocks.Particle;
+import Blocks.Liquids.Water;
 
 import java.util.Arrays;
 
@@ -39,6 +40,7 @@ public class Caves {
                 );
 
                 if (value < 0) generated[j][i] = new Stone();
+                else if (value > 0.855) generated[j][i] = new Water(); // to create puddles around
                 else generated[j][i] = new Air();
 
             }
