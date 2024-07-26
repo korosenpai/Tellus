@@ -99,6 +99,8 @@ public class Blob {
     }
 
     public void update(Grid grid) {
+        // remove all particles from grid, they will be reinserted
+        // after moving the grid, to always keep the player in the middle
         removeFromGrid(grid);
 
         int[] delta = move(grid);
