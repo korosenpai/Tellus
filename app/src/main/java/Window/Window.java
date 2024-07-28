@@ -25,6 +25,7 @@ import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
 import Grid.Grid;
+import Sidebar.SidebarPanel;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -66,6 +67,10 @@ public class Window extends JPanel implements ActionListener {
     public int playerDirectionY = 1;
     public Blob bplayer;
 
+    private JFrame sidebarWindow;
+    private SidebarPanel sidebarPanel;
+    private boolean showSidebar = false;
+
     //public ArrayList<Entity> entityList;
 
     public Window(int screenWidth, int screenHeight,int chunkSize, int gridOffset, int sidebarWidth, int tileDimension, int fps) {
@@ -82,7 +87,7 @@ public class Window extends JPanel implements ActionListener {
         this.DELAY = 1000 / FPS;
 
 
-        this.setPreferredSize(new Dimension(screenWidth + sidebarWidth, screenHeight));
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black); //dunno if its actually even useful since we color also the empty cell with a black square
         this.setDoubleBuffered(true); //improves performance
 
@@ -94,6 +99,23 @@ public class Window extends JPanel implements ActionListener {
         this.addMouseWheelListener(mouse);// for mouse wheel detection, changes cursour radius
         this.addMouseMotionListener(mouse);
         this.addMouseListener(mouse);
+
+        setupSidebar();
+    }
+
+    private void setupSidebar() {
+        sidebarWindow = new JFrame();
+        sidebarWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        sidebarWindow.setResizable(false);
+        sidebarWindow.setTitle("sidebar");
+
+
+        sidebarPanel = new SidebarPanel();
+        sidebarWindow.add(sidebarPanel);
+        sidebarWindow.pack();
+
+        sidebarWindow.setLocationRelativeTo(null); // specify location of the sliderWindow // unll -> display at center of screen
+        sidebarWindow.setVisible(showSidebar); 
 
     }
 
@@ -152,6 +174,12 @@ public class Window extends JPanel implements ActionListener {
         if (mouse.isDragged() || mouse.isPressed()) {
             setOnClick(); // set particle on the position of the mouse, when clicked
         };
+
+        // select particle from sidebar
+        if (sidebarPanel.isElementSelected()) {
+            currentSelectedParticle = sidebarPanel.getSelectedElementID();
+            currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
+        }
 
         //setEntities();
 
@@ -352,10 +380,13 @@ public class Window extends JPanel implements ActionListener {
 
 
     private class MyKeyAdapter extends KeyAdapter {
+
+        private boolean CTRL_PRESSED = false;
+
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
-            // System.out.println(key);
+            //System.out.println(key);
             switch (key) {
                 //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
                 case 10: // enter
@@ -465,9 +496,15 @@ public class Window extends JPanel implements ActionListener {
             if (key == 71) // g
                 grid.moveViewDownOne();;
 
+            // control
+            if (key == 17) CTRL_PRESSED = true;
 
+            // sidebar
+            if (CTRL_PRESSED && key == 66) { // ctrl + b
+                showSidebar = !showSidebar;
+                sidebarWindow.setVisible(showSidebar); 
+            }
 
-            
 
             // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
             currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
@@ -515,6 +552,9 @@ public class Window extends JPanel implements ActionListener {
             if (key == 98) { // numpad 2
                 Debug.toggleErrors();
             }
+
+            if (key == 17) CTRL_PRESSED = false;
+
         }
 
     }

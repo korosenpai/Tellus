@@ -41,8 +41,8 @@ public class Blob {
             }
         }
 
-        for (int[] pos: positions)
-            System.out.println(Arrays.toString(pos));
+        // for (int[] pos: positions)
+        //     System.out.println(Arrays.toString(pos));
 
         setInGrid(grid);
     }

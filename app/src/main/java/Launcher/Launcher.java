@@ -23,8 +23,7 @@ public class Launcher {
     static final int HEIGHT = CHUNK_SIZE * TILE_SIZE * 6; // 960
     static final int GRID_OFFSET = 2; // how many chunk to load more ON ONE SIDE
 
-    static final int SIDEBAR_WIDTH = 0; //(int)(WIDTH * .3);
-    // static final int SIDEBAR_WIDTH = (int)(WIDTH * .3);
+    static final int SIDEBAR_WIDTH = (int)(WIDTH * .3); // defined in sidebar
 
     // static final int TILE_SIZE = 20;
     // static final int CHUNK_SIZE = 5;
