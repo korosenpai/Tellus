@@ -83,13 +83,14 @@ public class SidebarPanel extends JPanel implements ActionListener {
             selectedElement = null;
         }
 
-        System.out.println(selectedElement);
+        // System.out.println(selectedElement);
     }
 
     public boolean isElementSelected() {
         return selectedElement != null;
     }
     public int getSelectedElementID() {
+        // same of particleList
         switch (selectedElement) {
             case "PICKAXE":
                 return -1;
@@ -120,7 +121,6 @@ public class SidebarPanel extends JPanel implements ActionListener {
         }
 
     }
-
 
 }
 

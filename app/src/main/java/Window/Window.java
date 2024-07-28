@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -70,6 +71,7 @@ public class Window extends JPanel implements ActionListener {
     private JFrame sidebarWindow;
     private SidebarPanel sidebarPanel;
     private boolean showSidebar = false;
+    private Point sidebarPosition;
 
     //public ArrayList<Entity> entityList;
 
@@ -109,13 +111,13 @@ public class Window extends JPanel implements ActionListener {
         sidebarWindow.setResizable(false);
         sidebarWindow.setTitle("sidebar");
 
-
         sidebarPanel = new SidebarPanel();
         sidebarWindow.add(sidebarPanel);
         sidebarWindow.pack();
 
         sidebarWindow.setLocationRelativeTo(null); // specify location of the sliderWindow // unll -> display at center of screen
         sidebarWindow.setVisible(showSidebar); 
+
 
     }
 
@@ -499,10 +501,27 @@ public class Window extends JPanel implements ActionListener {
             // control
             if (key == 17) CTRL_PRESSED = true;
 
-            // sidebar
+            // toggle sidebar
             if (CTRL_PRESSED && key == 66) { // ctrl + b
+                // sidebar about to be closed, save pos to variable
+                if (showSidebar)  {
+                    System.out.println("asa :" + sidebarWindow.getLocationOnScreen());
+                    sidebarPosition = sidebarWindow.getLocationOnScreen();
+                }
+
                 showSidebar = !showSidebar;
                 sidebarWindow.setVisible(showSidebar); 
+
+                // if sidebar is visible set it to saved size
+                if (showSidebar && sidebarPosition != null) {
+                    System.out.println("sid: " + sidebarPosition.x);
+                    // NOTE: I HAVE NO CLUE WHY THE FUCK THIS WORKS
+                    // if i set one var at the time its happy, but if i start by putting
+                    // both it doesnt work and sets it to the center
+                    // whatever, i dont care, its enough that it works
+                    sidebarWindow.setLocation(sidebarPosition.x, 100);
+                    sidebarWindow.setLocation(sidebarPosition.x, sidebarPosition.y);
+                }
             }
 
 
