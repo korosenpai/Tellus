@@ -10,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import MusicPlayer.MusicPlayer;
+
 public class SidebarPanel extends JPanel implements ActionListener {
     private enum Elements {
         PICKAXE,
@@ -137,6 +139,18 @@ class myBtn extends JButton {
         setContentAreaFilled(false);
 
         setActionCommand(ELEMENT);
+
+        addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                MusicPlayer.playFile("src/main/assets/audio/sidebar/button-press.wav");
+                // TODO: mayube also play something for an element
+                // like selecting fire also starts fire sound
+
+            }
+
+        });
     }
 
     public void setPressed() {

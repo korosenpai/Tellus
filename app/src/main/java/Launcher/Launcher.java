@@ -2,10 +2,6 @@ package Launcher;
 
 import javax.swing.JFrame;
 
-import Blocks.Particle;
-import Blocks.Solids.DynamicSolid.Sand;
-import FileHandler.FileHandler;
-// import MusicPlayer.MusicPlayer;
 import SRandom.SRandom;
 import Window.Window;
 
@@ -13,7 +9,7 @@ public class Launcher {
     static private JFrame screen;
     static private Window window;
 
-    static final int SEED = 42; // TODO: all random is determined with this seed
+    static final int SEED = 42; // NOTE: all random is determined with this seed
     
 
     // NOTE: leave them different to debug
@@ -47,9 +43,6 @@ public class Launcher {
 
         screen.setLocationRelativeTo(null); // specify location of the window // null -> display at center of screen
         screen.setVisible(true); 
-        
-        // MusicPlayer player = new MusicPlayer();
-        // player.playFile("src/main/assets/audio/blocks/landed.wav");
 
         window.start();
 

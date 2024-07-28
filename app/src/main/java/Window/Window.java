@@ -26,6 +26,7 @@ import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
 import Grid.Grid;
+import MusicPlayer.MusicPlayer;
 import Sidebar.SidebarPanel;
 
 
@@ -117,8 +118,6 @@ public class Window extends JPanel implements ActionListener {
 
         sidebarWindow.setLocationRelativeTo(null); // specify location of the sliderWindow // unll -> display at center of screen
         sidebarWindow.setVisible(showSidebar); 
-
-
     }
 
     
@@ -143,8 +142,12 @@ public class Window extends JPanel implements ActionListener {
     }
     
     public void stop() {
+        // https://stackoverflow.com/questions/15449022/show-prompt-before-closing-jframe
         JFrame ancestor = (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this);
         ancestor.dispose();
+
+        MusicPlayer.closeAll();
+
         System.exit(0);
     }
 
@@ -505,7 +508,6 @@ public class Window extends JPanel implements ActionListener {
             if (CTRL_PRESSED && key == 66) { // ctrl + b
                 // sidebar about to be closed, save pos to variable
                 if (showSidebar)  {
-                    System.out.println("asa :" + sidebarWindow.getLocationOnScreen());
                     sidebarPosition = sidebarWindow.getLocationOnScreen();
                 }
 
@@ -514,7 +516,6 @@ public class Window extends JPanel implements ActionListener {
 
                 // if sidebar is visible set it to saved size
                 if (showSidebar && sidebarPosition != null) {
-                    System.out.println("sid: " + sidebarPosition.x);
                     // NOTE: I HAVE NO CLUE WHY THE FUCK THIS WORKS
                     // if i set one var at the time its happy, but if i start by putting
                     // both it doesnt work and sets it to the center
