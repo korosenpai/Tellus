@@ -27,9 +27,10 @@ public class SidebarPanel extends JPanel implements ActionListener {
     private final int WIDTH;
     private final int HEIGHT;
 
-    private String selectedElement;
-
     private final String SIDEBAR_ASSET_DIR = "src/main/assets/sidebar/";
+
+    private String selectedElement;
+    private myBtn[] buttons;
 
     public SidebarPanel() {
         this.WIDTH = 250;
@@ -40,41 +41,44 @@ public class SidebarPanel extends JPanel implements ActionListener {
         this.setDoubleBuffered(true); // all drawing from this component will be done in an offscreen painting buffer -> improves performance
         setLayout(null);
 
-        myBtn pickaxeBtn = new myBtn(Elements.PICKAXE.name(), 30, 50, new ImageIcon(SIDEBAR_ASSET_DIR + "pickaxe.png"));
+        myBtn pickaxeBtn = new myBtn(Elements.PICKAXE.name(), 30, 50, SIDEBAR_ASSET_DIR + "pickaxe");
         pickaxeBtn.addActionListener(this);
         add(pickaxeBtn);
 
-        myBtn sandBtn = new myBtn(Elements.SAND.name(), 130, 50, new ImageIcon(SIDEBAR_ASSET_DIR + "sand.png"));
+        myBtn sandBtn = new myBtn(Elements.SAND.name(), 130, 50, SIDEBAR_ASSET_DIR + "sand");
         sandBtn.addActionListener(this);
         add(sandBtn);
 
-        myBtn snowBtn = new myBtn(Elements.SNOW.name(), 30, 150, new ImageIcon(SIDEBAR_ASSET_DIR + "snow.png"));
+        myBtn snowBtn = new myBtn(Elements.SNOW.name(), 30, 150, SIDEBAR_ASSET_DIR + "snow");
         snowBtn.addActionListener(this);
         add(snowBtn);
 
-        myBtn woodBtn = new myBtn(Elements.WOOD.name(), 130, 150, new ImageIcon(SIDEBAR_ASSET_DIR + "wood.png"));
+        myBtn woodBtn = new myBtn(Elements.WOOD.name(), 130, 150, SIDEBAR_ASSET_DIR + "wood");
         woodBtn.addActionListener(this);
         add(woodBtn);
 
-        myBtn waterBtn = new myBtn(Elements.WATER.name(), 30, 250, new ImageIcon(SIDEBAR_ASSET_DIR + "water.png"));
+        myBtn waterBtn = new myBtn(Elements.WATER.name(), 30, 250, SIDEBAR_ASSET_DIR + "water");
         waterBtn.addActionListener(this);
         add(waterBtn);
 
-        myBtn gravelBtn = new myBtn(Elements.GRAVEL.name(), 130, 250, new ImageIcon(SIDEBAR_ASSET_DIR + "gravel.png"));
+        myBtn gravelBtn = new myBtn(Elements.GRAVEL.name(), 130, 250, SIDEBAR_ASSET_DIR + "gravel");
         gravelBtn.addActionListener(this);
         add(gravelBtn);
 
-        myBtn fireBtn = new myBtn(Elements.FIRE.name(), 30, 350, new ImageIcon(SIDEBAR_ASSET_DIR + "fire.png"));
+        myBtn fireBtn = new myBtn(Elements.FIRE.name(), 30, 350, SIDEBAR_ASSET_DIR + "fire");
         fireBtn.addActionListener(this);
         add(fireBtn);
 
-        myBtn stoneBtn = new myBtn(Elements.STONE.name(), 130, 350, new ImageIcon(SIDEBAR_ASSET_DIR + "stone.png"));
+        myBtn stoneBtn = new myBtn(Elements.STONE.name(), 130, 350, SIDEBAR_ASSET_DIR + "stone");
         stoneBtn.addActionListener(this);
         add(stoneBtn);
+
+        buttons = new myBtn[]{pickaxeBtn, sandBtn, snowBtn, woodBtn, waterBtn, gravelBtn, fireBtn, stoneBtn };
     }
 
     public void actionPerformed(ActionEvent e) {
         String elem = e.getActionCommand();
+
 
         if (elem != selectedElement) {
             selectedElement = elem;
@@ -85,7 +89,15 @@ public class SidebarPanel extends JPanel implements ActionListener {
             selectedElement = null;
         }
 
-        // System.out.println(selectedElement);
+        // iterate through the buttons and show icon of pressed only for the selected element
+        for (myBtn btn: buttons) {
+            if (btn.ELEMENT == selectedElement) btn.setPressed();
+            else {
+                if (btn.isIconPressed) MusicPlayer.playFile("sidebar/button-released.wav");
+
+                btn.setReleased();
+            }
+        }
     }
 
     public boolean isElementSelected() {
@@ -129,11 +141,14 @@ public class SidebarPanel extends JPanel implements ActionListener {
 class myBtn extends JButton {
     private final int SIZE = 96;
     public final String ELEMENT;
+    private final String ICONPATH;
+    public boolean isIconPressed; // if icon is showin pressed
 
-    public myBtn(String elem, int x, int y, ImageIcon icon) {
+    public myBtn(String elem, int x, int y, String iconPath) {
         ELEMENT = elem;
-
-        setIcon(icon);
+        ICONPATH = iconPath;
+        
+        setReleased();
         setBounds(x, y, SIZE, SIZE);
         setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
         setContentAreaFilled(false);
@@ -144,7 +159,10 @@ class myBtn extends JButton {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                MusicPlayer.playFile("src/main/assets/audio/sidebar/button-press.wav");
+                // do not play sound when releasing
+                if (isIconPressed)
+                    MusicPlayer.playFile("sidebar/button-press.wav");
+
                 // TODO: mayube also play something for an element
                 // like selecting fire also starts fire sound
 
@@ -154,10 +172,12 @@ class myBtn extends JButton {
     }
 
     public void setPressed() {
-
+        setIcon(new ImageIcon(ICONPATH + "-pressed.png"));
+        isIconPressed = true;
     }
     public void setReleased() {
-
+        setIcon(new ImageIcon(ICONPATH + ".png"));
+        isIconPressed = false;
     }
 
 }

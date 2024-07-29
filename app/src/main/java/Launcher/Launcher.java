@@ -2,6 +2,7 @@ package Launcher;
 
 import javax.swing.JFrame;
 
+import MusicPlayer.MusicPlayer;
 import SRandom.SRandom;
 import Window.Window;
 
@@ -43,6 +44,8 @@ public class Launcher {
 
         screen.setLocationRelativeTo(null); // specify location of the window // null -> display at center of screen
         screen.setVisible(true); 
+
+        MusicPlayer.loadAll();
 
         window.start();
 

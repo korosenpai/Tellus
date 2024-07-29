@@ -7,6 +7,11 @@ public class Debug {
         System.out.println("[" + flag + "]: " + msg);
     }
 
+    // do not disactivate
+    public static void system(String msg) {
+        Debug.print("SYSTEM", msg);
+    }
+
     private static boolean printDebugInfo = true;
     public static void debug(String msg) {
         if (!printDebugInfo) return;
@@ -26,19 +31,19 @@ public class Debug {
     public static void error(String msg) {
         if (!printErrors) return;
 
-        System.out.println("ERROR " + msg);
+        Debug.print("ERROR", msg);
     }
 
     public static void toggleDebugInfo() {
         printDebugInfo = !printDebugInfo;
-        Debug.print("SYSTEM", "debug info will be " + (printDebugInfo ? "displayed" : "hidden"));
+        Debug.system("debug info will be " + (printDebugInfo ? "displayed" : "hidden"));
     }
     public static void toggleWarnings() {
         printWarnings = !printErrors;
-        Debug.print("SYSTEM", "warnings will be " + (printWarnings ? "displayed" : "hidden"));
+        Debug.system("warnings will be " + (printWarnings ? "displayed" : "hidden"));
     }
     public static void toggleErrors() {
         printErrors = !printErrors;
-        Debug.print("SYSTEM", "error messages will be " + (printErrors ? "displayed" : "hidden"));
+        Debug.system("error messages will be " + (printErrors ? "displayed" : "hidden"));
     }
 }
