@@ -112,7 +112,7 @@ public class MusicPlayer {
 
         for (String file: loaded.keySet()) {
             loaded.get(file).close();
-            Debug.debug("closed audio: " + file);
+            Debug.system("closed audio: " + file);
         }
     }
 

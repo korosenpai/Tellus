@@ -24,6 +24,10 @@ public class SidebarPanel extends JPanel implements ActionListener {
         STONE
     };
 
+    private final int VOFFSET = 50; // vertical offset
+    private final int HOFFSET = 30; // horizontal offset
+    private final int ICON_DISTANCE = 100; // distance from each button
+    private final int ICON_SIZE = 96;
     private final int WIDTH;
     private final int HEIGHT;
 
@@ -33,43 +37,43 @@ public class SidebarPanel extends JPanel implements ActionListener {
     private myBtn[] buttons;
 
     public SidebarPanel() {
-        this.WIDTH = 250;
-        this.HEIGHT = 500;
+        this.WIDTH = ICON_DISTANCE * 2 + HOFFSET * 2 - 5; // -5 bc numbers dont math and it look better
+        this.HEIGHT = ICON_DISTANCE * 4 + VOFFSET * 2;
 
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT)); // set window size
         this.setBackground(Color.black);
         this.setDoubleBuffered(true); // all drawing from this component will be done in an offscreen painting buffer -> improves performance
         setLayout(null);
 
-        myBtn pickaxeBtn = new myBtn(Elements.PICKAXE.name(), 30, 50, SIDEBAR_ASSET_DIR + "pickaxe");
+        myBtn pickaxeBtn = new myBtn(ICON_SIZE, Elements.PICKAXE.name(), HOFFSET, VOFFSET, SIDEBAR_ASSET_DIR + "pickaxe");
         pickaxeBtn.addActionListener(this);
         add(pickaxeBtn);
 
-        myBtn sandBtn = new myBtn(Elements.SAND.name(), 130, 50, SIDEBAR_ASSET_DIR + "sand");
+        myBtn sandBtn = new myBtn(ICON_SIZE, Elements.SAND.name(), HOFFSET + ICON_DISTANCE, VOFFSET, SIDEBAR_ASSET_DIR + "sand");
         sandBtn.addActionListener(this);
         add(sandBtn);
 
-        myBtn snowBtn = new myBtn(Elements.SNOW.name(), 30, 150, SIDEBAR_ASSET_DIR + "snow");
+        myBtn snowBtn = new myBtn(ICON_SIZE, Elements.SNOW.name(), HOFFSET, VOFFSET + ICON_DISTANCE, SIDEBAR_ASSET_DIR + "snow");
         snowBtn.addActionListener(this);
         add(snowBtn);
 
-        myBtn woodBtn = new myBtn(Elements.WOOD.name(), 130, 150, SIDEBAR_ASSET_DIR + "wood");
+        myBtn woodBtn = new myBtn(ICON_SIZE, Elements.WOOD.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE, SIDEBAR_ASSET_DIR + "wood");
         woodBtn.addActionListener(this);
         add(woodBtn);
 
-        myBtn waterBtn = new myBtn(Elements.WATER.name(), 30, 250, SIDEBAR_ASSET_DIR + "water");
+        myBtn waterBtn = new myBtn(ICON_SIZE, Elements.WATER.name(), HOFFSET, VOFFSET + ICON_DISTANCE * 2, SIDEBAR_ASSET_DIR + "water");
         waterBtn.addActionListener(this);
         add(waterBtn);
 
-        myBtn gravelBtn = new myBtn(Elements.GRAVEL.name(), 130, 250, SIDEBAR_ASSET_DIR + "gravel");
+        myBtn gravelBtn = new myBtn(ICON_SIZE, Elements.GRAVEL.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE * 2, SIDEBAR_ASSET_DIR + "gravel");
         gravelBtn.addActionListener(this);
         add(gravelBtn);
 
-        myBtn fireBtn = new myBtn(Elements.FIRE.name(), 30, 350, SIDEBAR_ASSET_DIR + "fire");
+        myBtn fireBtn = new myBtn(ICON_SIZE, Elements.FIRE.name(), HOFFSET, VOFFSET + ICON_DISTANCE * 3, SIDEBAR_ASSET_DIR + "fire");
         fireBtn.addActionListener(this);
         add(fireBtn);
 
-        myBtn stoneBtn = new myBtn(Elements.STONE.name(), 130, 350, SIDEBAR_ASSET_DIR + "stone");
+        myBtn stoneBtn = new myBtn(ICON_SIZE, Elements.STONE.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE * 3, SIDEBAR_ASSET_DIR + "stone");
         stoneBtn.addActionListener(this);
         add(stoneBtn);
 
@@ -92,11 +96,7 @@ public class SidebarPanel extends JPanel implements ActionListener {
         // iterate through the buttons and show icon of pressed only for the selected element
         for (myBtn btn: buttons) {
             if (btn.ELEMENT == selectedElement) btn.setPressed();
-            else {
-                if (btn.isIconPressed) MusicPlayer.playFile("sidebar/button-released.wav");
-
-                btn.setReleased();
-            }
+            else btn.setReleased();
         }
     }
 
@@ -139,43 +139,47 @@ public class SidebarPanel extends JPanel implements ActionListener {
 }
 
 class myBtn extends JButton {
-    private final int SIZE = 96;
     public final String ELEMENT;
     private final String ICONPATH;
     public boolean isIconPressed; // if icon is showin pressed
 
-    public myBtn(String elem, int x, int y, String iconPath) {
+    public myBtn(int size, String elem, int x, int y, String iconPath) {
         ELEMENT = elem;
         ICONPATH = iconPath;
-        
+
         setReleased();
-        setBounds(x, y, SIZE, SIZE);
+        setBounds(x, y, size, size);
         setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
         setContentAreaFilled(false);
 
         setActionCommand(ELEMENT);
 
-        addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        // addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
 
-                // do not play sound when releasing
-                if (isIconPressed)
-                    MusicPlayer.playFile("sidebar/button-press.wav");
+        //         // do not play sound when releasing
+        //         // condition is reversed bc it first runs action listener in sidebar,
+        //         // so by the time this line arrives the condition has already switched
+        //         // if (isIconPressed)
+        //         //     MusicPlayer.playFile("sidebar/button-press.wav");
 
-                // TODO: mayube also play something for an element
-                // like selecting fire also starts fire sound
+        //         // TODO: mayube also play something for an element
+        //         // like selecting fire also starts fire sound
 
-            }
+        //     }
 
-        });
+        // });
     }
 
     public void setPressed() {
+        MusicPlayer.playFile("sidebar/button-press.wav");
         setIcon(new ImageIcon(ICONPATH + "-pressed.png"));
         isIconPressed = true;
     }
     public void setReleased() {
+        if (isIconPressed) MusicPlayer.playFile("sidebar/button-released.wav");
+
         setIcon(new ImageIcon(ICONPATH + ".png"));
         isIconPressed = false;
     }
