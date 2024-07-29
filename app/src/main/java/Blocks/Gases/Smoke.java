@@ -22,7 +22,7 @@ public class Smoke extends GasParticle  {
         for (Particle particle: grid.getUpperNeighbors(coords[0], coords[1])) {
             if (particle == null || particle instanceof Air) return coords;
 
-            if (particle.isFlammable && SRandom.nextFloat() <= chanceToSpreadFire / 3000) {
+            if (particle.isFlammable && SRandom.nextFloat() <= chanceToSpreadFire / 100) {
                 int[] particlePos = particle.getCurrentPosition();
                 grid.setParticle(particlePos[0], particlePos[1], new Fire());
             }

@@ -11,7 +11,7 @@ public class Mouse extends MouseMotionAdapter implements MouseListener, MouseWhe
     private int y;
 
     private int radius = 1; // draw area around mouse
-    private int maxRadius = 20;
+    private int maxRadius = 100;
     private int minRadius = 0;
 
     private boolean pressed, dragged; // starts with false by default

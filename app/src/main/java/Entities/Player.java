@@ -12,21 +12,21 @@ import Grid.Grid;
 public class Player extends Entity{
 
     final int tileDimension;
-    final int centerY;
-    final int centerX;
+    final int screenCenterHeight;
+    final int screenCenterWidth;
 
-    public Player(int tileDimension, int centerY, int centerX, int entityID) {
+    public Player(int tileDimension, int screenCenterHeight, int screenCenterWidth, int entityID) {
         
         super(entityID, 3, 5, tileDimension);
         //System.out.println(entityID);
 
         this.tileDimension = tileDimension;
-        this.centerY = centerY;
-        this.centerX = centerX;
+        this.screenCenterHeight = screenCenterHeight;
+        this.screenCenterWidth = screenCenterWidth;
 
         setBehaviours(false, true);
-        setMoveX(centerX);
-        setMoveY(centerY);
+        setMoveX(screenCenterWidth);
+        setMoveY(screenCenterHeight);
         setMaxSpeed(4);
         setInitialJump(8);
         setAccelerationX(0.5f);
@@ -49,21 +49,22 @@ public class Player extends Entity{
 
         super.update(grid, directionX, directionY);
 
-        // difference between new coordinates and old coordinates
+        // calcola la differenza tra nuove e vecchie coordinate
         int diffX = moveX - oldX;
         int diffY = moveY - oldY;
 
-        // moves the grid to compensate the movement of the player
+        // muove la grid in modo da compensare il movimento del player e farlo rimanere al centro dello schermo
         for (int i = 0; i < Math.abs(diffX); i++)
             if (diffX < 0)
-                grid.moveViewLeft(1);
+                grid.moveViewLeftOne();
             else if (diffX > 0)
-                grid.moveViewRight(1);
+                grid.moveViewRightOne();
         for (int i = 0; i < Math.abs(diffY); i++)
             if (diffY < 0)
-                grid.moveViewUp(1);
+                grid.moveViewUpOne();
             else if (diffY > 0)
-                grid.moveViewDown(1);
+                grid.moveViewDownOne();
+
 
     }
 
@@ -77,3 +78,4 @@ public class Player extends Entity{
 
 
 }
+

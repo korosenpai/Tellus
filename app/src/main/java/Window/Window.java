@@ -3,8 +3,10 @@ package Window;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -18,10 +20,14 @@ import javax.swing.Timer;
 
 import Blocks.Particle;
 import Blocks.ParticleList;
+import Debug.Debug;
+import Entities.Blob;
 import Entities.Entity;
 import Entities.EntityParticle;
 import Entities.Player;
 import Grid.Grid;
+import MusicPlayer.MusicPlayer;
+import Sidebar.SidebarPanel;
 
 
 public class Window extends JPanel implements ActionListener {
@@ -36,10 +42,15 @@ public class Window extends JPanel implements ActionListener {
     int DELAY;
     Timer timer;
 
+
+    int calculatedFps = 0;
+    long timeAtLastFrame = 0;
+
     // if not rendering in time for timer wait that first is done rendering and skip frame
     private boolean currentlyRendering;
 
     private static Grid grid;
+    private int gridOffset;
     private boolean toDrawChunks;
     private boolean restart;
 
@@ -56,12 +67,19 @@ public class Window extends JPanel implements ActionListener {
     public Player player;
     public int playerDirectionX = 0;
     public int playerDirectionY = 1;
+    public Blob bplayer;
 
-    public ArrayList<Entity> entityList;
+    private JFrame sidebarWindow;
+    private SidebarPanel sidebarPanel;
+    private boolean showSidebar = false;
+    private Point sidebarPosition;
 
-    public Window(int screenWidth, int screenHeight,int chunkSize, int sidebarWidth, int tileDimension, int fps) {
+    //public ArrayList<Entity> entityList;
+
+    public Window(int screenWidth, int screenHeight,int chunkSize, int gridOffset, int sidebarWidth, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.gridOffset = gridOffset;
         this.chunkSize = chunkSize;
         this.sidebarWidth = sidebarWidth;
         this.tileDimension = tileDimension;
@@ -72,7 +90,7 @@ public class Window extends JPanel implements ActionListener {
         this.DELAY = 1000 / FPS;
 
 
-        this.setPreferredSize(new Dimension(screenWidth + sidebarWidth, screenHeight));
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black); //dunno if its actually even useful since we color also the empty cell with a black square
         this.setDoubleBuffered(true); //improves performance
 
@@ -85,18 +103,34 @@ public class Window extends JPanel implements ActionListener {
         this.addMouseMotionListener(mouse);
         this.addMouseListener(mouse);
 
+        setupSidebar();
+    }
+
+    private void setupSidebar() {
+        sidebarWindow = new JFrame();
+        sidebarWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        sidebarWindow.setResizable(false);
+        sidebarWindow.setTitle("sidebar");
+
+        sidebarPanel = new SidebarPanel();
+        sidebarWindow.add(sidebarPanel);
+        sidebarWindow.pack();
+
+        sidebarWindow.setLocationRelativeTo(null); // specify location of the sliderWindow // unll -> display at center of screen
+        sidebarWindow.setVisible(showSidebar); 
     }
 
     
 
     public void start() {
+        grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension, gridOffset);
+        //entityList = new ArrayList<>();
+        // if (player == null) { // avoid creating double player
+        //     player = new Player(tileDimension, grid.getRows() / 2, grid.getColumns() / 2, 0);
+        //     //entityList.add(player);
+        // }
 
-        grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension);
-        entityList = new ArrayList<>();
-        if (player == null) { // FIX: avoid creating double player
-            player = new Player(tileDimension, screenHeight/tileDimension/2 + 2*chunkSize, screenWidth/tileDimension/2 + 2*chunkSize, entityList.size()+1);
-            entityList.add(player);
-        }
+        if (bplayer == null) bplayer = new Blob(grid, grid.getRows() / 2, grid.getColumns() / 2);
 
         restart = false;
         if (timer == null) { // keep same timer even if restarted
@@ -104,12 +138,15 @@ public class Window extends JPanel implements ActionListener {
             timer.setRepeats(true);
             timer.start();
         }
-      
     }
     
     public void stop() {
+        // https://stackoverflow.com/questions/15449022/show-prompt-before-closing-jframe
         JFrame ancestor = (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this);
         ancestor.dispose();
+
+        MusicPlayer.closeAll();
+
         System.exit(0);
     }
 
@@ -120,8 +157,14 @@ public class Window extends JPanel implements ActionListener {
     // NOTE: MAIN LOOP
     //called every timer clock cycle
     public void actionPerformed(ActionEvent event){
-        if (currentlyRendering) return;
+        if (currentlyRendering) {
+            Debug.debug("frame skipped");
+            return;
+        };
         currentlyRendering = true;
+
+        //System.out.println("millies elapsed since last frame: " + (System.currentTimeMillis() - timeAtLastFrame)); // aim at 15
+
 
         //equivalent to pygame.display.update()
         //updates screen every clock cycle
@@ -136,7 +179,18 @@ public class Window extends JPanel implements ActionListener {
             setOnClick(); // set particle on the position of the mouse, when clicked
         };
 
+        // select particle from sidebar
+        if (sidebarPanel.isElementSelected()) {
+            currentSelectedParticle = sidebarPanel.getSelectedElementID();
+            currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
+        }
+
         //setEntities();
+
+        if (player != null)
+            player.updatePosition(grid, playerDirectionX, playerDirectionY);
+
+        if (bplayer != null) bplayer.update(grid);
 
         repaint(); // calls paintComponent
     
@@ -147,6 +201,8 @@ public class Window extends JPanel implements ActionListener {
         System.gc();
 
         currentlyRendering = false;
+
+        timeAtLastFrame = System.currentTimeMillis();
     }
 
     //called by repaint in actionPerformed
@@ -160,7 +216,26 @@ public class Window extends JPanel implements ActionListener {
         }
 
         drawMouse(g2);
-        drawPlayer(g2);
+
+        if (player != null) {
+            drawPlayer(g2);
+        }
+
+        // print offsets on screen
+        if (grid != null) {
+            g2.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 30));
+            g2.setColor(Color.WHITE);
+
+            g2.drawString(
+                "chunk offset xy: " + grid.getChunkOffsetX() + " " + grid.getChunkOffsetY(),
+                20, 40
+            );
+
+            g2.drawString(
+                "viewport offset xy: " + grid.getViewportOffsetX() + " " + grid.getViewportOffsetY(),
+                20, 80
+            );
+        }
 
         g2.dispose(); // frees up memory
     }
@@ -175,52 +250,65 @@ public class Window extends JPanel implements ActionListener {
 
 
     // TODO: change method to go j, i (if needed tbh idk if it will give problems)
-    public void drawGrid(Graphics2D g){        
+    public void drawGrid(Graphics2D g){
         // grid is saved perpewndicular so it must be draw in opposite way
         for (int i = 0; i < grid.getViewportRows(); i++){
             for (int j = 0; j < grid.getViewportColumns(); j++) {
                 Particle curr = grid.getAtPosition(i + grid.getViewportOffsetY(), j + grid.getViewportOffsetX());
                 g.setColor(new Color(curr.getColorRed(), curr.getColorGreen(), curr.getColorBlue()));
-                g.fillRect(j*tileDimension, i*tileDimension, tileDimension, tileDimension);                
+                g.fillRect(j*tileDimension, i*tileDimension, tileDimension, tileDimension);
             }
         }
     }
 
-    // FIX: make it work with new viewport
     public void drawChunks(Graphics2D g) {
+        // drawline(x1, y1, x2, y2)
+
         g.setColor(new Color(255, 255, 255));
 
-        for (int j = 1; j < grid.getChunkColumns(); j++) {
+        // how distant the bottom of the first chunk is to be drawn to the screen
+        int offsetX = grid.CHUNK_SIZE - grid.getViewportOffsetX() % grid.CHUNK_SIZE;
+        int offsetY = grid.CHUNK_SIZE - grid.getViewportOffsetY() % grid.CHUNK_SIZE;
+
+        // vertical lines
+        for (int i = 0; i < grid.getVisibleChunkColumns(); i++) {
             g.drawLine(
-                j * chunkSize * tileDimension,
+                (offsetX + i * chunkSize) * tileDimension,
                 0,
-                j * chunkSize * tileDimension,
-                screenHeight * tileDimension
+                (offsetX + i * chunkSize) * tileDimension,
+                screenHeight
             );
 
         }
 
-        for (int i = 1; i < grid.getChunkRows(); i++) {
+        // horizontal lines
+        for (int j = 0; j < grid.getVisibleChunkRows(); j++) {
             g.drawLine(
                 0,
-                i * chunkSize * tileDimension,
-                screenWidth * tileDimension,
-                i * chunkSize * tileDimension
+                (offsetY + j * chunkSize) * tileDimension,
+                screenWidth,
+                (offsetY + j * chunkSize) * tileDimension
             );
 
         }
 
         // draw active chunks
-        for (int i = 0; i < grid.getChunkRows(); i++){
-            for (int j = 0; j < grid.getChunkColumns(); j++) {
-                if (grid.getChunks()[i][j].getShouldStep()) {
+        // <= in case we are in middle of chunks so we need to render one more
+        for (int j = 0; j <= grid.getVisibleChunkRows(); j++){
+            for (int i = 0; i <= grid.getVisibleChunkColumns(); i++) {
+                if (grid.getChunks()[j + grid.getGridOffset()][i + grid.getGridOffset()].getShouldStep()) {
+                    // System.out.println("ji: " + j + " " + i);
+                    // System.out.println("offsety/x: " + offsetY + " " + offsetX);
+                    // System.out.println(offsetY - grid.CHUNK_SIZE);
                     g.setColor(new Color(255, 0, 0, 60));
                     g.fillRect(
-                        j * chunkSize * tileDimension,
-                        i * chunkSize * tileDimension,
+                        // math wizardry
+                        // give possibility of starting pos of rect to be negative to take care of small rects when they appear from borders
+                        (i * chunkSize) * tileDimension,
+                        (offsetY - grid.CHUNK_SIZE + j * chunkSize) * tileDimension,
                         chunkSize * tileDimension,
                         chunkSize * tileDimension
-                    );                
+                    );
                 }
             }
         }
@@ -273,35 +361,36 @@ public class Window extends JPanel implements ActionListener {
 
     // this sends the direction of the player to the player's position updater and draws it
     public void drawPlayer(Graphics2D p) {
-        if (player == null) return;
-        player.updatePosition(grid, playerDirectionX, playerDirectionY);
         player.paintComponent(p);
     }
 
 
     // It should set in the grid the particles of all the Entities
-    public void setEntities() {
-    
-        for(int e = 0; e < entityList.size(); e++){
-            Entity tempEntity = entityList.get(e);
-            ArrayList<EntityParticle> tempParticleList = tempEntity.getParticleList();
-            for(int p = 0; p < tempParticleList.size(); p++){
-                int[] coords = tempEntity.fromPosToCoords(p);
-                EntityParticle tempParticle = (EntityParticle)tempParticleList.get(p);
-                grid.setParticle(coords[0], coords[1], tempParticle);
-            }
-        }
-    }
+    // public void setEntities() {
+    // 
+    //     for(int e = 0; e < entityList.size(); e++){
+    //         Entity tempEntity = entityList.get(e);
+    //         ArrayList tempParticleList = tempEntity.getParticleList();
+    //         for(int p = 0; p < tempParticleList.size(); p++){
+    //             int[] coords = tempEntity.fromPosToCoords(p);
+    //             EntityParticle tempParticle = (EntityParticle)tempParticleList.get(p);
+    //             grid.setParticle(coords[0], coords[1], tempParticle);
+    //         }
+    //     }
+    // }
 
     
     
 
 
     private class MyKeyAdapter extends KeyAdapter {
+
+        private boolean CTRL_PRESSED = false;
+
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
-            // System.out.println(key);
+            //System.out.println(key);
             switch (key) {
                 //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
                 case 10: // enter
@@ -322,6 +411,10 @@ public class Window extends JPanel implements ActionListener {
                     break;
 
                 
+                case 80:
+                    currentSelectedParticle = -1;
+                    break;
+
                 // TODO: add all in one check
                 //keyboards input to switch currently selected particle
                 case 49: //F1
@@ -367,9 +460,6 @@ public class Window extends JPanel implements ActionListener {
                     currentSelectedParticle = (currentSelectedParticle -1);
                     if (currentSelectedParticle < 0) currentSelectedParticle = ParticleList.getNumberOfParticleAvailable();
                     
-                case 96:// numPad 0 
-                    grid.generateWorld();
-                
 
                 case 77:
                     //GridTemplates.saveCurrentGrid(grid);
@@ -380,18 +470,23 @@ public class Window extends JPanel implements ActionListener {
             }
 
             // checks the motion key pressed
-            // TODO: multiple keys pressed at the same time
             if (key == 68){ // D
                 playerDirectionX = 1;
+                bplayer.directionI = 1;
 
-            } else if (key == 65){ // A
+            } 
+            if (key == 65){ // A
                 playerDirectionX = -1;
+                bplayer.directionI = -1;
             }
             if (key == 87 || key == 32){ // W or sapce
                 playerDirectionY = -1;
+                bplayer.directionJ = -1;
 
-            } else if (key == 83){ // S
+            }
+            if (key == 83){ // S
                 playerDirectionY = 1;
+                bplayer.directionJ = 1;
             }
 
 
@@ -405,9 +500,30 @@ public class Window extends JPanel implements ActionListener {
             if (key == 71) // g
                 grid.moveViewDown(1);;
 
+            // control
+            if (key == 17) CTRL_PRESSED = true;
 
+            // toggle sidebar
+            if (CTRL_PRESSED && key == 66) { // ctrl + b
+                // sidebar about to be closed, save pos to variable
+                if (showSidebar)  {
+                    sidebarPosition = sidebarWindow.getLocationOnScreen();
+                }
 
-            
+                showSidebar = !showSidebar;
+                sidebarWindow.setVisible(showSidebar); 
+
+                // if sidebar is visible set it to saved size
+                if (showSidebar && sidebarPosition != null) {
+                    // NOTE: I HAVE NO CLUE WHY THE FUCK THIS WORKS
+                    // if i set one var at the time its happy, but if i start by putting
+                    // both it doesnt work and sets it to the center
+                    // whatever, i dont care, its enough that it works
+                    sidebarWindow.setLocation(sidebarPosition.x, 100);
+                    sidebarWindow.setLocation(sidebarPosition.x, sidebarPosition.y);
+                }
+            }
+
 
             // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
             currentSelectedParticleColor = particleList.getColorOfParticle(currentSelectedParticle);
@@ -419,19 +535,23 @@ public class Window extends JPanel implements ActionListener {
             int key = e.getKeyCode();
             if (key == 68){
                 playerDirectionX = 0;
+                bplayer.directionI = 0;
             } else if (key == 65){
                 playerDirectionX = 0;
+                bplayer.directionI = 0;
             }
             if (key == 87 || key == 32){
                 playerDirectionY = 1;
+                bplayer.directionJ = 0;
             } else if (key == 83){
                 playerDirectionY = 1;
+                bplayer.directionJ = 0;
             }
 
             if (key == 67) // c
                 toDrawChunks = !toDrawChunks;
-            if (key == 80) // p
-                grid.print();
+            // if (key == 80) // p
+            //     grid.print();
             if (key == 79) { // o
                 // grid.saveChunkToDisk(new int[]{0, 1});
                 // grid.saveChunkRowToDisk(0);
@@ -441,6 +561,19 @@ public class Window extends JPanel implements ActionListener {
                 // grid.loadChunkFromDisk(new int[]{0, 1});
                 // grid.loadChunkRowFromDisk(0);
                 grid.loadGridFromDisk();
+
+            if (key == 96) { // numpad 0
+                Debug.toggleDebugInfo();
+            }
+            if (key == 97) { // numpad 1
+                Debug.toggleWarnings();
+            }
+            if (key == 98) { // numpad 2
+                Debug.toggleErrors();
+            }
+
+            if (key == 17) CTRL_PRESSED = false;
+
         }
 
     }

@@ -10,9 +10,13 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import SRandom.SRandom;
+import WorldGen.Caves;
 import Blocks.Particle;
 import Blocks.Air;
 import Blocks.Solids.StaticSolid.Stone;
+import Debug.Debug;
+import Entities.BlobParticle;
+import Entities.EntityParticle;
 import Grid.Grid;
 
 // TODO: to refactor the shit out of this
@@ -47,32 +51,31 @@ public class FileHandler {
         }
         catch (Exception e) {
             e.printStackTrace();
-            System.out.println("could not save to file: " + filename);
+            Debug.error("could not save to file: " + filename);
         }
     }
 
-    // NOTE: to be removed when worldgen is here
     // this is the chunk that gets loaded in absence of worldGen (when there is not file saved)
-    public static void createDefaultChunkFile(int chunkSize) {
-        Particle[][] defaultChunk = new Particle[chunkSize][chunkSize];
+    // public static void createDefaultChunkFile(int chunkSize) {
+    //     Particle[][] defaultChunk = new Particle[chunkSize][chunkSize];
 
-        // all air except last layer is Stone
-        for (int j = 0; j < chunkSize - 1; j++) {
-            for (int i = 0; i < chunkSize; i++) {
-                defaultChunk[j][i] = new Air();
-            }
-        }
-        for (int i = 0; i < chunkSize; i++) {
-            defaultChunk[chunkSize - 1][i] = new Stone();
-        }
+    //     // all air except last layer is Stone
+    //     for (int j = 0; j < chunkSize - 1; j++) {
+    //         for (int i = 0; i < chunkSize; i++) {
+    //             defaultChunk[j][i] = new Air();
+    //         }
+    //     }
+    //     for (int i = 0; i < chunkSize; i++) {
+    //         defaultChunk[chunkSize - 1][i] = new Stone();
+    //     }
 
-        saveToDisk(defaultChunk, getChunkSaveDir(chunkSize) + "default.ser");
-    }
+    //     saveToDisk(defaultChunk, getChunkSaveDir(chunkSize) + "default.ser");
+    // }
 
 
     // unload a particle chunk at certain chunkCoords
-    // TODO: all other functions must pass chunkCoords, simply increment counter holded by the grid
-    // THIS IS ALL WRONG, EVERY FUNCTION HAS TO TAKE CHUNKCOORDS AS PARAMETER
+    // NOTE: all other functions must pass chunkCoords with the chunk offset
+    // it will not automatically check for it in case you need something off from chunk offset
     // MUST BE IN CHUNK_ROW FORMAT (ROW / CHUNKSIZE)
 
     public static void saveChunkToDisk(int[] chunkCoords, Grid grid) {
@@ -87,17 +90,9 @@ public class FileHandler {
                     i + chunkCoords[1] * grid.CHUNK_SIZE
                 ).clone();
 
-                // TODO: ABSOLUTELY CHANGE THIS
-                // if (PToSave.getClass().getName() != "Entities.EntityParticle") {
-                //     toSave[j][i] = PToSave;
-                // }
-                // else {
-                //     toSave[j][i] = new Air();
-                //     // System.out.println("skipped player");
-                // }
-                toSave[j][i] = PToSave;
+                if (PToSave instanceof BlobParticle) PToSave = new Air();
 
-                // toSave[j][i] = PToSave instanceof Particle ? PToSave : new Air(); // skip player, problem, it skips all entities
+                toSave[j][i] = PToSave;
             }
         }
 
@@ -108,7 +103,7 @@ public class FileHandler {
 
         // save to file
         String filename = getChunkFilenameFromCoords(chunkCoords, grid.CHUNK_SIZE);
-        System.out.println("saving chunk in: " + filename);
+        Debug.debug("saving chunk in: " + filename);
         saveToDisk(toSave, filename);
 
     }
@@ -123,7 +118,11 @@ public class FileHandler {
         }
 
     }
-    public static void saveChunkColToDisk(int colN, Grid grid) {}
+    public static void saveChunkColToDisk(int colN, Grid grid) {
+        for (int j = 0; j < grid.getRows() / grid.CHUNK_SIZE; j++) {
+            saveChunkToDisk(new int[]{j, colN}, grid);
+        }
+    }
 
     public static void saveWholeGridToDisk(Grid grid) {
         // should NEVER fail (in theory)
@@ -134,33 +133,31 @@ public class FileHandler {
     }
 
     // should never fail (file is created at startup)
-    public static Particle[][] DEFAULT_CHUNK; // to open file only once
-    private static Particle[][] loadDefaultChunk(int chunkSize) {
-        System.out.println("loading default chunk...");
-        if (DEFAULT_CHUNK != null) return DEFAULT_CHUNK.clone();
+    // public static Particle[][] DEFAULT_CHUNK; // to open file only once
+    // private static Particle[][] loadDefaultChunk(int chunkSize) {
+    //     System.out.println("loading default chunk...");
+    //     if (DEFAULT_CHUNK != null) return DEFAULT_CHUNK.clone();
 
-        Particle[][] loaded = new Particle[chunkSize][chunkSize];
-        try {
-            FileInputStream fileIn = new FileInputStream(getChunkSaveDir(chunkSize) + "default.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+    //     Particle[][] loaded = new Particle[chunkSize][chunkSize];
+    //     try {
+    //         FileInputStream fileIn = new FileInputStream(getChunkSaveDir(chunkSize) + "default.ser");
+    //         ObjectInputStream in = new ObjectInputStream(fileIn);
 
-            loaded = (Particle[][])in.readObject();
-            DEFAULT_CHUNK = loaded;
+    //         loaded = (Particle[][])in.readObject();
+    //         DEFAULT_CHUNK = loaded;
 
-            in.close();
-            fileIn.close();
-        }
-        catch (Exception e) {}
+    //         in.close();
+    //         fileIn.close();
+    //     }
+    //     catch (Exception e) {}
 
-        return loaded.clone();
-    }
+    //     return loaded.clone();
+    // }
 
     // NOTE: can fail, if it doesnt find the file simply get chunk from grid
     public static Particle[][] loadChunkFromDisk(int[] chunkCoords, Grid grid) {
         Particle[][] loaded = new Particle[grid.CHUNK_SIZE][grid.CHUNK_SIZE];
         String filename = getChunkFilenameFromCoords(chunkCoords, grid.CHUNK_SIZE);
-
-        System.out.println("loading chunk from: " + filename);
 
         try {
             FileInputStream fileIn = new FileInputStream(filename);
@@ -170,10 +167,13 @@ public class FileHandler {
 
             in.close();
             fileIn.close();
+
+            Debug.debug("loaded chunk : " + filename);
         }
         catch (Exception e) {
             // System.out.println("could not load chunk: " + filename);
-            loaded = loadDefaultChunk(grid.CHUNK_SIZE);
+            //loaded = loadDefaultChunk(grid.CHUNK_SIZE);
+            loaded = Caves.generateChunk(grid.CHUNK_SIZE, chunkCoords);
         }
 
         // for (Particle[] x: loaded) {
@@ -204,7 +204,22 @@ public class FileHandler {
 
         return loaded;
     }
-    public static Particle[][] loadChunkColFromDisk(int colN, Grid grid) {return new Particle[0][0];}
+    public static Particle[][] loadChunkColFromDisk(int colN, Grid grid) {
+
+        Particle[][] loaded = new Particle[grid.getRows()][grid.CHUNK_SIZE];
+
+        for (int j = 0; j < grid.getRows() / grid.CHUNK_SIZE; j++) {
+            Particle[][] singleChunk = loadChunkFromDisk(new int[]{j, colN}, grid);
+
+            for (int singleChunkJ = 0; singleChunkJ < singleChunk.length; singleChunkJ++) {
+                for (int singleChunkI = 0; singleChunkI < singleChunk[0].length; singleChunkI++) {
+                    loaded[singleChunkJ + j * grid.CHUNK_SIZE][singleChunkI] = singleChunk[singleChunkJ][singleChunkI];
+                }
+            }
+        }
+
+        return loaded;
+    }
 
     public static Particle[][] loadWholeGridFromDisk(Grid grid) {
         int[] chunkCoords = {grid.getChunkOffsetY(), grid.getChunkOffsetX()};
@@ -217,6 +232,8 @@ public class FileHandler {
                 Particle[][] singleChunk = loadChunkFromDisk(new int[]{ j + chunkCoords[0], i + chunkCoords[1] }, grid);
 
 
+                // manually insert singleChunk in newGrid
+                // cannot use something like array copy because it is Lparticle type? idk serialization problems
                 for (int singleChunkJ = 0; singleChunkJ < singleChunk.length; singleChunkJ++) {
                     for (int singleChunkI = 0; singleChunkI < singleChunk[0].length; singleChunkI++) {
                         newGrid[singleChunkJ + j * grid.CHUNK_SIZE][singleChunkI + i * grid.CHUNK_SIZE] = singleChunk[singleChunkJ][singleChunkI];
