@@ -74,6 +74,10 @@ public class Window extends JPanel implements ActionListener {
     private boolean showSidebar = false;
     private Point sidebarPosition;
 
+    private boolean showHelpOverlay;
+    private final int helpOverlayOriginOffset = 100;
+    private final int helpOverlayTextOffset = 50;
+
     //public ArrayList<Entity> entityList;
 
     public Window(int screenWidth, int screenHeight,int chunkSize, int gridOffset, int sidebarWidth, int tileDimension, int fps) {
@@ -237,6 +241,12 @@ public class Window extends JPanel implements ActionListener {
             );
         }
 
+
+        g2.drawString("press ? for help", screenWidth - 300, screenHeight - 50);
+
+        if (showHelpOverlay)
+            drawHelpOverlay(g2);
+
         g2.dispose(); // frees up memory
     }
 
@@ -264,7 +274,7 @@ public class Window extends JPanel implements ActionListener {
     public void drawChunks(Graphics2D g) {
         // drawline(x1, y1, x2, y2)
 
-        g.setColor(new Color(255, 255, 255));
+        g.setColor(Color.WHITE);
 
         // how distant the bottom of the first chunk is to be drawn to the screen
         int offsetX = grid.CHUNK_SIZE - grid.getViewportOffsetX() % grid.CHUNK_SIZE;
@@ -312,6 +322,23 @@ public class Window extends JPanel implements ActionListener {
                 }
             }
         }
+
+    }
+
+    public void drawHelpOverlay(Graphics2D g) {
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(helpOverlayOriginOffset, helpOverlayOriginOffset, screenWidth - 2 * helpOverlayOriginOffset, screenHeight - 2 * helpOverlayOriginOffset); // x, y, width, height
+        // g.drawRoundRect(200, 200, screenWidth - 400, screenHeight - 400, 0, 0); // x, y, width, height, arcwidth, archeight
+        g.setColor(Color.WHITE);
+        g.drawString("• a | d -> move left | right, w | space to jump (hold to jump higher)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 100);
+        g.drawString("• numbers 1-9 to scroll elements sidebar doesnt select anything", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 150);
+        g.drawString("  (or arrows to scroll)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 180);
+        g.drawString("• ctrl + b to open sidebar and select element (press again", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 230);
+        g.drawString("  element to deselect it)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 260);
+        g.drawString("• o -> save currently loaded grid to disk", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 310);
+        g.drawString("• i -> reload currently open grid from files", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 360);
+        g.drawString("• c -> toggle chunk view", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 410);
+        g.drawString("• numpad 0, 1, 2 to toggle debug info, warnings and errors", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 460);
 
     }
 
@@ -390,7 +417,7 @@ public class Window extends JPanel implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
-            //System.out.println(key);
+            // System.out.println(key);
             switch (key) {
                 //full list here https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
                 case 10: // enter
@@ -523,6 +550,9 @@ public class Window extends JPanel implements ActionListener {
                     sidebarWindow.setLocation(sidebarPosition.x, sidebarPosition.y);
                 }
             }
+
+            // "?" to toggle help overlay
+            if (key == 222) showHelpOverlay = !showHelpOverlay;
 
 
             // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
