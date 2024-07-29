@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import Blocks.Air;
 
-public class Entity extends JPanel{
+public abstract class Entity extends JPanel{
     
     final int tileDimension;
 

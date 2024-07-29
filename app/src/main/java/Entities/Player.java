@@ -65,6 +65,7 @@ public class Player extends Entity{
             else if (diffY > 0)
                 grid.moveViewDownOne();
 
+
     }
 
     public Color getPlayerColor() {
