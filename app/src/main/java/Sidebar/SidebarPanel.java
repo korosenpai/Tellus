@@ -27,7 +27,7 @@ public class SidebarPanel extends JPanel implements ActionListener {
     private final int VOFFSET = 50; // vertical offset
     private final int HOFFSET = 30; // horizontal offset
     private final int ICON_DISTANCE = 100; // distance from each button
-    private final int ICON_SIZE = 96;
+    private final int ICON_SIZE = 96; // TODO: maybe pump up to 128?
     private final int WIDTH;
     private final int HEIGHT;
 

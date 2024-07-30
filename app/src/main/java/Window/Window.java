@@ -330,15 +330,16 @@ public class Window extends JPanel implements ActionListener {
         g.fillRect(helpOverlayOriginOffset, helpOverlayOriginOffset, screenWidth - 2 * helpOverlayOriginOffset, screenHeight - 2 * helpOverlayOriginOffset); // x, y, width, height
         // g.drawRoundRect(200, 200, screenWidth - 400, screenHeight - 400, 0, 0); // x, y, width, height, arcwidth, archeight
         g.setColor(Color.WHITE);
-        g.drawString("• a | d -> move left | right, w | space to jump (hold to jump higher)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 100);
-        g.drawString("• numbers 1-9 to scroll elements sidebar doesnt select anything", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 150);
-        g.drawString("  (or arrows to scroll)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 180);
-        g.drawString("• ctrl + b to open sidebar and select element (press again", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 230);
-        g.drawString("  element to deselect it)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 260);
-        g.drawString("• o -> save currently loaded grid to disk", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 310);
-        g.drawString("• i -> reload currently open grid from files", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 360);
-        g.drawString("• c -> toggle chunk view", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 410);
-        g.drawString("• numpad 0, 1, 2 to toggle debug info, warnings and errors", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 460);
+        g.drawString("• a, d -> move left, right, w, space to jump (hold to jump higher)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 100);
+        g.drawString("• press f, t, g, h to move the view around", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 150);
+        g.drawString("• numbers 1-9 (or arrows) to scroll elements, works only when", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 200);
+        g.drawString("  sidebar isnt selecting anything", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 230);
+        g.drawString("• ctrl + b to toggle sidebar and select element (press again", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 280);
+        g.drawString("  the element to deselect it)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 310);
+        g.drawString("• o -> save currently loaded grid to disk", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 360);
+        g.drawString("• i -> reload currently open grid from files", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 410);
+        g.drawString("• c -> toggle chunk view", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 460);
+        g.drawString("• numpad 0, 1, 2 to toggle debug info, warnings and errors", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 510);
 
     }
 
@@ -552,7 +553,12 @@ public class Window extends JPanel implements ActionListener {
             }
 
             // "?" to toggle help overlay
+            // TODO: play sound when opening or closing
             if (key == 222) showHelpOverlay = !showHelpOverlay;
+            else if (showHelpOverlay) {
+                // press any key to close
+                showHelpOverlay = false;
+            }
 
 
             // get ovverriden every input, we dont care we are not yandere dev we can, gls amio
