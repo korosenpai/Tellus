@@ -137,9 +137,14 @@ public class MainMenu extends JPanel implements ActionListener {
         playButton.addActionListener(this);
         add(playButton);
 
+        // footer to thank
+        JLabel madeWithLove = new JLabel();
+        madeWithLove.setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/made-with-love.png"));
+        madeWithLove.setBounds(MENU_WIDTH - 192 - 50, MENU_HEIGHT - 48 - 50, 192, 48);
+        add(madeWithLove);
+
+
         MusicPlayer.loadAll();
-
-
 
     }
 
