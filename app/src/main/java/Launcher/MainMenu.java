@@ -120,12 +120,9 @@ public class MainMenu extends JPanel implements ActionListener {
 
         // modifiers
         int leftColTitleX = 50;
-        // tileSizeModifier = new ValueModifier(leftColTitleX, "tile-size.png", 120 + leftColTitleX, 210, TILE_SIZE, this);
-        // seedSizeModifier = new ValueModifier(leftColTitleX, "seed.png", 120 + leftColTitleX, 280, SEED, this);
-        // colsModifier = new ValueModifier(leftColTitleX, "cols.png", 120 + leftColTitleX, 350, COLS, this);
         ValueModifier seedSizeModifier = new ValueModifier(leftColTitleX, "seed.png", 120 + leftColTitleX, 210, SEED, this);
         ValueModifier colsModifier = new ValueModifier(leftColTitleX, "cols.png", 120 + leftColTitleX, 280, COLS, this);
-        ValueModifier rowsModifier = new ValueModifier(leftColTitleX, "rows.png", 120 + leftColTitleX, 350, COLS, this);
+        ValueModifier rowsModifier = new ValueModifier(leftColTitleX, "rows.png", 120 + leftColTitleX, 350, ROWS, this);
 
         int rightColTitleX = 630;
         ValueModifier fpsModifier = new ValueModifier(rightColTitleX, "fps.png", MENU_WIDTH / 2, 210, FPS, this);
