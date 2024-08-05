@@ -1,10 +1,10 @@
-package Debug;
+package Utils;
 
 public class Debug {
 
 
     private static void print(String flag, String msg) {
-        System.out.println("[" + flag + "]: " + msg);
+        System.out.println("[" + flag + "] " + msg);
     }
 
     // do not disactivate

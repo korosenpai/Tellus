@@ -4,13 +4,17 @@ package Window;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -20,7 +24,7 @@ import javax.swing.Timer;
 
 import Blocks.Particle;
 import Blocks.ParticleList;
-import Debug.Debug;
+import Utils.Debug;
 import Entities.Blob;
 import Entities.Entity;
 import Entities.EntityParticle;
@@ -35,7 +39,6 @@ public class Window extends JPanel implements ActionListener {
     final int screenWidth;
     final int screenHeight;
     final int chunkSize;
-    final int sidebarWidth;
     final int tileDimension;
 
     int FPS;
@@ -75,23 +78,33 @@ public class Window extends JPanel implements ActionListener {
     private Point sidebarPosition;
 
     private boolean showHelpOverlay;
-    private final int helpOverlayOriginOffset = 100;
-    private final int helpOverlayTextOffset = 50;
+    private final int helpOverlayOriginOffset = 50;
+    private final int helpOverlayTextOffset = 100;
+
+    Font MINECRAFT_FONT;
 
     //public ArrayList<Entity> entityList;
 
-    public Window(int screenWidth, int screenHeight,int chunkSize, int gridOffset, int sidebarWidth, int tileDimension, int fps) {
+    public Window(int screenWidth, int screenHeight,int chunkSize, int gridOffset, int tileDimension, int fps) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.gridOffset = gridOffset;
         this.chunkSize = chunkSize;
-        this.sidebarWidth = sidebarWidth;
         this.tileDimension = tileDimension;
         // this.rows = screenHeight / tileDimension;
         // this.columns = screenWidth / tileDimension;
 
         this.FPS = fps;
         this.DELAY = 1000 / FPS;
+
+        try {
+            MINECRAFT_FONT = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/assets/fonts/Minecraft.ttf")).deriveFont(30f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(MINECRAFT_FONT);
+        }
+        catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
 
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -227,16 +240,17 @@ public class Window extends JPanel implements ActionListener {
 
         // print offsets on screen
         if (grid != null) {
-            g2.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 30));
+            g2.setFont(MINECRAFT_FONT);
+            //g2.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 30));
             g2.setColor(Color.WHITE);
 
             g2.drawString(
-                "chunk offset xy: " + grid.getChunkOffsetX() + " " + grid.getChunkOffsetY(),
+                "CHUNK OFFSET XY: " + grid.getChunkOffsetX() + " " + grid.getChunkOffsetY(),
                 20, 40
             );
 
             g2.drawString(
-                "viewport offset xy: " + grid.getViewportOffsetX() + " " + grid.getViewportOffsetY(),
+                "VIEWPORT OFFSET XY: " + grid.getViewportOffsetX() + " " + grid.getViewportOffsetY(),
                 20, 80
             );
         }
@@ -330,16 +344,16 @@ public class Window extends JPanel implements ActionListener {
         g.fillRect(helpOverlayOriginOffset, helpOverlayOriginOffset, screenWidth - 2 * helpOverlayOriginOffset, screenHeight - 2 * helpOverlayOriginOffset); // x, y, width, height
         // g.drawRoundRect(200, 200, screenWidth - 400, screenHeight - 400, 0, 0); // x, y, width, height, arcwidth, archeight
         g.setColor(Color.WHITE);
-        g.drawString("• a, d -> move left, right, w, space to jump (hold to jump higher)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 100);
-        g.drawString("• press f, t, g, h to move the view around", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 150);
-        g.drawString("• numbers 1-9 (or arrows) to scroll elements, works only when", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 200);
-        g.drawString("  sidebar isnt selecting anything", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 230);
-        g.drawString("• ctrl + b to toggle sidebar and select element (press again", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 280);
-        g.drawString("  the element to deselect it)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 310);
-        g.drawString("• o -> save currently loaded grid to disk", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 360);
-        g.drawString("• i -> reload currently open grid from files", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 410);
-        g.drawString("• c -> toggle chunk view", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 460);
-        g.drawString("• numpad 0, 1, 2 to toggle debug info, warnings and errors", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 510);
+        g.drawString("A, D -> move left, right and W, space to jump (hold to jump higher)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 100);
+        g.drawString("press F, T, G, H to move the view around", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 180);
+        g.drawString("numbers 1-9 (or arrows) to scroll elements, works only when", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 260);
+        g.drawString("sidebar isnt selecting anything", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 300);
+        g.drawString("ctrl + B to toggle sidebar and select element (press again", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 380);
+        g.drawString("the element to deselect it)", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 420);
+        g.drawString("O -> save currently loaded grid to disk", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 500);
+        g.drawString("I -> reload currently open grid from files", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 580);
+        g.drawString("C -> toggle chunk view", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 660);
+        g.drawString("numpad 0, 1, 2 to toggle debug info, warnings and errors", helpOverlayOriginOffset + helpOverlayTextOffset, helpOverlayOriginOffset + 720);
 
     }
 
@@ -354,7 +368,6 @@ public class Window extends JPanel implements ActionListener {
         //g.setColor(new Color(currentSelectedParticle.getColorRed(), currentSelectedParticle.getColorGreen(), currentSelectedParticle.getColorBlue()));
 
         g.setColor(currentSelectedParticleColor);
-        
         /*
          int radiusInPixels = mouse.getRadius() * tileDimension;
          int centerX = mouse.getX() / tileDimension * tileDimension;
@@ -362,16 +375,15 @@ public class Window extends JPanel implements ActionListener {
 
          g.fillOval(centerX - radiusInPixels, centerY - radiusInPixels, radiusInPixels * 2, radiusInPixels * 2);
         */
-        
         int radius = mouse.getRadius() * tileDimension;
         int circleCentreX = (mouse.getX() / tileDimension) * tileDimension;
         int circleCentreY = (mouse.getY() / tileDimension) * tileDimension;
-        
+
         int c0 = (((circleCentreX + radius) / tileDimension) * tileDimension); //c0 stands for 0 degrees on the circumference
         int c180 = (((circleCentreX - radius) / tileDimension) * tileDimension); //c180 stands for 180 degrees on the circumference
         int c90 = (((circleCentreY + radius) / tileDimension) * tileDimension); //c90 stands for 90 degrees on the circumference
         int c270 = (((circleCentreY - radius) / tileDimension) * tileDimension); //c270 stands for 270 degrees on the circumference       
-        
+
         //int radiusInTiles = radius / tileDimension;
         // Calculate the number of tiles the circle spans in both directions
         //int numTilesX = Math.abs(c180 - c0) / tileDimension;

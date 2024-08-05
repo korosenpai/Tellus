@@ -31,7 +31,7 @@ public class SidebarPanel extends JPanel implements ActionListener {
     private final int WIDTH;
     private final int HEIGHT;
 
-    private final String SIDEBAR_ASSET_DIR = "src/main/assets/sidebar/";
+    private final String SIDEBAR_IMG_ASSET_DIR = "src/main/assets/images/sidebar/";
 
     private String selectedElement;
     private myBtn[] buttons;
@@ -45,35 +45,35 @@ public class SidebarPanel extends JPanel implements ActionListener {
         this.setDoubleBuffered(true); // all drawing from this component will be done in an offscreen painting buffer -> improves performance
         setLayout(null);
 
-        myBtn pickaxeBtn = new myBtn(ICON_SIZE, Elements.PICKAXE.name(), HOFFSET, VOFFSET, SIDEBAR_ASSET_DIR + "pickaxe");
+        myBtn pickaxeBtn = new myBtn(ICON_SIZE, Elements.PICKAXE.name(), HOFFSET, VOFFSET, SIDEBAR_IMG_ASSET_DIR + "pickaxe");
         pickaxeBtn.addActionListener(this);
         add(pickaxeBtn);
 
-        myBtn sandBtn = new myBtn(ICON_SIZE, Elements.SAND.name(), HOFFSET + ICON_DISTANCE, VOFFSET, SIDEBAR_ASSET_DIR + "sand");
+        myBtn sandBtn = new myBtn(ICON_SIZE, Elements.SAND.name(), HOFFSET + ICON_DISTANCE, VOFFSET, SIDEBAR_IMG_ASSET_DIR + "sand");
         sandBtn.addActionListener(this);
         add(sandBtn);
 
-        myBtn snowBtn = new myBtn(ICON_SIZE, Elements.SNOW.name(), HOFFSET, VOFFSET + ICON_DISTANCE, SIDEBAR_ASSET_DIR + "snow");
+        myBtn snowBtn = new myBtn(ICON_SIZE, Elements.SNOW.name(), HOFFSET, VOFFSET + ICON_DISTANCE, SIDEBAR_IMG_ASSET_DIR + "snow");
         snowBtn.addActionListener(this);
         add(snowBtn);
 
-        myBtn woodBtn = new myBtn(ICON_SIZE, Elements.WOOD.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE, SIDEBAR_ASSET_DIR + "wood");
+        myBtn woodBtn = new myBtn(ICON_SIZE, Elements.WOOD.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE, SIDEBAR_IMG_ASSET_DIR + "wood");
         woodBtn.addActionListener(this);
         add(woodBtn);
 
-        myBtn waterBtn = new myBtn(ICON_SIZE, Elements.WATER.name(), HOFFSET, VOFFSET + ICON_DISTANCE * 2, SIDEBAR_ASSET_DIR + "water");
+        myBtn waterBtn = new myBtn(ICON_SIZE, Elements.WATER.name(), HOFFSET, VOFFSET + ICON_DISTANCE * 2, SIDEBAR_IMG_ASSET_DIR + "water");
         waterBtn.addActionListener(this);
         add(waterBtn);
 
-        myBtn gravelBtn = new myBtn(ICON_SIZE, Elements.GRAVEL.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE * 2, SIDEBAR_ASSET_DIR + "gravel");
+        myBtn gravelBtn = new myBtn(ICON_SIZE, Elements.GRAVEL.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE * 2, SIDEBAR_IMG_ASSET_DIR + "gravel");
         gravelBtn.addActionListener(this);
         add(gravelBtn);
 
-        myBtn fireBtn = new myBtn(ICON_SIZE, Elements.FIRE.name(), HOFFSET, VOFFSET + ICON_DISTANCE * 3, SIDEBAR_ASSET_DIR + "fire");
+        myBtn fireBtn = new myBtn(ICON_SIZE, Elements.FIRE.name(), HOFFSET, VOFFSET + ICON_DISTANCE * 3, SIDEBAR_IMG_ASSET_DIR + "fire");
         fireBtn.addActionListener(this);
         add(fireBtn);
 
-        myBtn stoneBtn = new myBtn(ICON_SIZE, Elements.STONE.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE * 3, SIDEBAR_ASSET_DIR + "stone");
+        myBtn stoneBtn = new myBtn(ICON_SIZE, Elements.STONE.name(), HOFFSET + ICON_DISTANCE, VOFFSET + ICON_DISTANCE * 3, SIDEBAR_IMG_ASSET_DIR + "stone");
         stoneBtn.addActionListener(this);
         add(stoneBtn);
 
@@ -173,12 +173,12 @@ class myBtn extends JButton {
     }
 
     public void setPressed() {
-        MusicPlayer.playFile("sidebar/button-press.wav");
+        MusicPlayer.playFile("button-press.wav");
         setIcon(new ImageIcon(ICONPATH + "-pressed.png"));
         isIconPressed = true;
     }
     public void setReleased() {
-        if (isIconPressed) MusicPlayer.playFile("sidebar/button-released.wav");
+        if (isIconPressed) MusicPlayer.playFile("button-released.wav");
 
         setIcon(new ImageIcon(ICONPATH + ".png"));
         isIconPressed = false;

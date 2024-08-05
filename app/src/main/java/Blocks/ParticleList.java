@@ -11,7 +11,7 @@ import Blocks.Solids.DynamicSolid.Sand;
 import Blocks.Solids.DynamicSolid.Snow;
 import Blocks.Solids.StaticSolid.Stone;
 import Blocks.Solids.StaticSolid.Wood;
-import Debug.Debug;
+import Utils.Debug;
 ;
 
 // functions as big ass lookup table to get new instance of any particle

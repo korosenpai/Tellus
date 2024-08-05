@@ -14,7 +14,7 @@ import WorldGen.Caves;
 import Blocks.Particle;
 import Blocks.Air;
 import Blocks.Solids.StaticSolid.Stone;
-import Debug.Debug;
+import Utils.Debug;
 import Entities.BlobParticle;
 import Entities.EntityParticle;
 import Grid.Grid;
