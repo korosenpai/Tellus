@@ -8,7 +8,7 @@ import Blocks.Air;
 import Blocks.Particle;
 import Blocks.ParticleList;
 import Blocks.Solids.StaticSolid.Stone;
-import Debug.Debug;
+import Utils.Debug;
 import Entities.EntityParticle;
 import SRandom.SRandom;
 import FileHandler.FileHandler;

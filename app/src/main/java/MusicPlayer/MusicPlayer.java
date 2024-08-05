@@ -13,7 +13,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
-import Debug.Debug;
+import Utils.Debug;
 
 public class MusicPlayer {
 
@@ -82,7 +82,7 @@ public class MusicPlayer {
                 File audioFile = new File(filePath);
 
                 if (!audioFile.exists())
-                    throw new RuntimeException("cant find file :(");
+                    throw new RuntimeException("cant find '" + filePath + "':(");
 
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(audioFile);
                 clip = AudioSystem.getClip();

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import Blocks.Air;
 import Blocks.Solids.SolidParticle;
-import Debug.Debug;
+import Utils.Debug;
 import Grid.Grid;
 
 // player that moves with cellular automata behaviour

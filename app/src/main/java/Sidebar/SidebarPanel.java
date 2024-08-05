@@ -173,12 +173,12 @@ class myBtn extends JButton {
     }
 
     public void setPressed() {
-        MusicPlayer.playFile("sidebar/button-press.wav");
+        MusicPlayer.playFile("button-press.wav");
         setIcon(new ImageIcon(ICONPATH + "-pressed.png"));
         isIconPressed = true;
     }
     public void setReleased() {
-        if (isIconPressed) MusicPlayer.playFile("sidebar/button-released.wav");
+        if (isIconPressed) MusicPlayer.playFile("button-released.wav");
 
         setIcon(new ImageIcon(ICONPATH + ".png"));
         isIconPressed = false;
