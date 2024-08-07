@@ -30,42 +30,34 @@ import Window.Window;
 
 public class MainMenu extends JPanel implements ActionListener {
 
-    // TODO: scale everything to make it bigger!!!
     private static JFrame menuFrame;
-    private final int MENU_WIDTH = 800;
-    private final int MENU_HEIGHT = 600;
+    private final int MENU_WIDTH = 1200;
+    private final int MENU_HEIGHT = 900;
 
     int WIDTH;
     int HEIGHT;
-    final int GRID_OFFSET = 2;
 
     Font MINECRAFT_FONT;
 
     // menu element resolutions
-    final int logoWidth = 666;
-    final int logoHeight = 116;
+    final int logoWidth = 999;
+    final int logoHeight = 174;
 
     final int playButtonWidth = 192;
     final int playbuttonHeight = 96;
-
-    // modifiers
-    // ValueModifier seedSizeModifier;
-    // ValueModifier colsModifier;
-    // ValueModifier fpsModifier;
-    // ValueModifier tileSizeModifier;
+    Button playButton;
 
     // modifiable in the menu
-    private MutableInteger SEED = new MutableInteger(42, 1);
-    private MutableInteger COLS = new MutableInteger(8, 1);
-    private MutableInteger ROWS = new MutableInteger(6, 1);
+    private MutableInteger SEED = new MutableInteger(42, 1, 0);
+    private MutableInteger COLS = new MutableInteger(8, 1, 1);
+    private MutableInteger ROWS = new MutableInteger(6, 1, 1);
+    private MutableInteger GRID_OFFSET = new MutableInteger(2, 1, 2);
 
-    private MutableInteger FPS = new MutableInteger(30, 15);
-    private MutableInteger CHUNK_SIZE = new MutableInteger(32, 8);
-    private MutableInteger TILE_SIZE = new MutableInteger(5, 1);
+    private MutableInteger FPS = new MutableInteger(30, 15, 1);
+    private MutableInteger CHUNK_SIZE = new MutableInteger(32, 8, 1);
+    private MutableInteger TILE_SIZE = new MutableInteger(5, 1, 1);
 
 
-
-    Button playButton;
 
 
     public void calculateResolution() {
@@ -119,27 +111,32 @@ public class MainMenu extends JPanel implements ActionListener {
         add(logo);
 
         // modifiers
-        int leftColTitleX = 50;
-        // tileSizeModifier = new ValueModifier(leftColTitleX, "tile-size.png", 120 + leftColTitleX, 210, TILE_SIZE, this);
-        // seedSizeModifier = new ValueModifier(leftColTitleX, "seed.png", 120 + leftColTitleX, 280, SEED, this);
-        // colsModifier = new ValueModifier(leftColTitleX, "cols.png", 120 + leftColTitleX, 350, COLS, this);
-        ValueModifier seedSizeModifier = new ValueModifier(leftColTitleX, "seed.png", 120 + leftColTitleX, 210, SEED, this);
-        ValueModifier colsModifier = new ValueModifier(leftColTitleX, "cols.png", 120 + leftColTitleX, 280, COLS, this);
-        ValueModifier rowsModifier = new ValueModifier(leftColTitleX, "rows.png", 120 + leftColTitleX, 350, COLS, this);
+        int leftColTitleX = 0;
+        int startingY = 270;
+        int verticalOffset = 110;
+        ValueModifier seedSizeModifier = new ValueModifier(leftColTitleX, "seed.png", 240 + leftColTitleX, startingY, SEED, this);
+        ValueModifier colsModifier = new ValueModifier(leftColTitleX, "cols.png", 240 + leftColTitleX, verticalOffset + startingY, COLS, this);
+        ValueModifier rowsModifier = new ValueModifier(leftColTitleX, "rows.png", 240 + leftColTitleX, verticalOffset * 2 + startingY, ROWS, this);
+        ValueModifier gridOffsetModifier = new ValueModifier(leftColTitleX, "grid-offset.png", 240 + leftColTitleX, verticalOffset * 3 + startingY, GRID_OFFSET, this);
 
-        int rightColTitleX = 630;
-        ValueModifier fpsModifier = new ValueModifier(rightColTitleX, "fps.png", MENU_WIDTH / 2, 210, FPS, this);
-        ValueModifier chunkSizeModifier = new ValueModifier(rightColTitleX, "chunk-size.png", MENU_WIDTH / 2, 280, CHUNK_SIZE, this);
-        ValueModifier tileSizeModifier = new ValueModifier(rightColTitleX, "tile-size.png", MENU_WIDTH / 2, 350, TILE_SIZE, this);
+        int rightColTitleX = 950;
+        ValueModifier fpsModifier = new ValueModifier(rightColTitleX, "fps.png", MENU_WIDTH / 2, startingY, FPS, this);
+        ValueModifier chunkSizeModifier = new ValueModifier(rightColTitleX, "chunk-size.png", MENU_WIDTH / 2, verticalOffset + startingY, CHUNK_SIZE, this);
+        ValueModifier tileSizeModifier = new ValueModifier(rightColTitleX, "tile-size.png", MENU_WIDTH / 2, verticalOffset * 2 + startingY, TILE_SIZE, this);
 
         // load play button
         playButton = new Button(centerElemOnX(playButtonWidth), MENU_HEIGHT - playbuttonHeight - 40, playButtonWidth, playbuttonHeight, "menu/play-btn");
         playButton.addActionListener(this);
         add(playButton);
 
+        // footer to thank
+        JLabel madeWithLove = new JLabel();
+        madeWithLove.setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/made-with-love.png"));
+        madeWithLove.setBounds(MENU_WIDTH - 192 - 50, MENU_HEIGHT - 48 - 50, 192, 48);
+        add(madeWithLove);
+
+
         MusicPlayer.loadAll();
-
-
 
     }
 
@@ -180,7 +177,7 @@ public class MainMenu extends JPanel implements ActionListener {
         Debug.system("TILE SIZE: " + TILE_SIZE.get());
         Debug.system("FPS: " + FPS.get());
 
-        Window window = new Window(WIDTH, HEIGHT, CHUNK_SIZE.get(), GRID_OFFSET, TILE_SIZE.get(), FPS.get());
+        Window window = new Window(WIDTH, HEIGHT, CHUNK_SIZE.get(), GRID_OFFSET.get(), TILE_SIZE.get(), FPS.get());
         menuFrame.add(window);
         menuFrame.pack(); // resize window to fit preferred size (specified in gamepanel)
 
@@ -193,24 +190,30 @@ public class MainMenu extends JPanel implements ActionListener {
 }
 
 class MutableInteger {
-    private int val;
+    private final int MAX = 999;
+    private final int MIN;
+
+    private int VAL;
     private int step;
 
     // step, how much to incr or decr
-    public MutableInteger(int val, int step) {
-        this.val = val;
+    public MutableInteger(int val, int step, int min) {
+        this.MIN = min;
+
+        this.VAL = val;
         this.step = step;
     }
     public void incr() {
-        val += step;
+        if (VAL + step > MAX) return;
+        VAL += step;
     }
     public void decr() {
-        if (val - step < 0) return;
-
-        val -= step;
+        if (VAL - step < 0) return;
+        if (VAL - step < MIN) return;
+        VAL -= step;
     }
     public int get() {
-        return val;
+        return VAL;
     }
 }
 
@@ -218,7 +221,7 @@ class MutableInteger {
 class Button extends JButton {
     public String ICON;
     public boolean isPressed;
-    public int milliesTillReleased = 300;
+    public int milliesTillReleased = 200;
 
     public Button(int x, int y, int width, int height, String icon) {
         this.ICON = icon;
@@ -265,8 +268,8 @@ class Button extends JButton {
 class ValueModifier {
     private Button incr;
     private Button decr;
-    private final int ICON_SIZE = 64;
-    private final int LABEL_SIZE_WIDTH = 96;
+    private final int ICON_SIZE = 96;
+    private final int LABEL_SIZE_WIDTH = 144;
 
     private NumberLabel numberLabel;
 
@@ -275,7 +278,7 @@ class ValueModifier {
 
         JLabel tileSizeLabel = new JLabel();
         tileSizeLabel.setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/labels/" + titleFileName));
-        tileSizeLabel.setBounds(titleSizeX, topLeftY + 16, 112, 32);
+        tileSizeLabel.setBounds(titleSizeX, topLeftY + 24, 224, 64);
         menu.add(tileSizeLabel);
 
         incr = new Button(topLeftX, topLeftY, ICON_SIZE, ICON_SIZE, "menu/increment-btn");
@@ -291,7 +294,7 @@ class ValueModifier {
         numberLabel = new NumberLabel(topLeftX + ICON_SIZE, topLeftY, val.get(), menu);
 
         JLabel numLabelPlaque = new JLabel();
-        numLabelPlaque.setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/number-label.png"));
+        numLabelPlaque.setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/number-label" + Constants.IMG_EXT));
         numLabelPlaque.setBounds(topLeftX + ICON_SIZE, topLeftY, LABEL_SIZE_WIDTH, ICON_SIZE);
         menu.add(numLabelPlaque);
 
@@ -317,8 +320,8 @@ class NumberLabel {
     private String num;
 
     // res of each image
-    private final int WIDTH = 20;
-    private final int HEIGHT = 32;
+    private final int WIDTH = 40;
+    private final int HEIGHT = 64;
 
     public NumberLabel(int topLeftX, int topLeftY, int number, MainMenu menu) {
 
@@ -326,10 +329,9 @@ class NumberLabel {
 
         for (int i = 0; i < figures.length; i++) {
             figures[i] = new JLabel();
-            figures[i].setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/nums/" + this.num.charAt(i) + ".png"));
+            figures[i].setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/nums/" + this.num.charAt(i) + Constants.IMG_EXT));
             figures[i].setBounds(topLeftX + WIDTH * i + 15, topLeftY + 14, WIDTH, HEIGHT); // digits are to center it better
             menu.add(figures[i]);
-            System.out.println(Constants.IMAGE_ASSET_DIR + "menu/nums/" + this.num.charAt(i) + ".png");
         }
 
 
@@ -353,7 +355,7 @@ class NumberLabel {
         set(newVal);
 
         for (int i = 0; i < figures.length; i++) {
-            figures[i].setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/nums/" + this.num.charAt(i) + ".png"));
+            figures[i].setIcon(new ImageIcon(Constants.IMAGE_ASSET_DIR + "menu/nums/" + this.num.charAt(i) + Constants.IMG_EXT));
         }
     }
 

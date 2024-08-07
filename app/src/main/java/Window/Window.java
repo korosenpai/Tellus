@@ -121,6 +121,9 @@ public class Window extends JPanel implements ActionListener {
         this.addMouseListener(mouse);
 
         setupSidebar();
+
+        // background music
+        MusicPlayer.playFile("bg_songs/calm-chiptune-8min-[9VGuAljPBZM].wav", 85);
     }
 
     private void setupSidebar() {
