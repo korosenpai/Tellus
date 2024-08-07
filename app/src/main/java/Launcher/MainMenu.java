@@ -36,7 +36,6 @@ public class MainMenu extends JPanel implements ActionListener {
 
     int WIDTH;
     int HEIGHT;
-    final int GRID_OFFSET = 2;
 
     Font MINECRAFT_FONT;
 
@@ -52,7 +51,7 @@ public class MainMenu extends JPanel implements ActionListener {
     private MutableInteger SEED = new MutableInteger(42, 1, 0);
     private MutableInteger COLS = new MutableInteger(8, 1, 1);
     private MutableInteger ROWS = new MutableInteger(6, 1, 1);
-    private MutableInteger GRIDOFFSET = new MutableInteger(1, 1, 1);
+    private MutableInteger GRID_OFFSET = new MutableInteger(2, 1, 2);
 
     private MutableInteger FPS = new MutableInteger(30, 15, 1);
     private MutableInteger CHUNK_SIZE = new MutableInteger(32, 8, 1);
@@ -118,7 +117,7 @@ public class MainMenu extends JPanel implements ActionListener {
         ValueModifier seedSizeModifier = new ValueModifier(leftColTitleX, "seed.png", 240 + leftColTitleX, startingY, SEED, this);
         ValueModifier colsModifier = new ValueModifier(leftColTitleX, "cols.png", 240 + leftColTitleX, verticalOffset + startingY, COLS, this);
         ValueModifier rowsModifier = new ValueModifier(leftColTitleX, "rows.png", 240 + leftColTitleX, verticalOffset * 2 + startingY, ROWS, this);
-        ValueModifier gridOffsetModifier = new ValueModifier(leftColTitleX, "grid-offset.png", 240 + leftColTitleX, verticalOffset * 3 + startingY, GRIDOFFSET, this);
+        ValueModifier gridOffsetModifier = new ValueModifier(leftColTitleX, "grid-offset.png", 240 + leftColTitleX, verticalOffset * 3 + startingY, GRID_OFFSET, this);
 
         int rightColTitleX = 950;
         ValueModifier fpsModifier = new ValueModifier(rightColTitleX, "fps.png", MENU_WIDTH / 2, startingY, FPS, this);
@@ -178,7 +177,7 @@ public class MainMenu extends JPanel implements ActionListener {
         Debug.system("TILE SIZE: " + TILE_SIZE.get());
         Debug.system("FPS: " + FPS.get());
 
-        Window window = new Window(WIDTH, HEIGHT, CHUNK_SIZE.get(), GRID_OFFSET, TILE_SIZE.get(), FPS.get());
+        Window window = new Window(WIDTH, HEIGHT, CHUNK_SIZE.get(), GRID_OFFSET.get(), TILE_SIZE.get(), FPS.get());
         menuFrame.add(window);
         menuFrame.pack(); // resize window to fit preferred size (specified in gamepanel)
 

@@ -72,11 +72,16 @@ public class MusicPlayer {
     }
 
     public static void playFile(String filePath) {
+        int percentage = 100;
+        playFile(filePath, percentage);
+    }
+
+    // percentage -> 0..100
+    public static void playFile(String filePath, int percentage) {
         filePath = rootPath + filePath;
         Clip clip = loaded.get(filePath);
 
         // if clip is running just reload the clip and it will overlap the audios
-        // TODO: clone loaded clips
         if (clip == null || clip.isRunning()) {
         try {
                 File audioFile = new File(filePath);
@@ -88,9 +93,6 @@ public class MusicPlayer {
                 clip = AudioSystem.getClip();
                 clip.open(audioInput);
 
-                // set audio lower
-                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                gainControl.setValue(-10f); // decibels
 
                 loaded.put(filePath, clip);
                 Debug.system("loaded: " + filePath);
@@ -102,9 +104,18 @@ public class MusicPlayer {
 
         }
 
+        // set audio
+        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        //float decibels = getDecibels(gainControl.getMinimum(), gainControl.getMaximum(), percentage);
+
+        float range = gainControl.getMaximum() - gainControl.getMinimum();
+        float decibels = (range * percentage / 100) + gainControl.getMinimum();
+
+        //System.out.println(decibels);
+        gainControl.setValue(decibels);
+
         clip.setFramePosition(0);
         clip.start();
-
     }
 
     public static void closeAll() {
@@ -116,37 +127,6 @@ public class MusicPlayer {
         }
     }
 
+
 }
 
-// public class MyClip implements Cloneable {
-//     private Clip dummy;
-// 
-//     public MyClip() {
-//     }
-// 
-//     public Clip get() {
-//         return dummy;
-//     }
-// 
-//     public void set(Clip c) {
-//         this.dummy = c;
-//     }
-// 
-//     @Override
-//     protected Object clone() throws CloneNotSupportedException {
-//         MyClip clone = (MyClip) super.clone();
-//         if (dummy != null) {
-//             try {
-//                 // Create a new AudioInputStream from the original file
-//                 URL url = getClass().getResource("/Resources/sound/Laser.wav");
-//                 AudioInputStream inputStream = AudioSystem.getAudioInputStream(url);
-//                 // Open the new Clip with the cloned AudioInputStream
-//                 clone.dummy = AudioSystem.getClip();
-//                 clone.dummy.open(inputStream);
-//             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-//                 e.printStackTrace();
-//             }
-//         }
-//         return clone;
-//     }
-// }
