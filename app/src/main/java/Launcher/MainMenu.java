@@ -56,9 +56,7 @@ public class MainMenu extends JPanel implements ActionListener {
     private MutableInteger FPS = new MutableInteger(30, 15, 1);
     private MutableInteger CHUNK_SIZE = new MutableInteger(32, 8, 1);
     private MutableInteger TILE_SIZE = new MutableInteger(5, 1, 1);
-
-
-
+    // TODO: global volume
 
     public void calculateResolution() {
         WIDTH = CHUNK_SIZE.get() * TILE_SIZE.get() * COLS.get(); 
@@ -171,8 +169,8 @@ public class MainMenu extends JPanel implements ActionListener {
         menuFrame.setTitle("Tellus");
 
         Debug.system("SEED: " + SEED.get());
-        Debug.system("WIDTH: " + WIDTH);
-        Debug.system("HEIGHT: " + HEIGHT);
+        Debug.system("COLS / ROWS: : " + COLS.get() + "  " + ROWS.get());
+        Debug.system("WIDTH / HEIGHT: " + WIDTH + "  " + HEIGHT);
         Debug.system("CHUNK SIZE: " + CHUNK_SIZE.get());
         Debug.system("TILE SIZE: " + TILE_SIZE.get());
         Debug.system("FPS: " + FPS.get());
