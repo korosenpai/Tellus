@@ -53,18 +53,25 @@ public class ShaderManager {
         // else return new Color(0, 0, 0);
 
         // radial circle from center of screen
-        double distFromCenter = Math.sqrt(Math.pow((width / 2) - x, 2) + Math.pow((height / 2) - y, 2)); // 0...max(height, width)
-        distFromCenter /= width > height ? width / 2 : height / 2; // 0...1
-        // distFromCenter *= 255; // 0...255
-        // distFromCenter = 255 - distFromCenter; // from white to black
-        // distFromCenter /= 20; // make it darker
+
+        // normalize window from 0..width|height to 0..1
+        double normalizedX = (double)x / (double)width;
+        double normalizedY = (double)y / (double)height;
+
+        //System.out.println(normalizedX + " " + normalizedY);
+
+        double centerX = 0.5;
+        double centerY = 0.5;
+        double distFromCenter = Math.sqrt(Math.pow(centerX - normalizedX, 2) + Math.pow(centerY - normalizedY, 2)); // 0...1
 
 
         //distFromCenter = 1 - distFromCenter;
-        if (distFromCenter >= 1) {
+        if (distFromCenter >= 0.5) {
+            //System.out.println(distFromCenter);
             return new Color(0,0,0);
 
         }
+        distFromCenter = 0.5 - distFromCenter;
         //float brightnessFactor = distFromCenter * 0.9f;
         return adjustBrightness(r, g, b, (float)distFromCenter);
     }
