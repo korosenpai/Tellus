@@ -4,6 +4,8 @@ import Grid.Grid;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import Blocks.Particle;
 
@@ -25,7 +27,6 @@ public class ShaderManager {
     // NOTE: same thing as window.drawgrid() to avoid calling millions of functions
     // for every pixel
     public void render(Graphics2D g) {
-        System.out.println("w / h: " +  GRID.getViewportColumns() + " " + GRID.getViewportRows());
         for (int j = 0; j < GRID.getViewportRows(); j++){
             for (int i = 0; i < GRID.getViewportColumns(); i++) {
                 Particle curr = GRID.getAtPosition(j + GRID.getViewportOffsetY(), i + GRID.getViewportOffsetX());
@@ -62,23 +63,36 @@ public class ShaderManager {
 
         double centerX = 0.5;
         double centerY = 0.5;
-        double distFromCenter = Math.sqrt(Math.pow(centerX - normalizedX, 2) + Math.pow(centerY - normalizedY, 2)); // 0...1
+        double distFromCenter = Math.sqrt(Math.pow(centerX - normalizedX, 2) + Math.pow(centerY - normalizedY, 2)); // 0...0.707 (on the angles)
 
 
+        //distFromCenter = 0.5 - distFromCenter;
+
+        double maxValue = 0.707;
+        distFromCenter /= maxValue; // 0..1
         //distFromCenter = 1 - distFromCenter;
-        if (distFromCenter >= 0.5) {
-            //System.out.println(distFromCenter);
-            return new Color(0,0,0);
 
-        }
-        distFromCenter = 0.5 - distFromCenter;
-        //float brightnessFactor = distFromCenter * 0.9f;
-        return adjustBrightness(r, g, b, (float)distFromCenter);
+
+        // TODO: make it work with center radius
+        double CENTER_RADIUS = 100; // radius of center where brightness is full
+        double EXPONENTIAL_FACTOR = 10; // steepness of decay
+        double brightnessAdjustment = Math.exp(-EXPONENTIAL_FACTOR * Math.pow(distFromCenter, 2));
+        brightnessAdjustment = Math.max(brightnessAdjustment, 0); // never go below 0
+
+        int scaleFactor = (int) (255 * brightnessAdjustment);
+
+        // Create a new color with the adjusted brightness
+        int red = Math.max((r * scaleFactor) >> 8, 0);
+        int green = Math.max((g * scaleFactor) >> 8, 0);
+        int blue = Math.max((b * scaleFactor) >> 8, 0);
+
+        return new Color(red, green, blue, 255);
+
     }
 
     public Color adjustBrightness(int r, int g, int b, float brightnessFactor) {
         if (brightnessFactor < 0 || brightnessFactor > 1)
-            throw new RuntimeException("brightness factor must be 0 < x < 1");
+            throw new RuntimeException("brightness factor must be 0 < x < 1: " + brightnessFactor);
 
         // Convert the original color to HSB
         float[] hsbValues = new float[3];
