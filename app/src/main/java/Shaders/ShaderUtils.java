@@ -2,7 +2,7 @@ package Shaders;
 
 import java.awt.Color;
 
-public class Utilities {
+public class ShaderUtils {
 
     public static Color adjustBrightness(int r, int g, int b, int brightnessFactor) {
         // this uses float berightness factor 0 <= x <= 1
@@ -57,4 +57,5 @@ public class Utilities {
         double res = Math.exp(-exponentialFactor * Math.pow(value, 2));
         return Math.max(res, 0); // never go below 0
     }
+
 }

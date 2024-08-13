@@ -50,7 +50,7 @@ public class ShaderManager {
                 //     })
                 // );
 
-                g.setColor(shader.geogebra());
+                g.setColor(shader.mandelbrotSet());
                 g.fillRect(i * TILE_DIMENSION, j * TILE_DIMENSION, TILE_DIMENSION, TILE_DIMENSION);
             }
         }
