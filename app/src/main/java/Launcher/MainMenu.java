@@ -48,6 +48,9 @@ public class MainMenu extends JPanel implements ActionListener {
     Button playButton;
 
     // modifiable in the menu
+    // NOTE: nice res:
+    // - COLS / ROWS: : 6  4
+    // - TILE SIZE: 7
     private MutableInteger SEED = new MutableInteger(42, 1, 0);
     private MutableInteger COLS = new MutableInteger(8, 1, 1);
     private MutableInteger ROWS = new MutableInteger(6, 1, 1);
@@ -84,6 +87,8 @@ public class MainMenu extends JPanel implements ActionListener {
     }
 
     public MainMenu() {
+        MusicPlayer.loadAll();
+
         this.setPreferredSize(new Dimension(MENU_WIDTH, MENU_HEIGHT));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -134,7 +139,8 @@ public class MainMenu extends JPanel implements ActionListener {
         add(madeWithLove);
 
 
-        MusicPlayer.loadAll();
+
+        MusicPlayer.startBGMusic("bg_songs/calm-chiptune-8min-[9VGuAljPBZM].wav", 85);
 
     }
 

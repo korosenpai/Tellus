@@ -127,6 +127,7 @@ public class Window extends JPanel implements ActionListener {
 
         // background music
         //MusicPlayer.playFile("bg_songs/calm-chiptune-8min-[9VGuAljPBZM].wav", 85);
+        MusicPlayer.startBGMusic("bg_songs/caveSounds-8min.wav", 80);
     }
 
     private void setupSidebar() {
@@ -281,22 +282,15 @@ public class Window extends JPanel implements ActionListener {
     }
 
 
-    // NOTE: j and i are inverted, but do the same thing
-    // TODO: apply multithreading
     public void drawGrid(Graphics2D g){
-        // grid is saved perpewndicular so it must be draw in opposite way
         // for (int j = 0; j < grid.getViewportRows(); j++){
         //     for (int i = 0; i < grid.getViewportColumns(); i++) {
         //         Particle curr = grid.getAtPosition(j + grid.getViewportOffsetY(), i + grid.getViewportOffsetX());
         //         // g.setColor(new Color(curr.getColorRed(), curr.getColorGreen(), curr.getColorBlue()));
-        //         g.setColor(ShaderManager.shadePixel(
+        //         g.setColor(new Color(
         //             curr.getColorRed(),
         //             curr.getColorGreen(),
-        //             curr.getColorBlue(),
-        //             j,
-        //             i,
-        //             grid.getViewportRows(),
-        //             grid.getViewportColumns()
+        //             curr.getColorBlue()
         //         ));
         //         g.fillRect(i * tileDimension, j * tileDimension, tileDimension, tileDimension);
         //     }
