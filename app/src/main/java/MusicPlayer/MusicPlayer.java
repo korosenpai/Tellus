@@ -159,13 +159,13 @@ public class MusicPlayer {
         if (BGMusicTimer != null) {
             BGMusicTimer.cancel();
             BGMusicTimer.purge();
-            Debug.system("closed: " + BGMusic);
+            Debug.system("stopped playing: " + BGMusic);
         }
 
         BGMusic = rootPath + filename;
 
         playFile(filename, volumePercentage);
-        Debug.system("playing " + filename);
+        Debug.system("playing as background music: " + filename);
 
         // play music and schedule when to loop
         BGMusicTimer = new Timer();
@@ -176,7 +176,7 @@ public class MusicPlayer {
                 startBGMusic(filename, volumePercentage);
             }
         },
-        (long)(durationSeconds(filename) + 4) * 1000); // add 5 more seconds of silence
+        (long)(durationSeconds(filename) + 4) * 1000); // add 4 more seconds of silence
     }
 
 
