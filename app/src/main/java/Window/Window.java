@@ -296,6 +296,7 @@ public class Window extends JPanel implements ActionListener {
         //     }
         // }
 
+        shaderManager.setUniforms(bplayer.directionI, bplayer.directionJ, mouse.getRadius());
         shaderManager.render(g);
     }
 
