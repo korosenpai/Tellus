@@ -12,6 +12,11 @@ public class Shader {
     private int r,g,b;
     private double y,x;
 
+    // uniforms
+    // player movement
+    public double DELTA_X;
+    public double DELTA_Y;
+
     public Shader(int height, int width) {
         this.height = height;
         this.width = width;
@@ -121,37 +126,32 @@ public class Shader {
 
     }
 
-    public class Vector2d {
-        public double x;
-        public double y;
-
-        public Vector2d(double x, double y) {
-            set(x, y);
-        }
-        public void set(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
-
-    }
-    public Vector2d squareImaginary() {
-        return new Vector2d(
-            Math.pow(x, 2) - Math.pow(y, 2),
-            2 * x * y
-        );
-    }
     private final int range = 2;
     private final int MAX_ITERATIONS = 100;
-    private final int MAND_ZOOM = 1;
-    public Color mandelbrotSet() {
+    // private final double MAND_ZOOM = 2;
+    public Color mandelbrotSet(double zoom) {
 
         // range -2..2
         // if width > height on the x there will be more space,
         // inverted if height > width
         // (will be our C)
-        double normalizedX = x / Math.min(width, height) * range * 2 - range;
-        double normalizedY = y / Math.min(width, height) * range * 2 - range;
+        double normalizedX = (double)x / (double)Math.min(width, height) * range * 2 - range;
+        double normalizedY = (double)y / (double)Math.min(width, height) * range * 2 - range;
 
+        // normalizedX /= MAND_ZOOM * 50;
+        // normalizedY /= MAND_ZOOM * 50;
+        // normalizedX += 1 / 2;
+        // normalizedY -= 1 / (MAND_ZOOM / 0.5);
+
+        if (zoom != 0) {
+            normalizedX /= zoom;
+            normalizedY /= zoom;
+        }
+
+        // divie also delta by zoom? that way the more you are zoomed in the less it moves
+        // but at some point if you zoom it moves cursor
+        normalizedX += DELTA_X * 0.1;
+        normalizedY += DELTA_Y * 0.1;
 
         double zX = normalizedX;
         double zY = normalizedY;
@@ -177,36 +177,33 @@ public class Shader {
             // return new Color((int)(val * 255), (int)(val * 255), (int)(val * 255)); // grayscale
 
         }
-
-
     }
 
-// public class MandelbrotZoomer {
-//     private static final int MAX_ITERATIONS = 1000;
-//     private static final double ESCAPE_RADIUS = 2.0;
-//     private static final double ESCAPE_RADIUS_SQUARED = ESCAPE_RADIUS * ESCAPE_RADIUS;
-// 
-//     public Color calculateMandelbrot(double centerX, double centerY, double zoomLevel, double x, double y) {
-//         double real = (x / zoomLevel) - centerX;
-//         double imaginary = (y / zoomLevel) - centerY;
-// 
-//         double realSquared = real * real;
-//         double imaginarySquared = imaginary * imaginary;
-// 
-//         int iterations = 0;
-//         while (iterations < MAX_ITERATIONS && realSquared + imaginarySquared <= ESCAPE_RADIUS_SQUARED) {
-//             real = realSquared - imaginarySquared + real;
-//             imaginary = 2 * real * imaginary + imaginary;
-//             iterations++;
-//         }
-// 
-//         if (iterations == MAX_ITERATIONS) {
-//             return Color.BLACK; // Outside the set
-//         } else {
-//             float hue = ((float) iterations / MAX_ITERATIONS) % 1.0f;
-//             return Color.getHSBColor(hue, 1.0f, 1.0f); // Inside the set
-//         }
-//     }
-// }
+    // private static final int zoomLevel = 1;
+    // private static final int MAX_ITERATIONS = 1000;
+    // private static final double ESCAPE_RADIUS = 2.0;
+    // private static final double ESCAPE_RADIUS_SQUARED = ESCAPE_RADIUS * ESCAPE_RADIUS;
+    // public Color mandelbrotSet() {
+
+    //     double real = (x / zoomLevel) - (double)width / 2;
+    //     double imaginary = (y / zoomLevel) - (double)height / 2;
+
+    //     double realSquared = real * real;
+    //     double imaginarySquared = imaginary * imaginary;
+
+    //     int iterations = 0;
+    //     while (iterations < MAX_ITERATIONS && realSquared + imaginarySquared <= ESCAPE_RADIUS_SQUARED) {
+    //         real = realSquared - imaginarySquared + real;
+    //         imaginary = 2 * real * imaginary + imaginary;
+    //         iterations++;
+    //     }
+
+    //     if (iterations == MAX_ITERATIONS) {
+    //         return Color.BLACK; // Outside the set
+    //     } else {
+    //         float hue = ((float) iterations / MAX_ITERATIONS) % 1.0f;
+    //         return Color.getHSBColor(hue, 1.0f, 1.0f); // Inside the set
+    //     }
+    // }
 
 }
