@@ -150,8 +150,8 @@ public class Shader {
 
         // divie also delta by zoom? that way the more you are zoomed in the less it moves
         // but at some point if you zoom it moves cursor
-        normalizedX += DELTA_X * 0.1;
-        normalizedY += DELTA_Y * 0.1;
+        normalizedX += DELTA_X * 0.1 / zoom;
+        normalizedY += DELTA_Y * 0.1 / zoom;
 
         double zX = normalizedX;
         double zY = normalizedY;
