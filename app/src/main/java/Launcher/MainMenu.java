@@ -43,8 +43,8 @@ public class MainMenu extends JPanel implements ActionListener {
     final int logoWidth = 999;
     final int logoHeight = 174;
 
-    final int playButtonWidth = 192;
-    final int playbuttonHeight = 96;
+    final int playButtonWidth = 288;
+    final int playbuttonHeight = 144;
     Button playButton;
 
     // modifiable in the menu
