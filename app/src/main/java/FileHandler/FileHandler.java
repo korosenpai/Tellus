@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import SRandom.SRandom;
+import WorldGen.BiomeManager;
 import WorldGen.Caves;
 import Blocks.Particle;
 import Blocks.Air;
@@ -173,7 +174,9 @@ public class FileHandler {
         catch (Exception e) {
             // System.out.println("could not load chunk: " + filename);
             //loaded = loadDefaultChunk(grid.CHUNK_SIZE);
-            loaded = Caves.generateChunk(grid.CHUNK_SIZE, chunkCoords);
+            // loaded = Caves.generateChunk(grid.CHUNK_SIZE, chunkCoords);
+            loaded = BiomeManager.getBiome(chunkCoords[0], chunkCoords[1])
+                .generateChunk(grid.CHUNK_SIZE, chunkCoords);
         }
 
         // for (Particle[] x: loaded) {

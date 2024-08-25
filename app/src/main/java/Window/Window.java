@@ -454,7 +454,7 @@ public class Window extends JPanel implements ActionListener {
 
                 case 27: // esc
                     windowShouldClose = true;
-                    // grid.saveGridtoDisk();
+                    grid.saveGridtoDisk();
                     break;
 
                 // arrows up and down to increase / decrease cursor

@@ -61,6 +61,10 @@ public class Grid {
         CHUNK_ROWS = ROWS / CHUNK_SIZE;
         CHUNK_COLS = COLS / CHUNK_SIZE;
 
+        // TODO: its correct, juts uncomment
+        // bottom chunk of viewport screen must be -1,0 (ground) (y is inverted)
+        // chunkOffsetY = - (VIEWPORT_ROWS / CHUNK_SIZE + GRID_OFFSET);
+
         grid = new Particle[ROWS][COLS];
         gridChunk = new Chunk[CHUNK_ROWS][CHUNK_COLS];
         generateEmptyGrid();
