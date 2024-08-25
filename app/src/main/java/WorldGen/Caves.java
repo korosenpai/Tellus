@@ -3,20 +3,19 @@ package WorldGen;
 import Blocks.Particle;
 import Blocks.Liquids.Water;
 
-import java.util.Arrays;
-
 import Blocks.Air;
 import Blocks.Solids.StaticSolid.Stone;
 import SRandom.SRandom;
 
 // stone caves
-public class Caves {
+public class Caves implements Biome {
 
     // TODO: change based on the height
     public static double noiseDensity = 0.03f; // percent to spawn stone
 
     // chunkcoords used to make simplex noise function know where we are
-    public static Particle[][] generateChunk(int chunkSize, int[] chunkCoords) {
+    @Override
+    public Particle[][] generateChunk(int chunkSize, int[] chunkCoords) {
         //System.out.println(Arrays.toString(chunkCoords));
 
         Particle[][] generated = new Particle[chunkSize][chunkSize];
@@ -24,7 +23,7 @@ public class Caves {
         for (int j = 0; j < chunkSize; j++) {
             for (int i = 0; i < chunkSize; i++) {
 
-                // // playing with ocatves
+                // // playing with octaves
                 // double value = sumOctave(16, i + chunkCoords[1] * chunkSize, j + chunkCoords[0] * chunkSize, .5, 0, 255);
                 // System.out.println(value);
 

@@ -70,8 +70,9 @@ public class ShaderManager {
 
 
                 // g.setColor(shader.mandelbrotSet(mouseSize));
+                // g.setColor(shader.cave());
+                g.setColor(shader.clear());
 
-                g.setColor(shader.cave());
                 g.fillRect(i * TILE_DIMENSION, j * TILE_DIMENSION, TILE_DIMENSION, TILE_DIMENSION);
             }
         }

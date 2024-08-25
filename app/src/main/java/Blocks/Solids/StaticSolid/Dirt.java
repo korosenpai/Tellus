@@ -1,15 +1,14 @@
 package Blocks.Solids.StaticSolid;
 
-public class Wood extends StaticParticle {
+public class Dirt extends StaticParticle {
 
-    public Wood() {
+    public Dirt() {
         super();
 
         // make them shift a bit to create texture
         // original sand = 182, 155, 99
         int offset = getColorOffset();
-        setColors(33 + offset, 4 + offset, -7 + offset);
-
-        this.isFlammable = true;
+        setColors(63 + offset, 34 + offset, 13 + offset);
     }
 }
+
