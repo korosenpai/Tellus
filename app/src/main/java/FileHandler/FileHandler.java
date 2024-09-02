@@ -7,17 +7,14 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import SRandom.SRandom;
 import WorldGen.BiomeManager;
 import WorldGen.Caves;
 import Blocks.Particle;
 import Blocks.Air;
-import Blocks.Solids.StaticSolid.Stone;
 import Utils.Debug;
 import Entities.BlobParticle;
-import Entities.EntityParticle;
 import Grid.Grid;
 
 // TODO: to refactor the shit out of this
@@ -160,6 +157,7 @@ public class FileHandler {
         Particle[][] loaded = new Particle[grid.CHUNK_SIZE][grid.CHUNK_SIZE];
         String filename = getChunkFilenameFromCoords(chunkCoords, grid.CHUNK_SIZE);
 
+        // System.out.println("load chunk" + Arrays.toString(chunkCoords));
         try {
             FileInputStream fileIn = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -172,11 +170,11 @@ public class FileHandler {
             Debug.debug("loaded chunk : " + filename);
         }
         catch (Exception e) {
-            // System.out.println("could not load chunk: " + filename);
-            //loaded = loadDefaultChunk(grid.CHUNK_SIZE);
-            // loaded = Caves.generateChunk(grid.CHUNK_SIZE, chunkCoords);
+            // create new chunk
+            // TODO: understand why plains is at -5
             loaded = BiomeManager.getBiome(chunkCoords[0], chunkCoords[1])
                 .generateChunk(grid.CHUNK_SIZE, chunkCoords);
+            Debug.debug("generated chunk : " + filename);
         }
 
         // for (Particle[] x: loaded) {
@@ -230,8 +228,8 @@ public class FileHandler {
         Particle[][] newGrid = new Particle[grid.getRows()][grid.getColumns()];
 
         // go to each row and save it
-        for (int j = 0; j < grid.getRows() / grid.CHUNK_SIZE; j++) {
-            for (int i = 0; i < grid.getColumns() / grid.CHUNK_SIZE; i++) {
+        for (int j = 0; j < grid.getChunkRows(); j++) {
+            for (int i = 0; i < grid.getChunkColumns(); i++) {
                 Particle[][] singleChunk = loadChunkFromDisk(new int[]{ j + chunkCoords[0], i + chunkCoords[1] }, grid);
 
 

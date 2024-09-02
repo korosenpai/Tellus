@@ -21,28 +21,57 @@ public class Blob {
 
     // originJ/I are top left coords of to be rectangle player
     public Blob(Grid grid, int originJ, int originI) {
-        blobs = new BlobParticle[N_CELLS];
-        for (int b = 0; b < blobs.length; b++) { // populate blobs array
-            blobs[b] = new BlobParticle();
-        }
+        // blobs = new BlobParticle[N_CELLS];
+        // for (int b = 0; b < blobs.length; b++) { // populate blobs array
+        //     blobs[b] = new BlobParticle();
+        // }
 
-        positions = new int[N_CELLS][2];
-        // initiate as rectangle
-        int arr_idx = 0;
-        int width = 3;
-        int height = 5;
+        // positions = new int[N_CELLS][2];
+        // // initiate as rectangle
+        // int arr_idx = 0;
+        // int width = 3;
+        // int height = 5;
 
-        if (width * height != N_CELLS) Debug.error("WRONG NUMBER OF CELLS TO BE CREATED"); 
+        // if (width * height != N_CELLS) Debug.error("WRONG NUMBER OF CELLS TO BE CREATED"); 
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                positions[arr_idx] = new int[]{originJ + j, originI + i};
-                arr_idx++;
-            }
-        }
+        // for (int i = 0; i < width; i++) {
+        //     for (int j = 0; j < height; j++) {
+        //         positions[arr_idx] = new int[]{originJ + j, originI + i};
+        //         arr_idx++;
+        //     }
+        // }
 
         // for (int[] pos: positions)
         //     System.out.println(Arrays.toString(pos));
+
+
+
+        blobs = new BlobParticle[9];
+        positions = new int[9][2];
+
+        blobs[0] = new BlobParticle(238, 195, 154);
+        positions[0] = new int[]{originJ, originI + 1};
+
+        blobs[1] = new BlobParticle(217, 87, 99);
+        positions[1] = new int[]{originJ + 1, originI};
+        blobs[2] = new BlobParticle(217, 87, 99);
+        positions[2] = new int[]{originJ + 1, originI + 1};
+        blobs[3] = new BlobParticle(217, 87, 99);
+        positions[3] = new int[]{originJ + 1, originI + 2};
+
+        blobs[4] = new BlobParticle(69, 40, 60);
+        positions[4] = new int[]{originJ + 2, originI};
+        blobs[5] = new BlobParticle(217, 87, 99);
+        positions[5] = new int[]{originJ + 2, originI + 1};
+        blobs[6] = new BlobParticle(69, 40, 60);
+        positions[6] = new int[]{originJ + 2, originI + 2};
+
+        blobs[7] = new BlobParticle(217, 87, 99);
+        positions[7] = new int[]{originJ + 3, originI + 1};
+
+        blobs[8] = new BlobParticle(69, 40, 60);
+        positions[8] = new int[]{originJ + 4, originI + 1};
+
 
         setInGrid(grid);
     }

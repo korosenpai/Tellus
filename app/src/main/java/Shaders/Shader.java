@@ -2,7 +2,6 @@ package Shaders;
 
 import java.awt.Color;
 
-import org.checkerframework.checker.units.qual.min;
 
 
 public class Shader {
@@ -16,6 +15,7 @@ public class Shader {
     // player movement
     public double DELTA_X;
     public double DELTA_Y;
+    public float time;
 
     public Shader(int height, int width) {
         this.height = height;
@@ -169,41 +169,37 @@ public class Shader {
         }
 
         if (maxIter == MAX_ITERATIONS) {
-            return new Color(0, 0, 0);
+            return ShaderUtils.mixColors(r, g, b, 0, 0, 0);
+            // return new Color(0, 0, 0);
         }
         else {
-            double val = maxIter / MAX_ITERATIONS;
-            return Color.getHSBColor((float)val, 1f, 1f);
+            // original
+            // double val = maxIter / MAX_ITERATIONS;
+            // return Color.getHSBColor((float)val, 1f, 1f);
             // return new Color((int)(val * 255), (int)(val * 255), (int)(val * 255)); // grayscale
 
+            // blend with game
+            double val = maxIter / MAX_ITERATIONS;
+            Color color = Color.getHSBColor((float)val, 1f, 1f);
+            return ShaderUtils.mixColors(r, g, b, color.getRed(), color.getGreen(), color.getBlue());
         }
     }
 
-    // private static final int zoomLevel = 1;
-    // private static final int MAX_ITERATIONS = 1000;
-    // private static final double ESCAPE_RADIUS = 2.0;
-    // private static final double ESCAPE_RADIUS_SQUARED = ESCAPE_RADIUS * ESCAPE_RADIUS;
-    // public Color mandelbrotSet() {
+    public Color kaleidoscope() {
+        // -axis/2...axis/2
+        double centeredX = (double)x - (double)this.width / 2;
+        double centeredY = (double)this.height / 2 - (double)y;
 
-    //     double real = (x / zoomLevel) - (double)width / 2;
-    //     double imaginary = (y / zoomLevel) - (double)height / 2;
+        centeredX /= (double)width / 2.0;
+        centeredY /= (double)height / 2.0;
 
-    //     double realSquared = real * real;
-    //     double imaginarySquared = imaginary * imaginary;
+        // if (x == width - 1) System.out.println(centeredX);
 
-    //     int iterations = 0;
-    //     while (iterations < MAX_ITERATIONS && realSquared + imaginarySquared <= ESCAPE_RADIUS_SQUARED) {
-    //         real = realSquared - imaginarySquared + real;
-    //         imaginary = 2 * real * imaginary + imaginary;
-    //         iterations++;
-    //     }
-
-    //     if (iterations == MAX_ITERATIONS) {
-    //         return Color.BLACK; // Outside the set
-    //     } else {
-    //         float hue = ((float) iterations / MAX_ITERATIONS) % 1.0f;
-    //         return Color.getHSBColor(hue, 1.0f, 1.0f); // Inside the set
-    //     }
-    // }
+        if (centeredX == 1 || centeredY == 1) {
+            return new Color(0, 255, 0);
+            // return ShaderUtils.mixColors(r, g, b, 0, 255, 0);
+        }
+        return new Color(r, g, b);
+    }
 
 }

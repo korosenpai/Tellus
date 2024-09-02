@@ -148,7 +148,7 @@ public class Window extends JPanel implements ActionListener {
 
     public void start() {
         grid = new Grid(screenWidth, screenHeight, chunkSize, tileDimension, gridOffset);
-        shaderManager = new ShaderManager(grid, tileDimension);
+        shaderManager = new ShaderManager(grid, tileDimension, FPS);
 
         //entityList = new ArrayList<>();
         // if (player == null) { // avoid creating double player
@@ -454,7 +454,7 @@ public class Window extends JPanel implements ActionListener {
 
                 case 27: // esc
                     windowShouldClose = true;
-                    grid.saveGridtoDisk();
+                    // grid.saveGridtoDisk();
                     break;
 
                 // arrows up and down to increase / decrease cursor

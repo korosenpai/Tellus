@@ -16,17 +16,22 @@ public class ShaderManager {
     private final int ROWS;
     private final int COLS;
 
+    private final int FPS;
+
     // UNIFORMS
     private int playerDirectionX = 0; // always 0 or +- 1
     private int playerDirectionY = 0;
     private int mouseSize = 1; // can also try with mouse position
+    private float time = 0;
 
-    public ShaderManager(Grid grid, int tileDimension) {
+    public ShaderManager(Grid grid, int tileDimension, int fps) {
         this.GRID = grid;
         this.TILE_DIMENSION = tileDimension;
         this.ROWS = grid.getViewportRows();
         this.COLS = grid.getViewportColumns();
         this.shader = new Shader(grid.getViewportRows(), grid.getViewportColumns());
+
+        this.FPS = fps;
     }
 
     public void setUniforms(int playerDirectionX, int playerDirectionY, int mouseSize) {
@@ -43,9 +48,12 @@ public class ShaderManager {
     public void render(Graphics2D g) {
         renders++;
 
+        time += 1.0 / (float)FPS; // updates one every second
+
         // set uniforms once
         shader.DELTA_X += playerDirectionX;
         shader.DELTA_Y += playerDirectionY;
+        shader.time = time;
 
         for (int j = 0; j < ROWS; j++){
             for (int i = 0; i < COLS; i++) {
@@ -70,8 +78,9 @@ public class ShaderManager {
 
 
                 // g.setColor(shader.mandelbrotSet(mouseSize));
-                // g.setColor(shader.cave());
-                g.setColor(shader.clear());
+                // g.setColor(shader.geogebra());
+                g.setColor(shader.cave());
+                // g.setColor(shader.clear());
 
                 g.fillRect(i * TILE_DIMENSION, j * TILE_DIMENSION, TILE_DIMENSION, TILE_DIMENSION);
             }
